@@ -1,0 +1,2 @@
+$(document).ready(function(){function b(a){a.status?window.location.href=BaseUrl+"documents/"+$("#Parent").find("input:radio:checked").val()+"/show/"+a.id:(a=a.message,$("#alertErrorMessage").text(a),$("#alertError").slideDown())}$("#bSubmit").click(function(){$("#alertError").hide();var a=[];$("#employeeAccess").find("input:checked").each(function(){a.push($(this).val())});var c={TrainingName:$("#TrainingName").val(),TrainingContent:tinyMCE.activeEditor.getContent(),Parent:$("#Parent").find("input:radio:checked").val(),
+Employees:a};$.post(CurrentURL,c,b,"json")})});
