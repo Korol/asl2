@@ -244,5 +244,9 @@ $route['services/western/remove']        = 'Services_Western/remove';
 $route['services/meeting/remove']        = 'Services_Meeting/remove';
 $route['services/delivery/remove']       = 'Services_Delivery/remove';
 
+// Контроль доступа к комментариям сотрудников
+$route['users/template']         = 'Employee_CommentsAccess/template/$1';
+$route['users/template/update']     = 'Employee_CommentsAccess/template_update/$1';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap'
 
 import { fetchQuestionTemplate } from './../../actions/setting-actions'
+import { fetchUsersTemplate } from './../../actions/setting-actions'
 
 import LoadingPanel from '../LoadingPanel';
 import ReportTab from './ReportTab';
@@ -39,8 +40,8 @@ export default class SettingPage extends React.Component {
         }
 
         // Вкладка "Доступ к комментариям"
-        navs.push(<NavItem key="SettingCommentsAccessTab" eventKey="SettingCommentsAccessTab">Доступ к Коментариям</NavItem>);
-        panes.push(<Tab.Pane key="SettingCommentsAccessTab" eventKey="SettingCommentsAccessTab"><CommentsAccessTab /></Tab.Pane>);
+        navs.push(<NavItem key="SettingCommentsAccessTab" eventKey="SettingCommentsAccessTab">Доступ к комментариям</NavItem>);
+        panes.push(<Tab.Pane key="SettingCommentsAccessTab" eventKey="SettingCommentsAccessTab" onEnter={() => dispatch(fetchUsersTemplate())} ><CommentsAccessTab /></Tab.Pane>);
 
         return (
             <Tab.Container id="setting-category" defaultActiveKey="SettingReportTab">

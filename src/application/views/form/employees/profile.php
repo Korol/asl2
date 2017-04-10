@@ -42,6 +42,8 @@
         $isShowPageWork = ($isDirector || $isSecretary);
         $isShowPageWork_RoleAndSite = true;
         $isShowPagePhotoAndVideo = ($isDirector || $isSecretary);
+
+        $isEditComment = ($user['ID'] == 1) ? true : false;
     }
 
 ?>
@@ -205,6 +207,14 @@
                             <? endif ?>
                         </a>
                     </li>
+                    <? endif ?>
+
+                    <? if(!IS_LOVE_STORY && !empty($comment_access)): ?>
+                        <li role="presentation">
+                            <a href="#CommentPane" aria-controls="CommentPane" role="tab" data-toggle="tab">
+                                Комментарий
+                            </a>
+                        </li>
                     <? endif ?>
                 </ul>
             </div>
@@ -1432,6 +1442,26 @@
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                     Сохранить
                 </button>
+                <? endif ?>
+            </div>
+            <? endif ?>
+
+            <? if(!IS_LOVE_STORY && !empty($comment_access)): ?>
+            <div role="tabpanel" class="tab-pane" id="CommentPane">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <textarea class="assol-input-style" style="height: 136px;" id="Comment" rows="6" placeholder="Комментарий о сотруднике"><?=$employee['Comment']?></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <? if ($isEditComment): ?>
+                    <button id="SaveComment" class="btn assol-btn save" title="Сохранить изменения">
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                        Сохранить
+                    </button>
                 <? endif ?>
             </div>
             <? endif ?>

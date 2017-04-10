@@ -47,6 +47,7 @@ class Employee_model extends MY_Model {
             `ReasonForDeleted` TEXT COMMENT 'Причина удаления',
             `ReasonForBlocked` TEXT COMMENT 'Причина блокировки',
             `sms` TINYINT(1) DEFAULT 1 COMMENT 'Вход через СМС',
+            `Comment` TEXT COMMENT 'Комментарий о сотруднике',
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Сотрудники';";
 
@@ -182,6 +183,13 @@ class Employee_model extends MY_Model {
                 ON UPDATE NO ACTION ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Права доступа к сотрудникам';";
 
+    private $table_employees_comments_access =
+        "CREATE TABLE `assol_employees_comments_access` (
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `EmployeeID` int(11) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `EmployeeID` (`EmployeeID`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Права доступа к комментариям о сотрудниках';";
     /**
      * Инициализация таблицы
      */
@@ -200,6 +208,7 @@ class Employee_model extends MY_Model {
         $this->db()->query($this->table_employee_site_customer);
         $this->db()->query($this->table_employee_online);
         $this->db()->query($this->table_employee_rights);
+        $this->db()->query($this->table_employees_comments_access);
     }
 
     /** Удаление таблиц */
@@ -1330,7 +1339,8 @@ class Employee_model extends MY_Model {
         'Relative' => 'Брат / Сестра',
         'Site' => 'Сайты',
         'Skype' => 'Skype',
-        'Socnet' => 'Соцсети'
+        'Socnet' => 'Соцсети',
+        'Comment' => 'Комментарий о сотруднике',
     ];
 
     public function rightsGetList($EmployeeID) {
@@ -1408,6 +1418,44 @@ class Employee_model extends MY_Model {
 
         // Устанавливаем новое значение истории последних правок профиля
         $this->session->set_userdata(['UpdateEmployeeFields' => $updateFields]);
+    }
+
+    public function getListByRoles($roles)
+    {
+        return $this->db()
+            ->select('ID, SName, FName, UserRole')
+            ->from(self::TABLE_EMPLOYEE_NAME)
+            ->where_in('UserRole', $roles)
+            ->where(array(
+                'IsBlocked' => 0,
+                'IsDeleted' => 0,
+                'ID >' => 1,
+            ))
+            ->order_by('SName', SORT_ASC)
+            ->get()->result_array();
+    }
+
+    public function getCommentsAccessList()
+    {
+        return $this->db()->get(self::TABLE_EMPLOYEES_COMMENTS_ACCESS)->result_array();
+    }
+
+    public function addCommentsAccessId($id)
+    {
+        $this->removeCommentsAccessId($id);
+        return $this->db()->insert(self::TABLE_EMPLOYEES_COMMENTS_ACCESS, array('EmployeeID' => $id));
+    }
+
+    public function removeCommentsAccessId($id)
+    {
+        return $this->db()->delete(self::TABLE_EMPLOYEES_COMMENTS_ACCESS, array('EmployeeID' => $id));
+    }
+
+    public function checkCommentsAccess($employeeId)
+    {
+        if($employeeId == 1) return true;
+        $res = $this->db()->get_where(self::TABLE_EMPLOYEES_COMMENTS_ACCESS, array('EmployeeID' => $employeeId))->row_array();
+        return (!empty($res)) ? true : false;
     }
 
 }

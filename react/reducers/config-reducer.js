@@ -3,14 +3,16 @@ import * as types from '../actions/action-types';
 /**
  * @property {Array} employees - список активных пользователей согласно правам доступа 
  * 
- * @type {{config: boolean, setting: {email: string, isFetchQuestions: boolean, questions: Array}, employees: Array, customers: Array}}
+ * @type {{config: boolean, setting: {email: string, isFetchQuestions: boolean, questions: Array}, employees: Array, users: Array}}
  */
 const initialState = {
     config: false,
     setting: {
         email: '',
         isFetchQuestions: false,
-        questions: []
+        questions: [],
+        isFetchUsers: false,
+        users: []
     },
     employees: []
 };
@@ -54,6 +56,20 @@ export default function(state = initialState, action) {
             return {...state, setting: {...state.setting, questions: questionsRemove}};
         case types.FETCH_EMPLOYEES_SUCCESS:
             return {...state, employees: sortAndNormalizationEmployees(action.employees, state.config.userNameIsFirst)};
+        case types.FETCH_SETTING_USERS_START:
+            return {...state, setting: {...state.setting, isFetchUsers: true}};
+        case types.FETCH_SETTING_USERS_SUCCESS:
+            return {...state, setting: {...state.setting, isFetchUsers: false, users: action.users}};
+        case types.FETCH_SETTING_USERS_FAILED:
+            return {...state, setting: {...state.setting, isFetchUsers: false}};
+        case types.UPDATE_SETTING_EMPLOYEE_ACCESS_SUCCESS:
+            var usersUpdate = [...state.setting.users];
+            usersUpdate.forEach(function (item) {
+                if(item.ID == action.id) {
+                    item.Access = action.checked;
+                }
+            });
+            return {...state, setting: {...state.setting, users: usersUpdate}};
         default:
             return state;
     }

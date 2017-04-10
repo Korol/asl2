@@ -84,6 +84,7 @@ class MY_Model extends CI_Model {
     const TABLE_TRAINING_RIGHTS_NAME = 'assol_training_rights';
     const TABLE_TRAINING_FILE_NAME = 'assol_training_file';
     const TABLE_TRAINING_FILE_RIGHTS_NAME = 'assol_training_file_rights';
+    const TABLE_EMPLOYEES_COMMENTS_ACCESS = 'assol_employees_comments_access';
 
     /**
      * MY_Model constructor.

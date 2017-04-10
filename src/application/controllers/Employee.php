@@ -163,7 +163,8 @@ class Employee extends MY_Controller {
             'marital' => $this->getReferencesModel()->getReference(REFERENCE_MARITAL),
             'user_role' => $this->getReferencesModel()->getReference(REFERENCE_USER_ROLE),
             'sites' => $this->getSiteModel()->getRecords(),
-            'rights' => $this->getEmployeeModel()->rightsGetList($id)
+            'rights' => $this->getEmployeeModel()->rightsGetList($id),
+            'comment_access' => $this->getEmployeeModel()->checkCommentsAccess($this->user['ID'])
         );
 
         // Для сайта LoveStory добавляем график работы в карточку сотрудника

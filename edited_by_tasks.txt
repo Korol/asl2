@@ -1,0 +1,13 @@
+Stage 3:
+
+Task 6 (Сотрудникам добавить вкладка Комментарии):
+SQL:
+CREATE TABLE `assol_employees_comments_access` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `EmployeeID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `EmployeeID` (`EmployeeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `assol_employee` ADD `Comment` TEXT  NULL  AFTER `sms`;
+
+java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.employee.card.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.employee.card.js

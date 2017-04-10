@@ -49,6 +49,7 @@ $(document).ready(function(){
             $('#SaveWork').click(this.SaveWork)
                           .click(this.SaveWorkSites);
             $('#SavePhotoAndVideo').click(this.SavePhotoAndVideo);
+            $('#SaveComment').click(this.SaveComment);
 
             $('#EmployeeRemove').click(this.EmployeeRemove);
             $('#EmployeeMarkRemove').click(this.EmployeeMarkRemove);
@@ -525,6 +526,23 @@ $(document).ready(function(){
             }
 
             var data = getChangeData(['VideoConfirm']);
+
+            if (!$.isBlank(data))
+                $.post(BaseUrl + 'employee/'+EmployeeID+'/update', {data: data}, callback, 'json');
+        },
+        /** Сохранение комментария */
+        SaveComment: function() {
+            hideAlerts();
+
+            function callback(data) {
+                if (data.status) {
+                    showSuccessAlert('Комментарий успешно сохранён')
+                } else {
+                    showErrorAlert(data.message)
+                }
+            }
+
+            var data = getChangeData(['Comment']);
 
             if (!$.isBlank(data))
                 $.post(BaseUrl + 'employee/'+EmployeeID+'/update', {data: data}, callback, 'json');

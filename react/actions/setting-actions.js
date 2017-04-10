@@ -84,16 +84,58 @@ export function editQuestion(id, question) {
  *
  * @param {number} id - ID вопроса
  */
-export function removeQuestion(id) {
+export function removeQuestion(id, checked) {
     return function (dispatch) {
         dispatch({type: types.REMOVE_SETTING_CUSTOMER_PROFILE_START});
 
         axios.post("/question/template/remove", qs.stringify({id: id}))
             .then((response) => {
-                dispatch({type: types.REMOVE_SETTING_CUSTOMER_PROFILE_SUCCESS, id: id})
+                dispatch({type: types.REMOVE_SETTING_CUSTOMER_PROFILE_SUCCESS, id: id, checked: checked})
             })
             .catch((error) => {
                 dispatch({type: types.REMOVE_SETTING_CUSTOMER_PROFILE_FAILED, payload: error})
+            })
+    }
+}
+
+/**
+ * Загрузка списка сотрудников для контроля доступа к комментариям
+ */
+export function fetchUsersTemplate() {
+    return function (dispatch) {
+        dispatch({type: types.FETCH_SETTING_USERS_START});
+
+        axios.get("/users/template")
+            .then((response) => {
+                //console.log(response);
+                dispatch({
+                    type: types.FETCH_SETTING_USERS_SUCCESS,
+                    users: response.data.users
+                })
+            })
+            .catch((error) => {
+                dispatch({type: types.FETCH_SETTING_USERS_FAILED, payload: error})
+            })
+    };
+}
+
+/**
+ * Обновление доступа
+ *
+ * @param {number} id - ID пользователя
+ */
+export function updateAccess(id, checked) {
+    return function (dispatch) {
+        dispatch({type: types.UPDATE_SETTING_EMPLOYEE_ACCESS_START});
+
+        var checkval = (checked) ? 1 : 0;
+        axios.post("/users/template/update", qs.stringify({id: id, checked: checkval}))
+            .then((response) => {
+                //console.log(response);
+                dispatch({type: types.UPDATE_SETTING_EMPLOYEE_ACCESS_SUCCESS, id: id, checked: checked})
+            })
+            .catch((error) => {
+                dispatch({type: types.UPDATE_SETTING_EMPLOYEE_ACCESS_FAILED, payload: error})
             })
     }
 }
