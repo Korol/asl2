@@ -908,16 +908,44 @@ class Employee_model extends MY_Model {
      * @param int $idEmployee ID сотрудника
      */
     public function employeeCustomerGetList($idEmployee) {
-        return $this->db()
+        $result = $this->db()
             ->select("c.ID as 'CustomerID', c.FName, c.SName")
             ->from(self::TABLE_CUSTOMER_NAME.' AS c')
             ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
                 'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
             ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
                 'es.EmployeeID = '.$idEmployee.' AND es.IsDeleted = 0 AND es2c.EmployeeSiteID = es.ID', 'inner')
+            ->where('c.IsDeleted', 0)
             ->order_by('c.SName, c.FName', 'ASC')
             ->group_by('c.ID')
             ->get()->result_array();
+        return $result;
+    }
+
+    /**
+     * Получить список клиентов привязанных к сотруднику
+     *
+     * @param int $idEmployee ID сотрудника
+     * @param string $date
+     */
+    public function employeeCustomerGetListByDate($idEmployee, $date) {
+        $result = $this->db()
+            ->select("c.ID as 'CustomerID', c.FName, c.SName")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es.EmployeeID = '.$idEmployee.' AND es.IsDeleted = 0 AND es2c.EmployeeSiteID = es.ID', 'inner')
+            ->group_start()
+                ->where(array(
+                    'c.IsDeleted' => 0,
+                ))
+                ->or_where("'" . $date . "' <= DATE(c.`DateRemove`)", null, false)
+            ->group_end()
+            ->order_by('c.SName, c.FName', 'ASC')
+            ->group_by('c.ID')
+            ->get()->result_array();log_message('error', $this->db()->last_query());
+        return $result;
     }
 
     /**
@@ -931,9 +959,39 @@ class Employee_model extends MY_Model {
                 'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
             ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
                 'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0', 'inner')
+            ->group_start()
+                ->where(array(
+                    'c.IsDeleted' => 0,
+                ))
+            ->group_end()
             ->order_by('c.SName, c.FName', 'ASC')
             ->group_by('c.ID')
             ->get()->result_array();
+    }
+
+    /**
+     * Получить список клиентов привязанных к сотруднику + те, кто не удалён на момент указанной даты
+     * @param string $date
+     * @return mixed
+     */
+    public function allEmployeeCustomerGetListByDate($date) {
+        $result = $this->db()
+            ->select("c.ID as 'CustomerID', c.FName, c.SName")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0', 'inner')
+            ->group_start()
+                ->where(array(
+                    'c.IsDeleted' => 0,
+                ))
+                ->or_where("'" . $date . "' <= DATE(c.`DateRemove`)", null, false)
+            ->group_end()
+            ->order_by('c.SName, c.FName', 'ASC')
+            ->group_by('c.ID')
+            ->get()->result_array();
+        return $result;
     }
 
     /**
@@ -951,6 +1009,32 @@ class Employee_model extends MY_Model {
                 'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
             ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
                 'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0 AND es.EmployeeID='.$employee.' AND es.SiteID='.$idSite, 'inner')
+            ->where('c.IsDeleted', 0)
+            ->order_by('c.SName, c.FName', 'ASC')
+            ->get()->result_array();
+    }
+
+    /**
+     * Получить список клиентов привязанных к сайту + дата
+     *
+     * @param int $employee ID сотрудника
+     * @param int $idSite ID сайта
+     * @return
+     */
+    public function siteCustomerGetListByDate($employee, $idSite, $date) {
+        return $this->db()
+            ->select("es2c.ID as 'es2cID', c.FName, c.SName")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0 AND es.EmployeeID='.$employee.' AND es.SiteID='.$idSite, 'inner')
+            ->group_start()
+                ->where(array(
+                    'c.IsDeleted' => 0,
+                ))
+                ->or_where("'" . $date . "' <= DATE_FORMAT(c.`DateRemove`, '%Y-%m')", null, false)
+            ->group_end()
             ->order_by('c.SName, c.FName', 'ASC')
             ->get()->result_array();
     }
@@ -984,6 +1068,7 @@ class Employee_model extends MY_Model {
                 'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
             ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
                 'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0 AND es.EmployeeID = ' . $employee . ' AND es.SiteID = ' . $SiteID, 'inner')
+            ->where('c.IsDeleted', 0)
             ->order_by('c.SName, c.FName', 'ASC')
             ->get()->result_array();
     }

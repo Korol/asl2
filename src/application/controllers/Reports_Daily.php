@@ -5,14 +5,27 @@ class Reports_Daily extends MY_Controller {
 
     public function meta() {
         try {
+            $year = $this->input->post('year');
+            $month = $this->input->post('month') + 1;// Месяца на клиенте 0-11
+            $day = $this->input->post('day');
             $employee = $this->isDirector()
                 ? $this->input->post('employee')
                 : $this->getUserID();
 
             $data = [
                 'work_sites' => $this->getEmployeeModel()->siteGetList($employee),
-                'customers' => $this->getEmployeeModel()->employeeCustomerGetList($employee)
+                //'customers' => $this->getEmployeeModel()->employeeCustomerGetList($employee)
             ];
+
+            if(!empty($year) && !empty($month)){
+                $date = $year . '-'
+                    . $this->normalizeDate($month) . '-'
+                    . ((empty($day)) ? date('d') : $this->normalizeDate($day));
+                $data['customers'] = $this->getEmployeeModel()->employeeCustomerGetListByDate($employee, $date);
+            }
+            else{
+                $data['customers'] = $this->getEmployeeModel()->employeeCustomerGetList($employee);
+            }
 
             $this->json_response(array("status" => 1, 'records' => $data));
         } catch (Exception $e) {
@@ -62,5 +75,13 @@ class Reports_Daily extends MY_Controller {
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }
+    }
+
+    private function normalizeDate($item) {
+        if (strlen($item) === 1) {
+            $item = '0'.$item;
+        }
+
+        return $item;
     }
 }

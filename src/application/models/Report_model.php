@@ -434,7 +434,7 @@ class Report_model extends MY_Model {
      * @return mixed
      */
     public function reportGeneralOfCustomers($date) {
-        return $this->db()
+        $result = $this->db()
             ->select("c.ID as 'CustomerID', es.SiteID, rd.date, SUM(rd.emails) as emails, SUM(rd.chat) as chat")
             ->from(self::TABLE_CUSTOMER_NAME.' AS c')
             ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
@@ -443,9 +443,16 @@ class Report_model extends MY_Model {
                 'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0', 'inner')
             ->join(self::TABLE_REPORT_DAILY_NAME.' AS rd',
                 "rd.EmployeeSiteCustomerID = es2c.ID AND rd.date='".$date."'", 'left')
+            ->group_start()
+                ->where(array(
+                    'c.IsDeleted' => 0,
+                ))
+            ->or_where("'" . $date . "' <= DATE(c.`DateRemove`)", null, false)
+            ->group_end()
             ->group_by('c.ID')
             ->group_by('es.SiteID')
             ->get()->result_array();
+        return $result;
     }
 
     /**
@@ -456,7 +463,7 @@ class Report_model extends MY_Model {
      * @return mixed
      */
     public function reportGeneralOfCustomersGroupMonth($year, $month) {
-        return $this->db()
+        $result = $this->db()
             ->select("c.ID as 'CustomerID', es.SiteID, SUM(rd.emails) as 'emails', SUM(rd.chat) as 'chat'")
             ->from(self::TABLE_CUSTOMER_NAME.' AS c')
             ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
@@ -465,9 +472,16 @@ class Report_model extends MY_Model {
                 'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0', 'inner')
             ->join(self::TABLE_REPORT_DAILY_NAME.' AS rd',
                 "rd.EmployeeSiteCustomerID = es2c.ID AND DATE_FORMAT(rd.date, '%Y-%m')='".($year.'-'.$this->normalizeMonth($month))."'", 'left')
+            ->group_start()
+                ->where(array(
+                    'c.IsDeleted' => 0,
+                ))
+                ->or_where("'" . ($year.'-'.$this->normalizeMonth($month)) . "' <= DATE_FORMAT(c.`DateRemove`, '%Y-%m')", null, false)
+            ->group_end()
             ->group_by('c.ID')
             ->group_by('es.SiteID')
             ->get()->result_array();
+        return $result;
     }
 
     public function reportMailingFind($dateRecord, $idCross) {

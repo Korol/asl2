@@ -886,14 +886,17 @@
                             defaultDate: 'now',
                             showTodayButton: true
                         }).on('dp.change', function (e) {
-							$.ReportTranslate.RefreshReportDailyDate(e.date.year());
+                            $.ReportTranslate.ReloadReportDailyMeta(true);
+                            $.ReportTranslate.RefreshReportDailyDate(e.date.year());
                         });
 
                         months.change(function () {
-							$.ReportTranslate.RefreshReportDailyDate();
+							$.ReportTranslate.ReloadReportDailyMeta(true);
+                            $.ReportTranslate.RefreshReportDailyDate();
                         });
 
                         days.change(function () {
+                            $.ReportTranslate.ReloadReportDailyMeta(true);
                             $.ReportTranslate.ReloadReportDailyData();
                         });
 
@@ -1716,14 +1719,17 @@
                             defaultDate: 'now',
                             showTodayButton: true
                         }).on('dp.change', function (e) {
+                            $.ReportDirector.ReloadGeneralOfCustomersMeta(true);
                             $.ReportDirector.ReloadReportGeneralOfCustomersData(e.date.year());
                         });
 
                         months.change(function () {
+                            $.ReportDirector.ReloadGeneralOfCustomersMeta(true);
                             $.ReportDirector.RefreshReportGeneralOfCustomersDate();
                         });
 
                         days.change(function () {
+                            $.ReportDirector.ReloadGeneralOfCustomersMeta(true);
                             $.ReportDirector.ReloadReportGeneralOfCustomersData();
                         });
 

@@ -5,10 +5,21 @@ class Reports_GeneralOfCustomers extends MY_Controller {
 
     public function meta() {
         try {
+            $get = $this->input->get();
             $data = [
                 'work_sites' => $this->getEmployeeModel()->siteAllEmployeeGetList(),
-                'customers' => $this->getEmployeeModel()->allEmployeeCustomerGetList()
+                //'customers' => $this->getEmployeeModel()->allEmployeeCustomerGetList()
             ];
+
+            if(!empty($get['year']) && isset($get['month'])){
+                $date = $get['year'] . '-'
+                    . $this->normalizeDate(++$get['month']) . '-'
+                    . ((empty($get['day'])) ? date('d') : $this->normalizeDate($get['day']));
+                $data['customers'] = $this->getEmployeeModel()->allEmployeeCustomerGetListByDate($date);
+            }
+            else{
+                $data['customers'] = $this->getEmployeeModel()->allEmployeeCustomerGetList();
+            }
 
             $this->json_response(array("status" => 1, 'records' => $data));
         } catch (Exception $e) {
@@ -33,6 +44,14 @@ class Reports_GeneralOfCustomers extends MY_Controller {
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }
+    }
+
+    private function normalizeDate($item) {
+        if (strlen($item) === 1) {
+            $item = '0'.$item;
+        }
+
+        return $item;
     }
 
 }

@@ -459,7 +459,13 @@ $(document).ready(function(){
 
             $.post(BaseUrl + 'reports/overall/allocation/data', {SiteID: SiteID}, callback, 'json');
         },
-        ReloadGeneralOfCustomersMeta: function () {
+        ReloadGeneralOfCustomersMeta: function (norefresh = false) {
+            var data = {
+                year: $('#general-customers-year').data("DateTimePicker").date().year(),
+                month: $('#general-customers-month').val(),
+                day: $('#general-customers-day').val()
+            };
+
             $('#ReportGeneralOfCustomers_data').empty();
             $('#ReportGeneralOfCustomers_fixedWrapBody').find('>tbody').empty();
             $('#ReportGeneralOfCustomers_total').find('>tbody').empty();
@@ -469,12 +475,12 @@ $(document).ready(function(){
                     $.tmpl('reportGeneralOfCustomersTemplate', data.records).appendTo('#ReportGeneralOfCustomers_data');
                     $.tmpl('reportGeneralOfCustomers_fixedWrapBody_Template', data.records.customers).appendTo('#ReportGeneralOfCustomers_fixedWrapBody>tbody');
                     $.tmpl('reportGeneralOfCustomers_total_Template', data.records.customers).appendTo('#ReportGeneralOfCustomers_total>tbody');
-
+                    if(!norefresh)
                     $.ReportDirector.RefreshReportGeneralOfCustomersDate();
                 }
             }
 
-            $.getJSON(BaseUrl + 'reports/general/customers/meta', callback);
+            $.getJSON(BaseUrl + 'reports/general/customers/meta', data, callback);
         },
         ReloadReportGeneralOfCustomersData: function () {
             var data = {

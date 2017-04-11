@@ -392,7 +392,7 @@ $(document).ready(function(){
 
             $.ReportTranslate.ReloadReportDailyData();
         },
-        ReloadReportDailyMeta: function () {
+        ReloadReportDailyMeta: function (norefresh = false) {
             $('#ReportIndividualDaily_data').empty();
             $('#ReportIndividualDaily_fixedWrapBody').find('>tbody').empty();
             $('#ReportIndividualDaily_total').find('>tbody').empty();
@@ -402,12 +402,15 @@ $(document).ready(function(){
                     $.tmpl('reportIndividualDailyTemplate', data.records).appendTo('#ReportIndividualDaily_data');
                     $.tmpl('reportIndividualDaily_fixedWrapBody_Template', data.records.customers).appendTo('#ReportIndividualDaily_fixedWrapBody>tbody');
                     $.tmpl('reportIndividualDaily_total_Template', data.records.customers).appendTo('#ReportIndividualDaily_total>tbody');
-
+                    if(!norefresh)
                     $.ReportTranslate.RefreshReportDailyDate();
                 }
             }
 
             var data = {
+                year: $('#daily-year').data("DateTimePicker").date().year(),
+                month: $('#daily-month').val(),
+                day: $('#daily-day').val(),
                 employee: $.ReportTranslate.getEmployee()
             };
 
@@ -549,6 +552,8 @@ $(document).ready(function(){
             }
 
             var data = {
+                year: $('#mailing-year').data("DateTimePicker").date().year(),
+                month: $('#mailing-month').val(),
                 employee: $.ReportTranslate.getEmployee(),
                 SiteID: SiteID
             };

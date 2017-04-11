@@ -6,13 +6,24 @@ class Reports_Mailing extends MY_Controller {
     public function meta() {
         try {
             $site = $this->input->post('SiteID');
+            $year = $this->input->post('year');
+            $month = $this->input->post('month') + 1;// Месяца на клиенте 0-11
             $employee = $this->isDirector()
                 ? $this->input->post('employee')
                 : $this->getUserID();
 
-            $data = [
-                'customers' => $this->getEmployeeModel()->siteCustomerGetList($employee, $site)
-            ];
+//            $data = [
+//                'customers' => $this->getEmployeeModel()->siteCustomerGetList($employee, $site)
+//            ];
+
+            if(!empty($year) && !empty($month)){
+                $date = $year . '-' . $this->normalizeDate($month);
+                log_message('error', $date);
+                $data['customers'] = $this->getEmployeeModel()->siteCustomerGetListByDate($employee, $site, $date);
+            }
+            else{
+                $data['customers'] = $this->getEmployeeModel()->siteCustomerGetList($employee, $site);
+            }
 
             $this->json_response(array("status" => 1, 'records' => $data));
         } catch (Exception $e) {
@@ -75,5 +86,13 @@ class Reports_Mailing extends MY_Controller {
         } catch (Exception $e) {
             $this->json_response(['status' => 0, 'message' => $e->getMessage()]);
         }
+    }
+
+    private function normalizeDate($item) {
+        if (strlen($item) === 1) {
+            $item = '0'.$item;
+        }
+
+        return $item;
     }
 }

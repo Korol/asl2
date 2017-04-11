@@ -1329,6 +1329,7 @@ class Customer_model extends MY_Model {
             ->from(self::TABLE_CUSTOMER_NAME.' AS c')
             ->join(self::TABLE_CUSTOMER_SITE_NAME.' AS cs',
                 'c.ID = cs.CustomerID AND cs.IsDeleted=0 AND cs.SiteID = '.$siteID, 'inner')
+            ->where('c.IsDeleted', 0)
             ->order_by('c.SName, c.FName', 'ASC')
             ->get()->result_array();
 
