@@ -7,8 +7,8 @@ class Employee_CommentsAccess extends MY_Controller {
      * Функция проверки прав доступа
      */
     function assertUserRight() {
-        if (!$this->role['isDirector'])
-            show_error('Данный раздел доступен только для роли "Директор"', 403, 'Доступ запрещен');
+        if ($this->user['ID'] > 1)
+            show_error('Данный раздел доступен только для роли "Директор" с ID=1', 403, 'Доступ запрещен');
     }
 
     public function template() {
