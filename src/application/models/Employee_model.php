@@ -1050,6 +1050,7 @@ class Employee_model extends MY_Model {
             ->from(self::TABLE_CUSTOMER_NAME.' AS c')
             ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
                 'es2c.CustomerID = c.ID AND es2c.IsDeleted=0 AND es2c.EmployeeSiteID = '.$idEmployeeSite, 'inner')
+            ->where('c.IsDeleted', 0)
             ->order_by('c.SName, c.FName', 'ASC')
             ->get()->result_array();
     }
