@@ -1019,6 +1019,7 @@ class Employee_model extends MY_Model {
      *
      * @param int $employee ID сотрудника
      * @param int $idSite ID сайта
+     * @param string $date
      * @return
      */
     public function siteCustomerGetListByDate($employee, $idSite, $date) {

@@ -447,7 +447,7 @@ class Report_model extends MY_Model {
                 ->where(array(
                     'c.IsDeleted' => 0,
                 ))
-            ->or_where("'" . $date . "' <= DATE(c.`DateRemove`)", null, false)
+                ->or_where("'" . $date . "' <= DATE(c.`DateRemove`)", null, false)
             ->group_end()
             ->group_by('c.ID')
             ->group_by('es.SiteID')
