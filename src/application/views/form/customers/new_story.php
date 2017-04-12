@@ -23,11 +23,20 @@ if(!empty($sites)){
         font-size: 14px;
         font-weight: normal;
     }
+    .history-small-help{
+        font-size: 11px;
+        font-weight: normal;
+        color: #5d5d5d;
+        padding-top: 5px;
+    }
 </style>
 <?php if(!empty($meetings)): ?>
     <div class="row">
-        <div class="col-lg-12">
-            <h4>ВСТРЕЧИ <span class="md-small-header">(<?= count($meetings); ?>)</span></h4>
+        <div class="col-lg-12 clearfix">
+            <h4>ВСТРЕЧИ
+                <span class="md-small-header">(<?= count($meetings); ?>)</span>
+                <span class="pull-right history-small-help">Для скролла: "Наведите на таблицу и используйте Shift + прокрутка колесом мышки"</span>
+            </h4>
         </div>
     </div>
     <div class="row">
@@ -138,7 +147,10 @@ if(!empty($sites)){
         <br/><br/><br/>
     <div class="row">
         <div class="col-lg-12">
-            <h4>ДОСТАВКИ <span class="md-small-header">(<?= count($deliverys); ?>)</span></h4>
+            <h4>ДОСТАВКИ
+                <span class="md-small-header">(<?= count($deliverys); ?>)</span>
+                <span class="pull-right history-small-help">Для скролла: "Наведите на таблицу и используйте Shift + прокрутка колесом мышки"</span>
+            </h4>
         </div>
     </div>
     <div class="row">

@@ -557,14 +557,17 @@ class Service_model extends MY_Model {
             'western' => array(
                 'table' => self::TABLE_SERVICE_WESTERN_NAME,
                 'select' => '',
+                'sort' => array('field' => 'ID', 'type' => 'desc'),
             ),
             'meeting' => array(
                 'table' => self::TABLE_SERVICE_MEETING_NAME,
                 'select' => '',
+                'sort' => array('field' => 'DateIn', 'type' => 'desc'),
             ),
             'delivery' => array(
                 'table' => self::TABLE_SERVICE_DELIVERY_NAME,
                 'select' => ', e2.SName AS TSName, e2.FName AS TFName, e2.MName AS TMName',
+                'sort' => array('field' => 'Date', 'type' => 'desc'),
             ),
         );
 
@@ -576,7 +579,7 @@ class Service_model extends MY_Model {
             }
             $this->db()->where('IsDone', 1);
             $this->db()->like('Girl', $SName, 'after');
-            $this->db()->order_by('id', SORT_ASC);
+            $this->db()->order_by($types[$type]['sort']['field'], $types[$type]['sort']['type']);
             $res = $this->db()->get($types[$type]['table'])->result_array();//var_dump($this->db()->last_query());
         }
 
