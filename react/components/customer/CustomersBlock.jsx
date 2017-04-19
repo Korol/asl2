@@ -21,6 +21,7 @@ export default class CustomersBlock extends React.Component {
         return this.props.config ? (
             <div>
                 <Header refresh={this.onRefresh} />
+                <Pagination refresh={this.onRefresh} />
                 <List refresh={this.onRefresh} />
                 <Pagination refresh={this.onRefresh} />
             </div>

@@ -1842,6 +1842,7 @@ label {
   font-size: 12px;
   font-weight: 700;
   color: #575d62;
+    margin-bottom: 10px;
 }
 /* line 1722, ../../../scss/assol.scss */
 .assol-pagination .assol-pagination-in .assol-pagination-left {

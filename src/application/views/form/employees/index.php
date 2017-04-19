@@ -120,6 +120,27 @@
     </table>
 </div>
 
+<div class="assol-pagination assol-grey-panel">
+    <div class="assol-pagination-in clear">
+
+        <div class="assol-pagination-left">
+            <input type="number" class="assol-input-style now-page-input" id="CurrentPageTop" value="1">
+            <span class="assol-pagination-all">из <span id="CountPageTop">1<span></span>
+        </div>
+        <div class="assol-pagination-right">
+            <div class="assol-pagination-arrs">
+                <button class="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </button>
+                <button class="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <?
 
     $isShowEmail = !IS_LOVE_STORY; // только для assol

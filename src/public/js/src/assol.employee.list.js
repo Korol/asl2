@@ -33,22 +33,26 @@ $(document).ready(function(){
 
             $(document).on("click", "#EmployeesStatus input:radio", function (e) {
                 $('#CurrentPage').val(1);
+                $('#CurrentPageTop').val(1);
                 $.Employees.ReloadEmployeesList();
             });
 
             $(document).on("click", "#UserRole input:radio", function (e) {
                 $('#CurrentPage').val(1);
+                $('#CurrentPageTop').val(1);
                 $.Employees.ReloadEmployeesList();
             });
 
             $(document).on("click", "#FilterSite input:radio", function (e) {
                 $('#CurrentPage').val(1);
+                $('#CurrentPageTop').val(1);
                 $.Employees.ReloadEmployeesList();
             });
 
             $(document).on("keyup", ".filter-input", function (e) {
                 delay(function(){
                     $('#CurrentPage').val(1);
+                    $('#CurrentPageTop').val(1);
                     $.Employees.ReloadEmployeesList();
                 }, 500);
             });
@@ -59,13 +63,21 @@ $(document).ready(function(){
                 }, 500);
             });
 
+            $(document).on("keyup", "#CurrentPageTop", function (e) {
+                delay(function(){
+                    $.Employees.ReloadEmployeesList();
+                }, 500);
+            });
+
             $('.assol-pagination-arrs .next').click(function () {
                 $('#CurrentPage').val((parseInt($('#CurrentPage').val()) || 0) + 1);
+                $('#CurrentPageTop').val((parseInt($('#CurrentPageTop').val()) || 0) + 1);
                 $.Employees.ReloadEmployeesList();
             });
 
             $('.assol-pagination-arrs .prev').click(function () {
                 $('#CurrentPage').val((parseInt($('#CurrentPage').val()) || 0) - 1);
+                $('#CurrentPageTop').val((parseInt($('#CurrentPageTop').val()) || 0) - 1);
                 $.Employees.ReloadEmployeesList();
             });
         },
@@ -101,20 +113,26 @@ $(document).ready(function(){
                     pageCount = Math.ceil(data.data.count / pageRecordLimit) || 1;
                     // Сброс текущего значения при привышение лимита
                     currentPage = parseInt($('#CurrentPage').val()) || 1;
-                    if (currentPage > pageCount)
+                    if (currentPage > pageCount) {
                         $('#CurrentPage').val(1);
-
+                        $('#CurrentPageTop').val(1);
+                    }
                     $('#CountPage').html(pageCount);
+                    $('#CountPageTop').html(pageCount);
                 } else {
                     showErrorAlert(data.message)
                 }
             }
 
             currentPage = parseInt($('#CurrentPage').val()) || 0;
-            if (currentPage < 1)
+            if (currentPage < 1){
                 $('#CurrentPage').val(1);
-            if (currentPage > pageCount)
+                $('#CurrentPageTop').val(1);
+            }
+            if (currentPage > pageCount){
                 $('#CurrentPage').val(pageCount);
+                $('#CurrentPageTop').val(pageCount);
+            }
 
             var data = {
                 Status: $('#EmployeesStatus').find('input:radio:checked').val(),
