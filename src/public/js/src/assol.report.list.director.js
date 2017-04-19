@@ -20,9 +20,9 @@ $(document).ready(function(){
     /** Список общих отчетов */
     const REPORT_TYPE_GENERAL = {Level: 3, Name: 'Общие'};
     /** Общие отчеты -> Сводная зарплатная таблица */
-    const REPORT_OVERALL_SALARY = {Level: 31, Name: 'Сводная зарплатная таблица'};
+    const REPORT_OVERALL_SALARY = {Level: 31, Name: 'Подтвержденная зарплата'};
     /** Общие отчеты -> Общая з/п таблица */
-    const REPORT_GENERAL_SALARY = {Level: 32, Name: 'Общая з/п таблица'};
+    const REPORT_GENERAL_SALARY = {Level: 32, Name: 'Выплата зарплаты'};
     /** Общие отчеты -> Общая таблица по клиентам */
     const REPORT_GENERAL_OF_CUSTOMERS = {Level: 33, Name: 'Общая таблица по клиентам'};
     /** Общие отчеты -> Сводная таблица распределения */

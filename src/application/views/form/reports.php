@@ -1858,7 +1858,7 @@
 <? if($role['isDirector']): ?>
 
     <div id="ReportOverallSalary" class="overlay-salary-report report-table">
-        <div class="reports-title">Сводная зарплатная таблица</div>
+        <div class="reports-title">Подтвержденная зарплата</div>
 
 
         <div class="panel assol-grey-panel">
@@ -2075,7 +2075,7 @@
     </div>
 
     <div id="ReportGeneralSalary" class="total-salary-report report-table">
-        <div class="reports-title">Общая зарплатная таблица </div>
+        <div class="reports-title">Выплата зарплаты</div>
 
 
         <div class="panel assol-grey-panel">
