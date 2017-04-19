@@ -62,7 +62,9 @@ class Calendar extends MY_Controller {
                 $data[] = array(
                     'className' => 'action-birthday',
                     'title' => 'День рождения сотрудника - ' . $birthday['SName'] . ' ' . $birthday['FName'],
-                    'start' => $this->normalizeDOB($start, $end, $birthday['DOB'])
+                    'start' => $this->normalizeDOB($start, $end, $birthday['DOB']),
+                    'uid' => $birthday['ID'],
+                    'utype' => 'employee',
                 );
             }
 
@@ -71,7 +73,9 @@ class Calendar extends MY_Controller {
                 $data[] = array(
                     'className' => 'action-birthday',
                     'title' => 'День рождения клиентки - ' . $birthday['SName'] . ' ' . $birthday['FName'],
-                    'start' => $this->normalizeDOB($start, $end, $birthday['DOB'])
+                    'start' => $this->normalizeDOB($start, $end, $birthday['DOB']),
+                    'uid' => $birthday['ID'],
+                    'utype' => 'customer',
                 );
             }
 

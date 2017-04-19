@@ -15,6 +15,7 @@ java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users
 java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.report.director.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.report.director.js
 java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.report.list.director.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.report.list.director.js
 java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.report.translate.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.report.translate.js
+java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.calendar.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.calendar.js
 
 
 ReloadReportGeneralOfCustomers

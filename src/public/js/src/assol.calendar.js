@@ -36,10 +36,22 @@ $(document).ready(function(){
                     $.AssolCalendar.DialogCalendarEvent(start, end);
                 },
                 eventClick: function(calEvent, jsEvent, view) {
-                    $.AssolCalendar.DialogCalendarEvent(
-                        calEvent.start, calEvent.end, calEvent.id, calEvent.title,
-                        calEvent.description, calEvent.remind, true,
-                        (jQuery.inArray('action-birthday', calEvent.className) > -1));
+                    if(calEvent.uid){
+                        if(calEvent.utype == 'customer'){
+                            var win = window.open(BaseUrl + 'customer/' + calEvent.uid + '/profile', '_blank');
+                            win.focus();
+                        }
+                        else if(calEvent.utype == 'employee'){
+                            var win = window.open(BaseUrl + 'employee/' + calEvent.uid + '/profile', '_blank');
+                            win.focus();
+                        }
+                    }
+                    else{
+                        $.AssolCalendar.DialogCalendarEvent(
+                            calEvent.start, calEvent.end, calEvent.id, calEvent.title,
+                            calEvent.description, calEvent.remind, true,
+                            (jQuery.inArray('action-birthday', calEvent.className) > -1));
+                    }
                 },
                 selectable: true,
                 columnFormat: 'dddd',
