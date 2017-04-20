@@ -1055,6 +1055,26 @@
                         </div>
                     <? endif ?>
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="FootSize">Размер ноги</label>
+                            <input class="assol-input-style" type="text" placeholder="Размер ноги" name="FootSize" value="<?= $customer['FootSize']; ?>" id="FootSize"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="FingerSize">Размер пальца</label>
+                            <input class="assol-input-style" type="text" placeholder="Размер пальца" name="FingerSize" value="<?= $customer['FingerSize']; ?>" id="FingerSize"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="ClothingSize">Размер одежды</label>
+                            <input class="assol-input-style" type="text" placeholder="Размер одежды" name="ClothingSize" value="<?= $customer['ClothingSize']; ?>" id="ClothingSize"/>
+                        </div>
+                    </div>
+                </div>
                 <? if (IS_LOVE_STORY): ?>
                     <div class="row">
                         <div class="col-md-3">

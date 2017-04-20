@@ -62,6 +62,9 @@ class Customer_model extends MY_Model {
             `DateUpdate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Дата последнего редактирования',
             `DateRemove` TIMESTAMP NULL DEFAULT NULL COMMENT 'Дата удаления',
             `WhoUpdate` INT(11) COMMENT 'Кто обновил в последний раз',
+            `FootSize` VARCHAR(255) DEFAULT NULL COMMENT 'Размер ноги',
+            `FingerSize` VARCHAR(255) DEFAULT NULL COMMENT 'Размер пальца',
+            `ClothingSize` VARCHAR(255) DEFAULT NULL COMMENT 'Размер одежды',
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Клиенты';";
 
@@ -1544,7 +1547,10 @@ class Customer_model extends MY_Model {
         'Story' => 'История',
         'Album' => 'Фотоальбом',
         'Video' => 'Видео',
-        'QuestionPhoto' => 'Вопросы'
+        'QuestionPhoto' => 'Вопросы',
+        'FootSize' => 'Размер ноги',
+        'FingerSize' => 'Размер пальца',
+        'ClothingSize' => 'Размер одежды',
     ];
 
     public function passportList($limit, $offset) {
