@@ -107,7 +107,7 @@ export default class ScheduleBlock extends React.Component {
                 {
                     this.props.schedules.map((schedule, index) =>
                         <tr key={index} style={parseInt(schedule.IsOnline) > 0 ? {background: "#3aff3a"} : null}>
-                            <td>{`${schedule.SName} ${schedule.FName}`}</td>
+                            <td><a href={`/employee/${schedule.EmployeeID}/profile`} target="_blank">{`${schedule.SName} ${schedule.FName}`}</a></td>
                             <td>{schedule.Monday}</td>
                             <td>{schedule.Tuesday}</td>
                             <td>{schedule.Wednesday}</td>
