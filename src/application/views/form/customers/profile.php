@@ -123,6 +123,9 @@
                 <td>
                     <div><strong>Статус:</strong> <span class="blue-style"><?= ($customer['IsDeleted'] > 0 ? "удален" : "активный") ?></span></div>
                     <div><strong>Создана:</strong> <span><?= toClientDateTime($customer['DateCreate']) ?></span></div>
+                    <?php if(!empty($today_meetings)): ?>
+                    <div><strong style="color: red;">на встрече</strong></div>
+                    <?php endif; ?>
                 </td>
             </tr>
         </table>

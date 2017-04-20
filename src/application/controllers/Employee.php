@@ -39,6 +39,23 @@ class Employee extends MY_Controller {
                 }
             }
 
+            // добавляем метку «на встрече»
+            $todayMeetings = $this->getServiceModel()->getMeetingByDate(date('Y-m-d'));
+            if(!empty($result['records']) && !empty($todayMeetings)){
+                foreach ($result['records'] as $ekey => $employee) {
+                    foreach ($todayMeetings as $tm) {
+                        if((!empty($employee['SName']))
+                            && (mb_strpos($tm['UserTranslate'], $employee['SName'], 0, 'UTF-8') !== false))
+                        {
+                            $result['records'][$ekey]['onMeeting'] = 1;
+                        }
+                        else{
+                            $result['records'][$ekey]['onMeeting'] = 0;
+                        }
+                    }
+                }
+            }
+
             $this->json_response(array("status" => 1, 'data' => $result));
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));

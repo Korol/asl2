@@ -613,4 +613,38 @@ class Service_model extends MY_Model {
         return (!empty($res)) ? $res : array();
     }
 
+    /**
+     * @param string $date      - сегодняшняя дата Y-m-d
+     * @param string $userField - поле, в котором указано ФИО
+     * @param string $SName     - фамилия
+     * @return array
+     */
+    public function getMeetingByDateAndSName($date, $userField, $SName)
+    {
+        $return = array();
+        if(!empty($date)){
+            $return = $this->db()
+                ->where("`IsDone` = 0
+                AND ('" . $date . "' BETWEEN `DateIn` AND `DateOut`)
+                AND (`" . $userField . "` LIKE '%" . $SName . "%')", null, false)
+                ->get(self::TABLE_SERVICE_MEETING_NAME)->result_array();
+        }
+        return (!empty($return)) ? $return : array();
+    }
+
+    /**
+     * @param string $date - дата Y-m-d
+     * @return array
+     */
+    public function getMeetingByDate($date)
+    {
+        $return = array();
+        if(!empty($date)){
+            $return = $this->db()
+                ->where("`IsDone` = 0 AND ('" . $date . "' BETWEEN `DateIn` AND `DateOut`)", null, false)
+                ->get(self::TABLE_SERVICE_MEETING_NAME)->result_array();
+        }
+        return (!empty($return)) ? $return : array();
+    }
+
 }

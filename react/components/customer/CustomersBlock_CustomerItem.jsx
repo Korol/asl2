@@ -148,6 +148,7 @@ export default class CustomersBlock_CustomerItem extends React.Component {
                                 <div className="client-id">
                                     <strong>ID: </strong>
                                     <a href={`${BaseUrl}customer/${customer.ID}/profile`}>{customer.ID}</a>
+                                    <span className="pull-right on-meeting-span">{customer.onMeeting ? 'на встрече' : ''}</span>
                                 </div>
                                 {this.renderRestoreForm()}
                                 <div>

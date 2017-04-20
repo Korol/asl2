@@ -5550,3 +5550,14 @@ code {
   font-size: 18px;
   font-weight: bold;
 }
+
+.on-meeting-span {
+    color: red;
+    font-weight: bold;
+    margin-right: 30px;
+}
+.on-meeting-span15 {
+    color: red;
+    font-weight: bold;
+    margin-right: 15px;
+}

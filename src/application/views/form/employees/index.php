@@ -165,8 +165,9 @@
     <div class="">
         <div class="employee-wrap" id-employee="${ID}">
             <div class="employee">
-                <div class="employee-on-off {{if IsOnline > 0}}on{{else}}off{{/if}}">
+                <div class="employee-on-off clearfix {{if IsOnline > 0}}on{{else}}off{{/if}}">
                     {{if IsOnline > 0}}online{{else}}offline (${printDateOnline(DateOnline)}){{/if}}
+                    <span class="pull-right on-meeting-span15">{{if onMeeting}}на встрече{{/if}}</span>
                 </div>
                 <div class="employee-img">
                     <? if ($isAdmin): ?>

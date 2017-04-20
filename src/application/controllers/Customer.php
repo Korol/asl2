@@ -32,7 +32,23 @@ class Customer extends MY_Controller {
                 $filterUserId = ($this->isTranslate() || $this->isEmployee()) ? $this->getUserID() : FALSE;
             }
 
-            $this->json_response(array("status" => 1, 'data' => $this->getCustomerModel()->customerGetList($filterUserId, $data)));
+            // добавляем метку «на встрече»
+            $customerList = $this->getCustomerModel()->customerGetList($filterUserId, $data);
+            $todayMeetings = $this->getServiceModel()->getMeetingByDate(date('Y-m-d'));
+            if(!empty($customerList['records']) && !empty($todayMeetings)){
+                foreach ($customerList['records'] as $ckey => $customer) {
+                    foreach ($todayMeetings as $tm) {
+                        if(mb_strpos($tm['Girl'], $customer['SName'], 0, 'UTF-8') !== false){
+                            $customerList['records'][$ckey]['onMeeting'] = 1;
+                        }
+                        else{
+                            $customerList['records'][$ckey]['onMeeting'] = 0;
+                        }
+                    }
+                }
+            }
+
+            $this->json_response(array("status" => 1, 'data' => $customerList));
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }
@@ -150,6 +166,7 @@ class Customer extends MY_Controller {
         if(!empty($data['customer']['SName'])){
             $data['meetings'] = $this->getServiceModel()->findServiceByCustomerSName($data['customer']['SName'], 'meeting');
             $data['deliverys'] = $this->getServiceModel()->findServiceByCustomerSName($data['customer']['SName'], 'delivery');
+            $data['today_meetings'] = $this->getServiceModel()->getMeetingByDateAndSName(date('Y-m-d'), 'Girl', $data['customer']['SName']);
         }
 
         // Установка прав доступа к договорам и паспорту только для assol
