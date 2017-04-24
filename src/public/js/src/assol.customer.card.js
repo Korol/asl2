@@ -1000,9 +1000,18 @@ $(document).ready(function(){
                 notes.push({id: id, note: note});
             });
 
+            var comments = [];
+            $('.comment-site').each(function(){
+                var comment = $(this).val();
+                var id = $(this).attr('record');
+
+                comments.push({id: id, comment: comment});
+            });
+
             var data = {
                 sites: sites,
-                notes: notes
+                notes: notes,
+                comments: comments
             };
 
             function callback(data) {

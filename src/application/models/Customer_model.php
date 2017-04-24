@@ -188,6 +188,7 @@ class Customer_model extends MY_Model {
             `SiteID` INT(11) NOT NULL COMMENT 'Уникальный номер сайта',
             `Note` TEXT COMMENT 'Примечание к сайту',
             `IsDeleted` TINYINT(1) DEFAULT 0 COMMENT 'Флаг удаления',
+            `Comment` varchar(255) DEFAULT NULL COMMENT 'Комментарий к сайту клиента',
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Сайты клиента';";
 
@@ -1656,6 +1657,40 @@ class Customer_model extends MY_Model {
                 return $record['description'];
             }, $records))
         ]);
+    }
+
+    /**
+     * Получаем списки сотрудников, сгруппированных по сайтам,
+     * за которыми закреплен данный клиент
+     *
+     * @param string $CustomerID - ID клиента
+     * @return array
+     */
+    public function getEmployeesBySite($CustomerID)
+    {
+        $return = array();
+        $res = $this->db()
+            ->select('e.ID, e.SName, e.FName, es.SiteID, es.EmployeeID, esc.EmployeeSiteID')
+            ->from(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME . ' AS esc')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME . ' AS es', 'es.ID=esc.EmployeeSiteID')
+            ->join(self::TABLE_EMPLOYEE_NAME . ' AS e', 'e.ID=es.EmployeeID')
+            ->where(array(
+                'esc.CustomerID' => $CustomerID,
+                'e.IsBlocked' => 0, // assol_employee
+                'e.IsDeleted' => 0, // assol_employee
+                'es.IsDeleted' => 0, // assol_employee_site
+                'esc.IsDeleted' => 0, // assol_employee_site_customer
+            ))
+            ->get()->result_array();
+//        var_dump($this->db()->last_query(), $res);
+        // группируем результаты по сайтам (es.SiteID), формируем ссылку на профиль сотрудника
+        if(!empty($res)){
+            foreach ($res as $row) {
+                $name = '<a href="/employee/' . $row['ID'] . '/profile" target="_blank">' . trim($row['SName']) . ' ' . mb_substr($row['FName'], 0, 1, 'UTF-8') . '.</a>';
+                $return[$row['SiteID']] = (isset($return[$row['SiteID']])) ? $return[$row['SiteID']] . ', ' . $name : $name;
+            }
+        }
+        return $return;
     }
 
 }

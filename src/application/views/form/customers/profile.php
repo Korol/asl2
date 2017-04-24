@@ -1950,24 +1950,32 @@
 
                 <script id="siteTemplate" type="text/x-jquery-tmpl">
                     <div class="work-sites-block" record="${SiteID}">
-                        <div class="row">
+                        <div class="row" style="margin-bottom: 25px;">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <div class="site-item">
                                         <? if ($isEditSites): ?>
                                         <span class="glyphicon glyphicon-remove-circle action-remove-site" record="${ID}" aria-hidden="true" title="Удалить сайт"></span>
                                         <? endif ?>
-                                        <span <? if (!$isEditSites): ?>style="padding-left: 10px;"<? endif ?>>${Sites[SiteID]}</span>
+                                        <span <? if (!$isEditSites): ?>style="padding-left: 10px;"<? endif ?>>${Sites[SiteID]} ${SiteID}</span>
                                         <div class="arrow">
                                             <div class="arrow-in"></div>
                                         </div>
                                     </div>
                                 </div>
+                                <? if ($isEditSites): ?>
+                                <div class="form-group">
+                                    <input type="text" class="form-control comment-site" record="${ID}" <? if (!$isEditSitesDescription): ?> disabled="disabled" <? endif ?> value="${Comment}"/>
+                                </div>
+                                <? endif ?>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-group">
                                     <textarea class="assol-input-style note-site" record="${ID}" <? if (!$isEditSitesDescription): ?> disabled="disabled" <? endif ?>>${Note}</textarea>
                                 </div>
+                                {{if EmployeesList}}
+                                <div style="margin-top: -5px;">{{html EmployeesList}}</div>
+                                {{/if}}
                             </div>
                         </div>
                     </div>

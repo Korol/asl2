@@ -2,13 +2,13 @@ Stage 3:
 
 Task 6 (Сотрудникам добавить вкладка Комментарии):
 SQL:
-CREATE TABLE `assol_employees_comments_access` (
+//CREATE TABLE `assol_employees_comments_access` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `EmployeeID` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `EmployeeID` (`EmployeeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE `assol_employee` ADD `Comment` TEXT  NULL  AFTER `sms`;
+//ALTER TABLE `assol_employee` ADD `Comment` TEXT  NULL  AFTER `sms`;
 
 java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.employee.card.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.employee.card.js
 java -jar /Users/korol/Sites/asl2.loc/src/public/js/src/compiler.jar --js /Users/korol/Sites/asl2.loc/src/public/js/src/assol.customer.card.js          --js_output_file /Users/korol/Sites/asl2.loc/src/public/js/assol.customer.card.js
@@ -24,8 +24,14 @@ ReloadGeneralOfCustomersMeta
 ReloadReportGeneralOfCustomersData
 RefreshReportGeneralOfCustomersDataSummary
 
-INSERT INTO `assol_references` (`ID`, `ReferenceKey`, `ReferenceValue`) VALUES (NULL, 'FORMING', 'Среднее техническое');
+//INSERT INTO `assol_references` (`ID`, `ReferenceKey`, `ReferenceValue`) VALUES (NULL, 'FORMING', 'Среднее техническое');
 
-ALTER TABLE `assol_customer` ADD `FootSize` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `WhoUpdate`;
-ALTER TABLE `assol_customer` ADD `FingerSize` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL  AFTER `FootSize`;
-ALTER TABLE `assol_customer` ADD `ClothingSize` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL  AFTER `FingerSize`;
+//ALTER TABLE `assol_customer` ADD `FootSize` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `WhoUpdate`;
+//ALTER TABLE `assol_customer` ADD `FingerSize` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL  AFTER `FootSize`;
+//ALTER TABLE `assol_customer` ADD `ClothingSize` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  DEFAULT NULL  AFTER `FingerSize`;
+================
+
+2017-04-21:
+ALTER TABLE `assol_customer_site` ADD `Comment` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `IsDeleted`;
+
+(`Comment` varchar(255) DEFAULT NULL COMMENT 'Комментарий к сайту клиента',)

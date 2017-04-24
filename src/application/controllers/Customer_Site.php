@@ -10,6 +10,16 @@ class Customer_Site extends MY_Controller {
 
             $records = $this->getCustomerModel()->siteGetList($CustomerID);
 
+            // сотрудники, за которыми закреплён клиент по сайтам
+            $employeesBySites = $this->getCustomerModel()->getEmployeesBySite($CustomerID);
+            if(!empty($records) && !empty($employeesBySites)){
+                foreach ($records as $rk => $row) {
+                    $records[$rk]['EmployeesList'] = (!empty($employeesBySites[$row['SiteID']]))
+                        ? $employeesBySites[$row['SiteID']]
+                        : '';
+                }
+            }
+
             $this->json_response(array("status" => 1, 'records' => $records));
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
@@ -43,6 +53,14 @@ class Customer_Site extends MY_Controller {
             if (isset($data['notes'])) {
                 foreach($data['notes'] as $note) {
                     $this->getCustomerModel()->siteUpdate($note['id'], array('Note' => $note['note']));
+                    $update = true;
+                }
+            }
+
+            // Комментарии к сайтам клиентов
+            if (isset($data['comments'])) {
+                foreach($data['comments'] as $comment) {
+                    $this->getCustomerModel()->siteUpdate($comment['id'], array('Comment' => $comment['comment']));
                     $update = true;
                 }
             }
