@@ -2321,4 +2321,80 @@
     </div>
 </div>
 
+    <div id="ReportOverallCustomersSites" class="report-table overall-customer-sites">
+        <div class="row">
+            <style>
+                .history-small-help {
+                    font-size: 11px;
+                    font-weight: normal;
+                    color: #5d5d5d;
+                    padding-top: 5px;
+                }
+                .cs-table > tbody > tr > td {
+                    border: 1px solid #ddd;
+                }
+                .cs-tb-link {
+                    color: #000;
+                    text-decoration: none;
+                }
+                .cs-tb-link:hover {
+                    text-decoration: none;
+                }
+            </style>
+            <div class="col-md-12 clearfix">
+                <div class="reports-title">
+                    Клиенты &harr; Сайты
+                    <span class="pull-right history-small-help">Для скролла: "Наведите на таблицу и используйте Shift + прокрутка колесом мышки"</span>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding-right: 15px;">
+        <?php if(!empty($sites) && !empty($cs_customers)): ?>
+            <div class="col-md-12 table-responsive">
+                <table class="table table-bordered table-striped cs-table">
+                    <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <?php foreach($sites as $th_site): ?>
+                        <th><?= $th_site['Name']; ?></th>
+                        <?php endforeach; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach($cs_customers as $cs_item): ?>
+                        <?php
+                        $fname = mb_substr($cs_item['FName'], 0, 1, 'UTF-8');
+                        $mname = mb_substr($cs_item['MName'], 0, 1, 'UTF-8');
+                        ?>
+                    <tr>
+                        <td nowrap><?= $cs_item['SName'] . ' ' . $fname . '.' . $mname . '.'; ?></td>
+                        <?php foreach($sites as $tb_site): ?>
+                        <td>
+                        <?php
+                        $tb_text = '&dash;';
+                        if(!empty($cs_item['CS'][$tb_site['ID']])){
+                            $tb_text = $cs_item['CS'][$tb_site['ID']];
+                        }
+                        elseif(in_array($tb_site['ID'], array_keys($cs_item['CS']))){
+                            $tb_text = 'Есть';
+                        }
+                        echo ($tb_text !== '&dash;')
+                            ? '<a class="cs-tb-link" href="/customer/' . $cs_item['ID'] . '/profile#Sites" target="_blank">' . $tb_text . '</a>'
+                            : $tb_text;
+                        ?>
+                        </td>
+                        <?php endforeach; ?>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <div class="col-md-12">
+                <h4>Нет данных для отображения</h4>
+            </div>
+        <?php endif; ?>
+        </div>
+    </div>
+
 <? endif ?>

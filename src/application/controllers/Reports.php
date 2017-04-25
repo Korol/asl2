@@ -13,10 +13,13 @@ class Reports extends MY_Controller {
         $data = array(
             'employee' => $this->getEmployeeModel()->employeeGet($this->getUserID()),
             'sites' => $this->getSiteModel()->getRecords(),
-            'translators' => $this->getEmployeeModel()->employeeTranslatorGetList()
+            'translators' => $this->getEmployeeModel()->employeeTranslatorGetList(),
         );
 
         if ($this->isDirector() || $this->isSecretary()) {
+            // данные для таблицы Клиенты <–> Сайты
+            $data['cs_customers'] = $this->getCustomerModel()->getListCustomersSites();//var_dump($data['cs_customers']);
+
             $js[] = "public/js/$script_prefix.report.director.js";
             $js[] = $this->isDirector()
                 ? "public/js/$script_prefix.report.list.director.js"

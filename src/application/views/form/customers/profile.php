@@ -1957,7 +1957,7 @@
                                         <? if ($isEditSites): ?>
                                         <span class="glyphicon glyphicon-remove-circle action-remove-site" record="${ID}" aria-hidden="true" title="Удалить сайт"></span>
                                         <? endif ?>
-                                        <span <? if (!$isEditSites): ?>style="padding-left: 10px;"<? endif ?>>${Sites[SiteID]} ${SiteID}</span>
+                                        <span <? if (!$isEditSites): ?>style="padding-left: 10px;"<? endif ?>>${Sites[SiteID]}</span>
                                         <div class="arrow">
                                             <div class="arrow-in"></div>
                                         </div>

@@ -5,6 +5,8 @@ $(document).ready(function(){
     const REPORT_INDIVIDUAL_LIST = {Level: 0};
     /** Индивидуальные отчеты -> Ежедневный отчет */
     const REPORT_OVERALL_ALLOCATION = {Level: 1, Name: 'Сводная таблица распределения'};
+    /** Общие отчеты -> Клиенты <–> Сайты */
+    const REPORT_OVERALL_CUSTOMERS_SITES = {Level: 35, Name: 'Клиенты &harr; Сайты'};
 
     var pathLevel = REPORT_INDIVIDUAL_LIST.Level;
 
@@ -12,6 +14,8 @@ $(document).ready(function(){
         switch (pathLevel) {
             case REPORT_OVERALL_ALLOCATION.Level:
                 return {Name: REPORT_OVERALL_ALLOCATION.Name, IsLast: true};
+            case REPORT_OVERALL_CUSTOMERS_SITES.Level:
+                return {Name: REPORT_OVERALL_CUSTOMERS_SITES.Name, IsLast: true};
             default:
                 return [];
         }
@@ -20,7 +24,8 @@ $(document).ready(function(){
     var path = {
         individual: {
             data: [
-                {Level: REPORT_OVERALL_ALLOCATION.Level, Name: REPORT_OVERALL_ALLOCATION.Name, IsDoc: true}
+                {Level: REPORT_OVERALL_ALLOCATION.Level, Name: REPORT_OVERALL_ALLOCATION.Name, IsDoc: true},
+                {Level: REPORT_OVERALL_CUSTOMERS_SITES.Level, Name: REPORT_OVERALL_CUSTOMERS_SITES.Name, IsDoc: true}
             ]
         }
     };
@@ -66,6 +71,9 @@ $(document).ready(function(){
                 case REPORT_OVERALL_ALLOCATION.Level:
                     render({bread: getIindividualBread()});
                     break;
+                case REPORT_OVERALL_CUSTOMERS_SITES.Level:
+                    render({bread: getIindividualBread()});
+                    break;
                 default:
                     alert('Ошибка загрузки данных');
             }
@@ -74,9 +82,13 @@ $(document).ready(function(){
         },
         ShowReport: function (level) {
             $('#ReportOverallAllocation').toggle(level == REPORT_OVERALL_ALLOCATION.Level);
+            $('#ReportOverallCustomersSites').toggle(level == REPORT_OVERALL_CUSTOMERS_SITES.Level);
 
             switch (level) {
                 case REPORT_OVERALL_ALLOCATION.Level:
+                    $('#overallAllocationSite').find('input:first').click();
+                    break;
+                case REPORT_OVERALL_CUSTOMERS_SITES.Level:
                     $('#overallAllocationSite').find('input:first').click();
                     break;
             }

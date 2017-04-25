@@ -247,3 +247,5 @@ ERROR - 2017-04-24 20:10:12 --> Severity: Parsing Error --> syntax error, unexpe
 ERROR - 2017-04-24 20:10:13 --> Severity: Parsing Error --> syntax error, unexpected '}' /Users/korol/Sites/asl2.loc/src/application/models/Customer_model.php 1673
 ERROR - 2017-04-24 20:10:17 --> Severity: Parsing Error --> syntax error, unexpected '}' /Users/korol/Sites/asl2.loc/src/application/models/Customer_model.php 1673
 ERROR - 2017-04-24 20:10:18 --> Severity: Parsing Error --> syntax error, unexpected '}' /Users/korol/Sites/asl2.loc/src/application/models/Customer_model.php 1673
+ERROR - 2017-04-24 22:13:38 --> 404 Page Not Found: Faviconico/index
+ERROR - 2017-04-24 22:13:38 --> 404 Page Not Found: Faviconico/index
