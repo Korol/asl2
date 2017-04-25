@@ -1252,6 +1252,13 @@
                         Сохранить
                     </button>
                 <?php endif ?>
+                <?php
+                $this->load->view('form/customers/site_self_description', array(
+                    'customer' => $customer,
+                    'isEditSelfDescription' => $isEditSelfDescription,
+                    'ssdStaffs' => $ssdStaffs,
+                ));
+                ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="Questions">
                 <div id="react-customer-profile-page"></div>

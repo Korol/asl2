@@ -171,6 +171,13 @@ class Customer extends MY_Controller {
 
         // Установка прав доступа к договорам и паспорту только для assol
         if (!IS_LOVE_STORY) {
+            // список сотрудников, ответственных за самоописание для сайта
+            $data['ssdStaffs'] = $this->getEmployeeModel()
+                ->employeeGetFilterRoleList($id,
+//                    [USER_ROLE_DIRECTOR, USER_ROLE_SECRETARY, USER_ROLE_TRANSLATE, USER_ROLE_EMPLOYEE]
+                    [USER_ROLE_TRANSLATE, USER_ROLE_EMPLOYEE]
+                );
+
             // Редактирование прав доступа к договорам и паспорту
             $data['isEditDocumentAccess'] = $this->isDirector() || $this->isSecretary();
 

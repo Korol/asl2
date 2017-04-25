@@ -59,6 +59,7 @@ $(document).ready(function(){
             $('#SaveVideo').click(this.SaveVideoSites);
             $('#SavePhoto').click(this.SavePhoto);
             $('#SavePhotoAndVideo').click(this.SavePhotoAndVideo);
+            $('#SaveSiteSelfDescription').click(this.SaveSiteSelfDescription);
 
             $('#CustomerRemove').click(this.CustomerRemove);
             $('#CustomerMarkRemove').click(this.CustomerMarkRemove);
@@ -752,6 +753,24 @@ $(document).ready(function(){
 
             var data = getChangeData(['Temper', 'Interests', 'WishesForManAgeMin', 'WishesForManAgeMax',
                 'WishesForManWeight', 'WishesForManHeight', 'WishesForManText', 'WishesForManNationality']);
+
+            if (!$.isBlank(data))
+                $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
+        },
+        /** Сохранение статичных полей с вкладки "Самоописание" блок "Самоописание на сайт" */
+        SaveSiteSelfDescription: function() {
+            hideAlerts();
+
+            function callback(data) {
+                if (data.status) {
+                    showSuccessAlert('Самоописание на сайт успешно сохранено')
+                } else {
+                    showErrorAlert(data.message)
+                }
+            }
+
+            var data = getChangeData(['ssdCharacter', 'ssdHobbies', 'ssdWishingForPartner', 'ssdPresentationLetter',
+                'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');

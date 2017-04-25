@@ -37,3 +37,15 @@ RefreshReportGeneralOfCustomersDataSummary
 //ALTER TABLE `assol_customer_site` ADD `Comment` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `IsDeleted`;
 
 //(`Comment` varchar(255) DEFAULT NULL COMMENT 'Комментарий к сайту клиента',)
+================
+
+2017-04-25:
+ALTER TABLE `assol_customer` ADD `ssdCharacter` TEXT  NULL  AFTER `ClothingSize`;
+ALTER TABLE `assol_customer` ADD `ssdHobbies` TEXT  NULL  AFTER `ssdCharacter`;
+ALTER TABLE `assol_customer` ADD `ssdWishingForPartner` TEXT  NULL  AFTER `ssdHobbies`;
+ALTER TABLE `assol_customer` ADD `ssdPresentationLetter` TEXT  NULL  AFTER `ssdWishingForPartner`;
+ALTER TABLE `assol_customer` ADD `ssdMailingList1` TEXT  NULL  AFTER `ssdPresentationLetter`;
+ALTER TABLE `assol_customer` ADD `ssdMailingList2` TEXT  NULL  AFTER `ssdMailingList1`;
+ALTER TABLE `assol_customer` ADD `ssdMailingList3` TEXT  NULL  AFTER `ssdMailingList2`;
+ALTER TABLE `assol_customer` ADD `ssdResponsibleStaff` INT(11)  NULL  DEFAULT NULL  AFTER `ssdMailingList3`;
+ALTER TABLE `assol_customer` ADD `ssdPending` TINYINT(1)  NOT NULL  DEFAULT '0'  AFTER `ssdResponsibleStaff`;
