@@ -45,7 +45,28 @@ class Schedule_model extends MY_Model {
      * @param string $idEmployee ID сотрудника
      */
     public function scheduleGet($idEmployee) {
-        return $this->db()->get_where(self::TABLE_SCHEDULE_NAME, array('EmployeeID' => $idEmployee))->row_array();
+        $res = $this->db()->get_where(self::TABLE_SCHEDULE_NAME, array('EmployeeID' => $idEmployee))->row_array();
+        if(empty($res)){
+            $insert = array(
+                'Monday' => '',
+                'MondayNote' => '',
+                'Tuesday' => '',
+                'TuesdayNote' => '',
+                'Wednesday' => '',
+                'WednesdayNote' => '',
+                'Thursday' => '',
+                'ThursdayNote' => '',
+                'Friday' => '',
+                'FridayNote' => '',
+                'Saturday' => '',
+                'SaturdayNote' => '',
+                'Sunday' => '',
+                'SundayNote' => '',
+            );
+            $this->scheduleInsert($idEmployee, $insert);
+            $res = $this->db()->get_where(self::TABLE_SCHEDULE_NAME, array('EmployeeID' => $idEmployee))->row_array();
+        }
+        return $res;
     }
 
     /**

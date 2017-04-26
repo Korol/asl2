@@ -178,3 +178,31 @@ ERROR - 2017-04-26 18:12:22 --> Severity: Parsing Error --> syntax error, unexpe
 ERROR - 2017-04-26 18:12:26 --> Severity: Parsing Error --> syntax error, unexpected ''showRestoreButton'' (T_CONSTANT_ENCAPSED_STRING), expecting ']' /Users/korol/Sites/asl2.loc/src/application/controllers/Config.php 72
 ERROR - 2017-04-26 18:12:33 --> Severity: Parsing Error --> syntax error, unexpected ''showRestoreButton'' (T_CONSTANT_ENCAPSED_STRING), expecting ']' /Users/korol/Sites/asl2.loc/src/application/controllers/Config.php 72
 ERROR - 2017-04-26 18:12:41 --> Severity: Parsing Error --> syntax error, unexpected ''showRestoreButton'' (T_CONSTANT_ENCAPSED_STRING), expecting ']' /Users/korol/Sites/asl2.loc/src/application/controllers/Config.php 72
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60
+ERROR - 2017-04-26 18:57:51 --> Severity: Warning --> strip_tags() expects parameter 1 to be string, array given /Users/korol/Sites/asl2.loc/src/application/controllers/Schedule.php 60

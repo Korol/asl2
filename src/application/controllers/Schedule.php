@@ -19,8 +19,8 @@ class Schedule extends MY_Controller {
 
             $this->json_response([
                 "status" => 1,
-                'schedule' => $this->getScheduleModel()->scheduleGet($this->getUserID()),
-                'schedules' => $this->getScheduleModel()->scheduleGetList($this->getUserID(), $this->getUserRole())
+                'schedule' => $this->cleanData($this->getScheduleModel()->scheduleGet($this->getUserID())),
+                'schedules' => $this->cleanData($this->getScheduleModel()->scheduleGetList($this->getUserID(), $this->getUserRole()))
             ]);
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
@@ -31,6 +31,7 @@ class Schedule extends MY_Controller {
         try {
             $employee = $this->input->post('employee');
             $data = $this->input->post('data');
+            $data = $this->cleanData($data);
 
             $employeeID = empty($employee) ? $this->getUserID() : $employee;
 
@@ -49,5 +50,24 @@ class Schedule extends MY_Controller {
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }
+    }
+
+    public function cleanData($data)
+    {
+        // убираем левые теги из данных
+        if(!empty($data) && is_array($data)){
+            foreach ($data as $dkey => $ditem) {
+                if(is_array($ditem)){
+                    foreach ($ditem as $ddkey => $dditem) {
+                        if(is_string($dditem))
+                            $data[$dkey][$ddkey] = strip_tags($dditem);
+                    }
+                }
+                elseif(is_string($ditem)){
+                    $data[$dkey] = strip_tags($ditem);
+                }
+            }
+        }
+        return $data;
     }
 }
