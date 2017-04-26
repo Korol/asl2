@@ -65,9 +65,11 @@ class Config extends MY_Controller {
             /* Количество клиентов на страницу */
             'pageRecordLimit' => 20,
             /* Отображение фильтра "Статус" для списка клиентов */
-            'showStateFilter' => $this->isDirector(),
+            'showStateFilter' => ($this->isDirector() || $this->isTranslate()),
             /* Отображение кнопки добавления нового клиента */
-            'showAppendButton' => ($this->isDirector() || $this->isSecretary())
+            'showAppendButton' => ($this->isDirector() || $this->isSecretary()),
+            /* Отображение кнопки восстановления клиента */
+            'showRestoreButton' => ($this->isDirector() || $this->isSecretary())
         ];
     }
 

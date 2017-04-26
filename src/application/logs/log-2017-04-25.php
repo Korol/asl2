@@ -1771,3 +1771,5 @@ ERROR - 2017-04-25 20:55:40 --> Severity: Notice --> Undefined index: ssdCharact
 ERROR - 2017-04-25 21:01:04 --> Severity: Notice --> Undefined index: ssdResponsibleStaff /Users/korol/Sites/asl2.loc/src/application/models/Customer_model.php 1649
 ERROR - 2017-04-25 21:01:04 --> Severity: Notice --> Undefined index: ssdHobbies /Users/korol/Sites/asl2.loc/src/application/models/Customer_model.php 1649
 ERROR - 2017-04-25 21:01:04 --> Severity: Notice --> Undefined index: ssdCharacter /Users/korol/Sites/asl2.loc/src/application/models/Customer_model.php 1649
+ERROR - 2017-04-25 21:59:39 --> 404 Page Not Found: Faviconico/index
+ERROR - 2017-04-25 21:59:40 --> 404 Page Not Found: Faviconico/index

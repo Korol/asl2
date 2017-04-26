@@ -60,6 +60,9 @@ $(document).ready(function(){
             $('#SavePhoto').click(this.SavePhoto);
             $('#SavePhotoAndVideo').click(this.SavePhotoAndVideo);
             $('#SaveSiteSelfDescription').click(this.SaveSiteSelfDescription);
+            $('#SaveSiteSelfDescription1').click(this.SaveSiteSelfDescription1);
+            $('#SaveSiteSelfDescription2').click(this.SaveSiteSelfDescription2);
+            $('#SaveSiteSelfDescription3').click(this.SaveSiteSelfDescription3);
 
             $('#CustomerRemove').click(this.CustomerRemove);
             $('#CustomerMarkRemove').click(this.CustomerMarkRemove);
@@ -757,13 +760,16 @@ $(document).ready(function(){
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
         },
-        /** Сохранение статичных полей с вкладки "Самоописание" блок "Самоописание на сайт" */
+        /**
+         * Самоописание на сайт – назначение ответственного сотрудника (ssdStatus = 1)
+         * возможно, Директор заполняет некоторые или все поля
+         */
         SaveSiteSelfDescription: function() {
             hideAlerts();
 
             function callback(data) {
                 if (data.status) {
-                    showSuccessAlert('Самоописание на сайт успешно сохранено')
+                    showSuccessAlert('Анкета закреплена за выбранным сотрудником')
                 } else {
                     showErrorAlert(data.message)
                 }
@@ -771,6 +777,89 @@ $(document).ready(function(){
 
             var data = getChangeData(['ssdCharacter', 'ssdHobbies', 'ssdWishingForPartner', 'ssdPresentationLetter',
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
+
+            data['ssdStatus'] = 1; // новый статус
+            $('#SaveSiteSelfDescription').remove(); // скрываем кнопку
+
+            if (!$.isBlank(data))
+                $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
+        },
+        /**
+         * Самоописание на сайт – сотрудник заполняет поля анкеты,
+         * и отправляет на утверждение Директору (ssdStatus = 2)
+         */
+        SaveSiteSelfDescription1: function() {
+            hideAlerts();
+
+            function callback(data) {
+                if (data.status) {
+                    showSuccessAlert('Анкета отправлена на утверждение Директору')
+                } else {
+                    showErrorAlert(data.message)
+                }
+            }
+
+            var data = getChangeData(['ssdCharacter', 'ssdHobbies', 'ssdWishingForPartner', 'ssdPresentationLetter',
+                'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
+
+            data['ssdStatus'] = 2; // новый статус
+            $('#SaveSiteSelfDescription1').remove(); // скрываем кнопку
+
+            if (!$.isBlank(data))
+                $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
+        },
+        /**
+         * Самоописание на сайт – Директор подтверждает анкету (ssdStatus = 3)
+         */
+        SaveSiteSelfDescription2: function() {
+            hideAlerts();
+
+            function callback(data) {
+                if (data.status) {
+                    showSuccessAlert('Анкета подтверждена')
+                } else {
+                    showErrorAlert(data.message)
+                }
+            }
+
+            var data = getChangeData(['ssdCharacter', 'ssdHobbies', 'ssdWishingForPartner', 'ssdPresentationLetter',
+                'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
+
+            data['ssdStatus'] = 3; // новый статус
+            $('#SaveSiteSelfDescription2').remove(); // скрываем кнопку
+
+            if (!$.isBlank(data))
+                $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
+        },
+        /**
+         * Самоописание на сайт – Директор возвращает анкету на доработку,
+         * при этом может назначить другого сотрудника (ssdStatus = 1)
+         * комментарий обязателен!
+         */
+        SaveSiteSelfDescription3: function() {
+            hideAlerts();
+
+            // проверка наличия комментария для ответственного сотрудника
+            var comment = $('#ssdRSComment').val();
+            comment = comment.replace(/^\s+|\s+$/g, '');
+            if(!comment){
+                showErrorAlert('Укажите ваши замечания в поле «Комментарий ответственному»!');
+                return;
+            }
+
+            function callback(data) {
+                if (data.status) {
+                    showSuccessAlert('Анкета отправлена на доработку ответственному сотруднику')
+                } else {
+                    showErrorAlert(data.message)
+                }
+            }
+
+            var data = getChangeData(['ssdCharacter', 'ssdHobbies', 'ssdWishingForPartner', 'ssdPresentationLetter',
+                'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff', 'ssdRSComment']);
+
+            data['ssdStatus'] = 1; // новый статус
+            $('#SaveSiteSelfDescription3').remove(); // скрываем кнопку
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');

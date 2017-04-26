@@ -10,6 +10,7 @@ import { restoreCustomer, updateCustomer } from './../../actions/customer-action
 @connect((store) => {
     return {
         isEditPhotoSessionDate: store.configState.config.customers.isEditPhotoSessionDate,
+        showRestoreButton: store.configState.config.customers.showRestoreButton,
         isEditMeetings: store.configState.config.customers.isEditMeetings,
         isEditDelivery: store.configState.config.customers.isEditDelivery,
         isLoveStoryCustomerCard: store.customersState.customers.isLoveStoryCustomerCard,
@@ -363,7 +364,7 @@ export default class CustomersBlock_CustomerItem extends React.Component {
     renderRestoreForm = () => {
         const { ID, IsDeleted } = this.props.customer;
 
-        return (IsDeleted > 0) ? (
+        return (IsDeleted > 0 && this.props.showRestoreButton) ? (
             <div className="client-btn clear">
                 <button
                     className="btn assol-btn add"

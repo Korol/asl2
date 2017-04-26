@@ -26,7 +26,13 @@ class Events extends MY_Controller {
                     $this->getCustomerModel()->getBirthdaysCount($this->getUserID())
                 )
             ],
-            'customer'  => ['replay' => 0, 'once' => 0],
+//            'customer'  => ['replay' => 0, 'once' => 0],
+            'customer'  => [
+                'replay' => 0,
+                'once' => $this->getMax(
+                    $this->getCustomerModel()->countSsdEvents($this->getUserID(), $this->getUserRole())
+                ),
+            ],
             'employee'  => ['replay' => 0, 'once' => 0],
             'tasks'     => [
                 'replay' => $this->getMax($this->getTaskModel()->getCountConfirmationTask($this->getUserID())),

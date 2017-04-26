@@ -128,7 +128,8 @@ export default class CustomersBlock_Header extends React.Component {
                 <SelectDropdown
                     data={[
                         { value: 0, label: "Активные" },
-                        { value: 1, label: "Удаленные" }
+                        { value: 1, label: "Удаленные" },
+                        { value: 2, label: "В очереди" }
                     ]}
                     defaultValue={filter.status}
                     onChange={this.onChangeFilterStatus}

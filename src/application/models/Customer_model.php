@@ -65,6 +65,17 @@ class Customer_model extends MY_Model {
             `FootSize` VARCHAR(255) DEFAULT NULL COMMENT 'Размер ноги',
             `FingerSize` VARCHAR(255) DEFAULT NULL COMMENT 'Размер пальца',
             `ClothingSize` VARCHAR(255) DEFAULT NULL COMMENT 'Размер одежды',
+            `ssdCharacter` TEXT,
+            `ssdCharacter` TEXT,
+            `ssdHobbies` TEXT,
+            `ssdWishingForPartner` TEXT,
+            `ssdPresentationLetter` TEXT,
+            `ssdMailingList1` TEXT,
+            `ssdMailingList2` TEXT,
+            `ssdMailingList3` TEXT,
+            `ssdResponsibleStaff` INT(11) DEFAULT NULL,
+            `ssdStatus` TINYINT(1) NOT NULL DEFAULT '0',
+            `ssdRSComment` TEXT,
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Клиенты';";
 
@@ -336,6 +347,20 @@ class Customer_model extends MY_Model {
 
         if (is_array($data)) {
             $this->db()->where('c.IsDeleted', (isset($data['Status']) ? $data['Status'] : 0));
+
+            // условие для статуса «В очереди»
+            if(!empty($data['ssdStatus'])){
+                $ssdWhere = array(
+                    'ssdStatus' => $data['ssdStatus'],
+                );
+                if(!empty($data['ssdResponsibleStaff'])){
+                    $ssdWhere['ssdResponsibleStaff'] = $data['ssdResponsibleStaff'];
+                }
+                $this->db()
+                    ->group_start()
+                        ->where($ssdWhere)
+                    ->group_end();
+            }
 
             if (IS_LOVE_STORY) {
                 // Для LoveStory поиск по ID и ФИО в одном поле ID
@@ -1552,6 +1577,16 @@ class Customer_model extends MY_Model {
         'FootSize' => 'Размер ноги',
         'FingerSize' => 'Размер пальца',
         'ClothingSize' => 'Размер одежды',
+        'ssdCharacter' => 'Характер',
+        'ssdHobbies' => 'Интересы',
+        'ssdWishingForPartner' => 'Пожелание к партнеру',
+        'ssdPresentationLetter' => 'Презентационное письмо',
+        'ssdMailingList1' => 'Рассылочное письмо 1',
+        'ssdMailingList2' => 'Рассылочное письмо 2',
+        'ssdMailingList3' => 'Рассылочное письмо 3',
+        'ssdResponsibleStaff' => 'Ответственный сотрудник',
+        'ssdStatus' => 'Статус анкеты',
+        'ssdRSComment' => 'Комментарий для сотрудника',
     ];
 
     public function passportList($limit, $offset) {
@@ -1729,6 +1764,33 @@ class Customer_model extends MY_Model {
             }
         }
         return (!empty($customers)) ? $customers : array();
+    }
+
+    public function countSsdEvents($userId, $userRole)
+    {
+        if((int)$userRole == 10001){
+            // это директор – считаем все анкеты со статусом 2
+            return $this->db()
+                ->select('ID')
+                ->from(self::TABLE_CUSTOMER_NAME)
+                ->where('ssdStatus', 2)
+                ->where('IsDeleted', 0)
+                ->count_all_results();
+        }
+        else{
+            // это сотрудник – считаем анкеты, в которых он указан ответственным, и которые имеют статус 1
+            return $this->db()
+                ->select('ID')
+                ->from(self::TABLE_CUSTOMER_NAME)
+                ->where(
+                    array(
+                        'ssdStatus' => 1,
+                        'ssdResponsibleStaff' => $userId,
+                        'IsDeleted' => 0,
+                    )
+                )
+                ->count_all_results();
+        }
     }
 
 }

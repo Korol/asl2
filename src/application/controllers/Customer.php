@@ -32,6 +32,22 @@ class Customer extends MY_Controller {
                 $filterUserId = ($this->isTranslate() || $this->isEmployee()) ? $this->getUserID() : FALSE;
             }
 
+            // перехватываем Status на предмет фильтрации анкет клиентов «В очереди»
+            if(!empty($data['Status']) && ((int)$data['Status'] == 2)){
+                if($this->isDirector()){
+                    // для Директора – запрашиваем клиентов с ssdStatus = 2
+                    $data['ssdStatus'] = 2;
+                    $data['ssdResponsibleStaff'] = 0;
+                    unset($data['Status']); // удаляем ненужный более Status
+                }
+                elseif($this->isTranslate()){
+                    // для Переводчика - запрашиваем клиентов с ssdStatus = 1
+                    $data['ssdStatus'] = 1;
+                    $data['ssdResponsibleStaff'] = $this->getUserID();
+                    unset($data['Status']); // удаляем ненужный более Status
+                }
+            }
+
             // добавляем метку «на встрече»
             $customerList = $this->getCustomerModel()->customerGetList($filterUserId, $data);
             $todayMeetings = $this->getServiceModel()->getMeetingByDate(date('Y-m-d'));
@@ -175,7 +191,7 @@ class Customer extends MY_Controller {
             $data['ssdStaffs'] = $this->getEmployeeModel()
                 ->employeeGetFilterRoleList($id,
 //                    [USER_ROLE_DIRECTOR, USER_ROLE_SECRETARY, USER_ROLE_TRANSLATE, USER_ROLE_EMPLOYEE]
-                    [USER_ROLE_TRANSLATE, USER_ROLE_EMPLOYEE]
+                    [USER_ROLE_TRANSLATE]
                 );
 
             // Редактирование прав доступа к договорам и паспорту
