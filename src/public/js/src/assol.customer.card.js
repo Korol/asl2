@@ -860,6 +860,7 @@ $(document).ready(function(){
 
             data['ssdStatus'] = 1; // новый статус
             $('#SaveSiteSelfDescription3').remove(); // скрываем кнопку
+            $('#SaveSiteSelfDescription2').remove(); // скрываем кнопку
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
