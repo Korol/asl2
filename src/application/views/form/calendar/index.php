@@ -1,3 +1,13 @@
+<style>
+    .no-link{
+        color: #000 !important;
+        text-decoration: none;
+        font: 13px 'HelveticaNeueCyr' !important;
+    }
+    .no-link:hover{
+        text-decoration: underline;
+    }
+</style>
 <div class="calendar-day-events">
 	<table>
 		<tr>
@@ -7,10 +17,10 @@
 					<div class="cde-block-in">
 						<ul>
 							<?php foreach($birthdays['employee'] as $birthday): ?>
-                                <li>День рождения сотрудника - <?= $birthday['SName'] ?> <?= $birthday['FName'] ?></li>
+                                <li>День рождения сотрудника - <a class="no-link" href="/employee/<?=$birthday['ID']; ?>/profile" target="_blank"><?= $birthday['SName'] ?> <?= $birthday['FName'] ?></a></li>
                             <?php endforeach ?>
                             <?php foreach($birthdays['customer'] as $birthday): ?>
-                                <li>День рождения клиентки - <?= $birthday['SName'] ?> <?= $birthday['FName'] ?></li>
+                                <li>День рождения клиентки - <a class="no-link" href="/customer/<?=$birthday['ID']; ?>/profile" target="_blank"><?= $birthday['SName'] ?> <?= $birthday['FName'] ?></a></li>
                             <?php endforeach ?>
 						</ul>
 					</div>
