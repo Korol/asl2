@@ -154,6 +154,12 @@ class Customer extends MY_Controller {
             foreach ($data as $key => $value)
                 $fields[] = $key;
 
+            // Привязка клиентов к сайту «В очереди» (ID=15) при назначении Ответственного
+            // по заполнению Анкеты клиента
+            if(!empty($data['ssdStatus']) && ($data['ssdStatus'] == 1) && !empty($data['ssdResponsibleStaff'])){
+                $this->getCustomerModel()->toQueue($id, $data['ssdResponsibleStaff']);
+            }
+
             // Обновление профиля
             $this->getCustomerModel()->customerUpdate($id, $data);
             $this->getCustomerModel()->customerUpdateNote($id, $this->getUserID(), $fields);

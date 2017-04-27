@@ -1793,4 +1793,87 @@ class Customer_model extends MY_Model {
         }
     }
 
+    public function toQueue($CustomerID, $EmployeeID)
+    {
+        $QueueID = 15; // ID сайта-очереди
+        // проверка, связан ли клиент с сайтом-очередью
+        $check_cs = $this->db()
+            ->select('ID')
+            ->from(self::TABLE_CUSTOMER_SITE_NAME)
+            ->group_start()
+                ->where(
+                    array(
+                        'CustomerID' => $CustomerID,
+                        'IsDeleted' => 0,
+                        'SiteID' => $QueueID,
+                    )
+                )
+            ->group_end()
+            ->count_all_results();
+        if(empty($check_cs)) {
+            // назначаем клиенту сайт-очередь
+            $cs_insert = array(
+                'CustomerID' => $CustomerID,
+                'IsDeleted' => 0,
+                'SiteID' => $QueueID,
+                'Note' => '',
+                'Comment' => '',
+            );
+            $this->db()->insert(self::TABLE_CUSTOMER_SITE_NAME, $cs_insert);
+        }
+
+        // проверка, связан ли сотрудник с сайтом-очередью
+        $check_es = $this->db()
+            ->select('ID')
+            ->from(self::TABLE_EMPLOYEE_SITE_NAME)
+            ->where(
+                array(
+                    'EmployeeID' => $EmployeeID,
+                    'SiteID' => $QueueID,
+                    'IsDeleted' => 0,
+                )
+            )
+            ->limit(1)
+            ->get()->row_array();
+        $esID = (!empty($check_es['ID'])) ? $check_es['ID'] : 0; // ID связи сотрудника с сайтом-очередью
+
+        // если сотрудник не был связан с сайтом-очередью ранее
+        if(empty($esID)){
+            // связываем сотрудника с сайтом-очередью
+            $es_insert = array(
+                'EmployeeID' => $EmployeeID,
+                'SiteID' => $QueueID,
+                'IsDeleted' => 0,
+            );
+            $this->db()->insert(self::TABLE_EMPLOYEE_SITE_NAME, $es_insert);
+            $esID = $this->db()->insert_id();
+        }
+
+        // если есть связь сотрудника с сайтом-очередью
+        if(!empty($esID)) {
+            // проверка, есть ли связь клиента с сотрудником через сайт-очередь
+            $check_esc = $this->db()
+                ->select('ID')
+                ->from(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME)
+                ->where(
+                    array(
+                        'CustomerID' => $CustomerID,
+                        'EmployeeSiteID' => $esID,
+                        'IsDeleted' => 0,
+                    )
+                )
+                ->count_all_results();
+            if(empty($check_esc)){
+                // связываем клиента с сотрудником через сайт-очередь
+                $esc_insert = array(
+                    'CustomerID' => $CustomerID,
+                    'EmployeeSiteID' => $esID,
+                    'IsDeleted' => 0,
+                );
+                $this->db()->insert(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME, $esc_insert);
+            }
+        }
+
+    }
+
 }
