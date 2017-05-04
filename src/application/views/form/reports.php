@@ -2350,44 +2350,62 @@
         </div>
         <div class="row" style="padding-right: 15px;">
         <?php if(!empty($sites) && !empty($cs_customers)): ?>
-            <div class="col-md-12 table-responsive">
-                <table class="table table-bordered table-striped cs-table">
-                    <thead>
-                    <tr>
-                        <th>ФИО</th>
-                        <?php foreach($sites as $th_site): ?>
-                        <th><?= $th_site['Name']; ?></th>
+            <div class="col-md-12 clearfix" style="padding-right: 0;">
+                <div style="width: 150px; float: left;">
+                    <table class="table table-bordered table-striped cs-table">
+                        <thead>
+                        <tr>
+                            <th>ФИО</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach($cs_customers as $cs_item): ?>
+                            <?php
+                            $fname = mb_substr($cs_item['FName'], 0, 1, 'UTF-8');
+                            $mname = mb_substr($cs_item['MName'], 0, 1, 'UTF-8');
+                            ?>
+                        <tr>
+                            <td nowrap>
+                                <?= $cs_item['SName'] . ' ' . $fname . '.' . $mname . '.'; ?>
+                            </td>
+                        </tr>
                         <?php endforeach; ?>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach($cs_customers as $cs_item): ?>
-                        <?php
-                        $fname = mb_substr($cs_item['FName'], 0, 1, 'UTF-8');
-                        $mname = mb_substr($cs_item['MName'], 0, 1, 'UTF-8');
-                        ?>
-                    <tr>
-                        <td nowrap><?= $cs_item['SName'] . ' ' . $fname . '.' . $mname . '.'; ?></td>
-                        <?php foreach($sites as $tb_site): ?>
-                        <td>
-                        <?php
-                        $tb_text = '&dash;';
-                        if(!empty($cs_item['CS'][$tb_site['ID']])){
-                            $tb_text = $cs_item['CS'][$tb_site['ID']];
-                        }
-                        elseif(in_array($tb_site['ID'], array_keys($cs_item['CS']))){
-                            $tb_text = 'Есть';
-                        }
-                        echo ($tb_text !== '&dash;')
-                            ? '<a class="cs-tb-link" href="/customer/' . $cs_item['ID'] . '/profile#Sites" target="_blank">' . $tb_text . '</a>'
-                            : $tb_text;
-                        ?>
-                        </td>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive" style="width: 785px; float: left;">
+                    <table class="table table-bordered table-striped cs-table">
+                        <thead>
+                        <tr>
+                            <?php foreach($sites as $th_site): ?>
+                                <th nowrap><?= $th_site['Name']; ?></th>
+                            <?php endforeach; ?>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach($cs_customers as $cs_item): ?>
+                            <tr>
+                                <?php foreach($sites as $tb_site): ?>
+                                <td nowrap>
+                                    <?php
+                                    $tb_text = '&dash;';
+                                    if(!empty($cs_item['CS'][$tb_site['ID']])){
+                                        $tb_text = $cs_item['CS'][$tb_site['ID']];
+                                    }
+                                    elseif(in_array($tb_site['ID'], array_keys($cs_item['CS']))){
+                                        $tb_text = 'Есть';
+                                    }
+                                    echo ($tb_text !== '&dash;')
+                                        ? '<a class="cs-tb-link" href="/customer/' . $cs_item['ID'] . '/profile#Sites" target="_blank">' . $tb_text . '</a>'
+                                        : $tb_text;
+                                    ?>
+                                </td>
+                                <?php endforeach; ?>
+                            </tr>
                         <?php endforeach; ?>
-                    </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         <?php else: ?>
             <div class="col-md-12">
