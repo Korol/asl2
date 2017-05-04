@@ -35,14 +35,14 @@ class Customer extends MY_Controller {
             // перехватываем Status на предмет фильтрации анкет клиентов «В очереди»
             if(!empty($data['Status']) && ((int)$data['Status'] == 2)){
                 if($this->isDirector()){
-                    // для Директора – запрашиваем клиентов с ssdStatus = 2
-                    $data['ssdStatus'] = 2;
+                    // для Директора – запрашиваем клиентов с ssdStatus = 1 и ssdStatus = 2
+                    $data['ssdStatus'] = array(1, 2);
                     $data['ssdResponsibleStaff'] = 0;
                     unset($data['Status']); // удаляем ненужный более Status
                 }
                 elseif($this->isTranslate()){
                     // для Переводчика - запрашиваем клиентов с ssdStatus = 1
-                    $data['ssdStatus'] = 1;
+                    $data['ssdStatus'] = array(1);
                     $data['ssdResponsibleStaff'] = $this->getUserID();
                     unset($data['Status']); // удаляем ненужный более Status
                 }
@@ -60,6 +60,20 @@ class Customer extends MY_Controller {
                         else{
                             $customerList['records'][$ckey]['onMeeting'] = 0;
                         }
+                    }
+                }
+            }
+            // для Директора: кто заполняет Анкету клиента
+            if($this->isDirector() && !empty($customerList['records'])){
+                foreach ($customerList['records'] as $cckey => $ccustomer){
+                    if(in_array($ccustomer['ssdStatus'], array(1, 2)) && !empty($ccustomer['ssdResponsibleStaff'])){
+                        $employeeInfo = $this->getEmployeeModel()->employeeGet($ccustomer['ssdResponsibleStaff']);
+                        $customerList['records'][$cckey]['ssdStaffFio'] = (!empty($employeeInfo))
+                            ? $employeeInfo['SName'] . ' ' . mb_substr($employeeInfo['FName'], 0, 1) . '.'
+                            : '';
+                    }
+                    else{
+                        $customerList['records'][$cckey]['ssdStaffFio'] = '';
                     }
                 }
             }

@@ -350,16 +350,12 @@ class Customer_model extends MY_Model {
 
             // условие для статуса «В очереди»
             if(!empty($data['ssdStatus'])){
-                $ssdWhere = array(
-                    'ssdStatus' => $data['ssdStatus'],
-                );
-                if(!empty($data['ssdResponsibleStaff'])){
-                    $ssdWhere['ssdResponsibleStaff'] = $data['ssdResponsibleStaff'];
-                }
-                $this->db()
-                    ->group_start()
-                        ->where($ssdWhere)
-                    ->group_end();
+                $this->db()->group_start();
+                    $this->db()->where_in('ssdStatus', $data['ssdStatus']);
+                    if(!empty($data['ssdResponsibleStaff'])){
+                        $this->db()->where('ssdResponsibleStaff', $data['ssdResponsibleStaff']);
+                    }
+                $this->db()->group_end();
             }
 
             if (IS_LOVE_STORY) {

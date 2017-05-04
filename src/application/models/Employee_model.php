@@ -1428,6 +1428,7 @@ class Employee_model extends MY_Model {
         'Skype' => 'Skype',
         'Socnet' => 'Соцсети',
         'Comment' => 'Комментарий о сотруднике',
+        'JobComment' => 'Примечание (Работа)',
     ];
 
     public function rightsGetList($EmployeeID) {

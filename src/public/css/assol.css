@@ -2567,7 +2567,7 @@ label {
 /* line 2481, ../../../scss/assol.scss */
 .clients-wrap .client-block .client-footnote .client-footnote-block-wrap:hover .client-footnote-block-in {
   height: auto;
-  min-height: 67px;
+  min-height: 52px; /* 67 */
   box-shadow: 1px 2px 3px 0 rgba(0, 0, 0, 0.15) inset, 0 0 0 1px rgba(95, 103, 109, 0.2) inset;
   *zoom: 1;
   filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF000000', endColorstr='#FFFFFFFF');
@@ -5560,4 +5560,9 @@ code {
     color: red;
     font-weight: bold;
     margin-right: 15px;
+}
+
+/* уменьшаем высоту текстовой области в списке клиентов */
+.height52 {
+    height: 52px !important;
 }

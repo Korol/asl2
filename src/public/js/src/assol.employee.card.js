@@ -454,7 +454,7 @@ $(document).ready(function(){
                 }
             }
 
-            var data = getChangeData(['UserRole']);
+            var data = getChangeData(['UserRole', 'JobComment']);
 
             if (!$.isBlank(data))
                 $.post(BaseUrl + 'employee/'+EmployeeID+'/update', {data: data}, callback, 'json');

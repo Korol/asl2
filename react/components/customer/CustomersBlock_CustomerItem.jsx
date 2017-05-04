@@ -77,7 +77,7 @@ export default class CustomersBlock_CustomerItem extends React.Component {
                 <div className="client-footnote">
                     <strong>Дополнительно:</strong>
                     <br />
-                    <div className="assol-input-style client-footnote-block-wrap">
+                    <div className="assol-input-style client-footnote-block-wrap height52">
                         <div className="client-footnote-block">
                             <div className="assol-input-style client-footnote-block-in">
                                 {customer.Additionally}
@@ -120,6 +120,14 @@ export default class CustomersBlock_CustomerItem extends React.Component {
                             </div>
                         </div>
                     </div>
+                </div>
+            ) : null
+        }
+
+        function printQuestionaryStaff(fio) {
+            return fio ? (
+                <div>
+                    <strong>Заполняет:</strong> {fio}
                 </div>
             ) : null
         }
@@ -190,6 +198,7 @@ export default class CustomersBlock_CustomerItem extends React.Component {
                                 </div>
 
                                 {printAdditionally()}
+                                {(customer.ssdStaffFio) ? printQuestionaryStaff(customer.ssdStaffFio) : null}
                                 {printMeetings()}
                                 {printDelivery()}
                             </li>
