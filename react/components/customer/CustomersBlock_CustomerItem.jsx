@@ -126,7 +126,7 @@ export default class CustomersBlock_CustomerItem extends React.Component {
 
         function printQuestionaryStaff(fio) {
             return fio ? (
-                <div>
+                <div className="red">
                     <strong>Заполняет:</strong> {fio}
                 </div>
             ) : null
