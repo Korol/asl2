@@ -1743,6 +1743,7 @@ class Customer_model extends MY_Model {
             $customers_sites = $this->db()
                 ->select('CustomerID, SiteID, Comment')
                 ->from(self::TABLE_CUSTOMER_SITE_NAME)
+                ->where('IsDeleted', 0)
                 ->get()->result_array();
             if(!empty($customers_sites)){
                 // группируем привязку сайтов по клиентам
