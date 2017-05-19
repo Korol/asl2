@@ -1970,11 +1970,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <? if ($isEditSites): ?>
+                                <? //if ($isEditSites): ?>
                                 <div class="form-group">
                                     <input type="text" class="form-control comment-site" record="${ID}" <? if (!$isEditSitesDescription): ?> disabled="disabled" <? endif ?> value="${Comment}"/>
                                 </div>
-                                <? endif ?>
+                                <? //endif ?>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-group">
