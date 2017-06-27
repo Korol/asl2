@@ -2415,4 +2415,12 @@
         </div>
     </div>
 
+    <div id="ReportDailyEmployees" class="report-table overall-customer-sites">
+        <?php $this->load->view('form/reports/general/daily_employees', array(
+                'sites' => $sites,
+                'translators' => $translators,
+                'daily_reports' => $daily_reports,
+        )); ?>
+    </div>
+
 <? endif ?>

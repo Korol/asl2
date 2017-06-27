@@ -29,6 +29,8 @@ $(document).ready(function(){
     const REPORT_OVERALL_ALLOCATION = {Level: 34, Name: 'Сводная таблица распределения'};
     /** Общие отчеты -> Клиенты <–> Сайты */
     const REPORT_OVERALL_CUSTOMERS_SITES = {Level: 35, Name: 'Клиенты &harr; Сайты'};
+    /** Общие отчеты -> Ежедневный отчет по сотрудникам */
+    const REPORT_DAILY_EMPLOYEES = {Level: 36, Name: 'Ежедневный отчет по сотрудникам'};
 
     var pathLevel = REPORT_TYPE_LIST.Level;
     var selectEmployeeName = '';
@@ -85,6 +87,9 @@ $(document).ready(function(){
             case REPORT_OVERALL_CUSTOMERS_SITES.Level:
                 bread.push({Name: REPORT_OVERALL_CUSTOMERS_SITES.Name, IsLast: true});
                 break;
+            case REPORT_DAILY_EMPLOYEES.Level:
+                bread.push({Name: REPORT_DAILY_EMPLOYEES.Name, IsLast: true});
+                break;
         }
 
         return bread;
@@ -104,7 +109,8 @@ $(document).ready(function(){
                 {Level: REPORT_GENERAL_SALARY.Level, Name: REPORT_GENERAL_SALARY.Name, IsDoc: true},
                 {Level: REPORT_GENERAL_OF_CUSTOMERS.Level, Name: REPORT_GENERAL_OF_CUSTOMERS.Name,IsDoc: true},
                 {Level: REPORT_OVERALL_ALLOCATION.Level, Name: REPORT_OVERALL_ALLOCATION.Name, IsDoc: true},
-                {Level: REPORT_OVERALL_CUSTOMERS_SITES.Level, Name: REPORT_OVERALL_CUSTOMERS_SITES.Name, IsDoc: true}
+                {Level: REPORT_OVERALL_CUSTOMERS_SITES.Level, Name: REPORT_OVERALL_CUSTOMERS_SITES.Name, IsDoc: true},
+                {Level: REPORT_DAILY_EMPLOYEES.Level, Name: REPORT_DAILY_EMPLOYEES.Name, IsDoc: true}
             ]
         },
         individual: {
@@ -201,6 +207,7 @@ $(document).ready(function(){
                 case REPORT_GENERAL_OF_CUSTOMERS.Level:
                 case REPORT_GENERAL_SALARY.Level:
                 case REPORT_OVERALL_CUSTOMERS_SITES.Level:
+                case REPORT_DAILY_EMPLOYEES.Level:
                     render({bread: getGeneralBread()});
                     break;
                 default:
@@ -219,6 +226,7 @@ $(document).ready(function(){
             $('#ReportGeneralOfCustomers').toggle(level == REPORT_GENERAL_OF_CUSTOMERS.Level);
             $('#ReportGeneralSalary').toggle(level == REPORT_GENERAL_SALARY.Level);
             $('#ReportOverallCustomersSites').toggle(level == REPORT_OVERALL_CUSTOMERS_SITES.Level);
+            $('#ReportDailyEmployees').toggle(level == REPORT_DAILY_EMPLOYEES.Level);
 
             switch (level) {
                 case REPORT_INDIVIDUAL_DAILY.Level:
@@ -250,6 +258,9 @@ $(document).ready(function(){
                     $.ReportDirector.ReloadReportGeneralSalary();
                     break;
                 case REPORT_OVERALL_CUSTOMERS_SITES.Level:
+                    $('#overallAllocationSite').find('input:first').click();
+                    break;
+                case REPORT_DAILY_EMPLOYEES.Level:
                     $('#overallAllocationSite').find('input:first').click();
                     break;
             }

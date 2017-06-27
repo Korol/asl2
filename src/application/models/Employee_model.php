@@ -1546,4 +1546,108 @@ class Employee_model extends MY_Model {
         return (!empty($res)) ? true : false;
     }
 
+    /**
+     * @param string $year
+     * @param string $month
+     * @param string $day
+     */
+    public function getReportDailyEmployees($year, $month, $day = '')
+    {
+        $return = array();
+        // 1. определяемся с датой:
+        // может быть либо конкретная дата (год-месяц-число) – либо конкретный месяц (год-месяц)
+        if(empty($day) && (!empty($year) && !empty($month))){
+            // конкретный месяц (год-месяц)
+            $where_date = "DATE_FORMAT(`date`, '%Y-%m') = '" . $year . "-" . $month . "'";
+        }
+        elseif(!empty($day) && !empty($year) && !empty($month)){
+            // конкретная дата (год-месяц-число)
+            $where_date = "`date` = '" . $year . "-" . $month . "-" . $day . "'";
+        }
+        else{
+            // берём отчеты за сегодня
+            $where_date = "`date` = '" . date('Y-m-d') . "'";
+        }
+
+        // 2. получаем суммы по emails и chat для указанной даты,
+        // сгруппированные по связям Сотрудник -> Сайт -> Клиент (EmployeeSiteCustomerID)
+        $sums = $this->db()
+            ->select("EmployeeSiteCustomerID, SUM(`emails`) as `semails`, SUM(`chat`) as `schat`", null)
+            ->where($where_date, null, null)
+            ->group_by('EmployeeSiteCustomerID')
+            ->get(self::TABLE_REPORT_DAILY_NAME)->result_array();
+
+        // 3. по полученным связям Сотрудник -> Сайт -> Клиент (EmployeeSiteCustomerID)
+        // получаем связи Сотрудник -> Сайт (EmployeeSiteID)
+        if(!empty($sums)){
+            // группируем результаты по EmployeeSiteCustomerID
+            $sums_gr = toolIndexArrayBy($sums, 'EmployeeSiteCustomerID'); // это ID из $esc
+            // получаем массив EmployeeSiteCustomerID
+            $esc_ids = array_keys($sums_gr);
+            // запрашиваем связи Сотрудник <-> Сайт по полученным ID
+            $esc = $this->db()
+                ->select('ID, EmployeeSiteID')
+                ->where_in('ID', $esc_ids)
+                ->where('IsDeleted', 0) // ? - удаление связи могло случиться позже, чем дата отчета
+                ->get(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME)->result_array();
+        }
+
+        // 4. по полученным связям EmployeeSiteID получаем список ID сотрудников EmployeeID,
+        // которые задействованы в запрошенном отчете
+        if(!empty($esc)){
+            // группируем по EmployeeSiteID
+            $esc_gr = toolIndexArrayBy($esc, 'EmployeeSiteID'); // это ID из $es
+            // суммируем статистику по связи Сотрудник -> Сайт (EmployeeSiteID)
+            $groupped_by_es_id = get_grouped_array($esc, 'EmployeeSiteID');
+            $gbei_sums = array();
+            if(!empty($groupped_by_es_id)){
+                foreach($groupped_by_es_id as $esid => $gbei){
+                    $gbei_sums[$esid] = array(
+                        'emails' => 0,
+                        'chat' => 0,
+                    );
+                    foreach($gbei as $gb){
+                        $gbei_sums[$esid]['emails'] += $sums_gr[$gb['ID']]['semails'];
+                        $gbei_sums[$esid]['chat'] += $sums_gr[$gb['ID']]['schat'];
+                    }
+                }
+            }
+            // получаем массив EmployeeSiteID
+            $es_ids = array_keys($esc_gr);
+            // запрашиваем ID сотрудников по полученным связям
+            $es = $this->db()
+                ->select('es.ID, es.SiteID, es.EmployeeID, e.SName, e.FName, s.Name')
+                ->from(self::TABLE_EMPLOYEE_SITE_NAME . ' AS es')
+                ->join(self::TABLE_EMPLOYEE_NAME . ' AS e', 'e.ID = es.EmployeeID')
+                ->join(self::TABLE_SITE_NAME . ' AS s', 's.ID = es.SiteID')
+                ->where_in('es.ID', $es_ids)
+                ->where(array(
+                    'e.IsDeleted' => 0,
+                    'e.IsBlocked' => 0,
+                )) // нужно ли это условие на проверку удалённых или заблокированных сотрудников?
+                ->get()->result_array();
+        }
+
+        // 5. распределяем полученные в п.2 суммы по сотрудникам – руководствуясь всеми связями
+        /**
+         * формируем массив вида:
+         * array(
+         *      EmployeeID => array(
+         *          SiteID => array(
+         *              'emails' => 123,
+         *              'chat' => 456,
+         *          ),
+         *      ),
+         * );
+         */
+        if(!empty($gbei_sums) && !empty($es)){
+            // теперь проходим от обратного – от сотрудника к суммам
+            foreach($es as $es_row){
+                $return[$es_row['EmployeeID']][$es_row['SiteID']] = $gbei_sums[$es_row['ID']]; // all magic is here!!!)))
+            }
+        }
+
+        return $return;
+    }
+
 }

@@ -18,7 +18,9 @@ class Reports extends MY_Controller {
 
         if ($this->isDirector() || $this->isSecretary()) {
             // данные для таблицы Клиенты <–> Сайты
-            $data['cs_customers'] = $this->getCustomerModel()->getListCustomersSites();//var_dump($data['cs_customers']);
+            $data['cs_customers'] = $this->getCustomerModel()->getListCustomersSites();
+            // данные для таблицы Ежедневный отчет по сотрудникам
+            $data['daily_reports'] = $this->getEmployeeModel()->getReportDailyEmployees('2017', '01'); // DATE!!!
 
             $js[] = "public/js/$script_prefix.report.director.js";
             $js[] = $this->isDirector()
