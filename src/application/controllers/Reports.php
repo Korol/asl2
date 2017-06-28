@@ -20,7 +20,7 @@ class Reports extends MY_Controller {
             // данные для таблицы Клиенты <–> Сайты
             $data['cs_customers'] = $this->getCustomerModel()->getListCustomersSites();
             // данные для таблицы Ежедневный отчет по сотрудникам
-            $data['daily_reports'] = $this->getEmployeeModel()->getReportDailyEmployees('2017', '01'); // DATE!!!
+            $data['daily_reports'] = $this->getEmployeeModel()->getReportDailyEmployees(date('Y'), date('m'), date('d'));
 
             $js[] = "public/js/$script_prefix.report.director.js";
             $js[] = $this->isDirector()

@@ -18,6 +18,7 @@
                 <div class="form-group">
                     <label for="daily-day">Число</label>
                     <select class="assol-btn-style" id="de-daily-day">
+                        <option value="0">за месяц</option>
                         <?php
                         $num_days = date('t');
                         for($i = 1; $i <= $num_days; $i++):
@@ -52,7 +53,7 @@
                 <div class="form-group calendar-block">
                     <label for="daily-year">Год</label>
                     <div class='input-group date' id='de-daily-year'>
-                        <input type='text' class="assol-btn-style" />
+                        <input type='text' class="assol-btn-style" id="de-daily-year-input" />
                         <span class="input-group-addon">
                                 <span class="fa fa-calendar">
                                     <img src="<?= base_url() ?>/public/img/calendar-icon.png" alt="">
@@ -73,71 +74,71 @@
                         format: 'YYYY',
                         viewMode: 'years',
                         defaultDate: 'now',
+//                        minDate: '2016',
+//                        maxDate: 'now',
                         showTodayButton: true
                     }).on('dp.change', function (e) {
                         // действия при изменении Года
+                        setDaysList();
+                        reloadEmployeesTable('year');
                     });
 
                     months.change(function () {
                         // действия при изменении Месяца
+                        reloadEmployeesTable('month');
+                        setDaysList();
                     });
 
                     days.change(function () {
                         // действия при изменении Дня
+                        reloadEmployeesTable('day');
                     });
                 });
+
+                function reloadEmployeesTable(mode){
+                    $.post(
+                        '/reports/daily/employees',
+                        {
+                            day: $('#de-daily-day').val(),
+                            month: $('#de-daily-month').val(),
+                            year: $('#de-daily-year-input').val(),
+                            mode: mode
+                        },
+                        function(data){
+                            if(data !== ''){
+                                $('#dailyEmployeeTable').html(data);
+                            }
+                        },
+                        'html'
+                    );
+                }
+
+                function setDaysList(){
+                    // подставляем в Дни корректное количество дней для выбранного месяца
+                    // selected = за месяц
+                    $.post(
+                        '/reports/daily/days',
+                        {
+                            year: $('#de-daily-year-input').val(),
+                            month: $('#de-daily-month').val()
+                        },
+                        function(data){
+                            if(data !== ''){
+                                $('#de-daily-day').html(data);
+                            }
+                            else{
+                                $('#de-daily-day').find("[selected='selected']").removeAttr("selected");
+                                $('#de-daily-day').val('0');
+                            }
+                        },
+                        'html'
+                    );
+                }
             </script>
 
         </div>
     </div>
 
-    <link rel="stylesheet" href="/public/stickytable/jquery.stickytable.min.css">
-    <script src="/public/stickytable/jquery.stickytable.min.js?v=1"></script>
-    <script src="/public/tablesorter/jquery.tablesorter.min.js"></script>
-    <link rel="stylesheet" href="/public/tablesorter/blue/style.css">
-    <style>
-        .sticky-table table td.sticky-cell, .sticky-table table th.sticky-cell,
-        .sticky-table table tr.sticky-row td, .sticky-table table tr.sticky-row th {
-            outline: #ddd solid 1px !important;
-        }
-        .site-table .table > thead > tr > th, .table > tbody > tr > td{
-            border: 1px solid #ddd;
-        }
-        td.sticky-cell{
-            font-weight: bold !important;
-            background-color: #ecf0f3 !important;
-        }
-        tr.sticky-row > th{
-            background-color: #ecf0f3 !important;
-        }
-        .thVal{
-            max-width: 100%;
-        }
-        .editable-table>thead>tr>th{
-            border-bottom-width: 1px !important;
-        }
-        .th-centered{
-            text-align: center !important;
-        }
-        .th-vcentered{
-            vertical-align: middle !important;
-        }
-        .th-sitename{
-            color: #2067b0;
-        }
-        .td-bold{
-            font-weight: bold !important;
-        }
-        .th-result-vertical{
-            min-width: 100px;
-        }
-        .td-light-grey{
-            color: lightgrey !important;
-        }
-        .td-result{
-            background-color: #ecf0f3;
-        }
-    </style>
 <div class="row" style="margin-bottom: 50px;">
     <div class="col-md-12" id="dailyEmployeeTable">
         <?php $this->load->view('form/reports/general/de_table', array(

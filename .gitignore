@@ -35,3 +35,5 @@ Temporary Items
 !*/cache/index.html
 !*/cache/.htaccess
 
+# Custom
+/src/application/logs

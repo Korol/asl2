@@ -84,4 +84,68 @@ class Reports_Daily extends MY_Controller {
 
         return $item;
     }
+
+    /**
+     * данные для таблицы Ежедневный отчет по сотрудникам
+     */
+    public function employees()
+    {
+        $year = $this->input->post('year', true);
+        $month = $this->input->post('month', true);
+        $day = $this->input->post('day', true);
+        $mode = $this->input->post('mode', true);
+        $html = '';
+        $daily_reports = array();
+
+        if ($this->isDirector() || $this->isSecretary()){
+            // проверяем данные
+            if(in_array($mode, array('year', 'month'))){
+                if(!empty($year) && !empty($month)){
+                    // данные за месяц, без дня
+                    $daily_reports = $this->getEmployeeModel()->getReportDailyEmployees($year, $month);
+                }
+            }
+            elseif($mode == 'day'){
+                if(!empty($year) && !empty($month) && !empty($day)){
+                    // данные за указанную дату
+                    $daily_reports = $this->getEmployeeModel()->getReportDailyEmployees($year, $month, $day);
+                }
+                elseif(!empty($year) && !empty($month)){
+                    // данные за месяц, без дня
+                    $daily_reports = $this->getEmployeeModel()->getReportDailyEmployees($year, $month);
+                }
+            }
+            else{
+                echo $html; return;
+            }
+
+            $data = array(
+                'sites' => $this->getSiteModel()->getRecords(),
+                'translators' => $this->getEmployeeModel()->employeeTranslatorGetList(),
+                'daily_reports' => $daily_reports,
+            );
+            $html = $this->load->view('form/reports/general/de_table', $data, true);
+        }
+
+        echo $html;
+    }
+
+    /**
+     * options для выпадающего списка Дней в фильтре
+     */
+    public function days()
+    {
+        $year = $this->input->post('year', true);
+        $month = $this->input->post('month', true);
+        $html = '';
+
+        if(!empty($year) && !empty($month)){
+            $days = date('t', strtotime($year . '-' . $month));
+            $html .= '<option value="0" selected="selected">за месяц</option>';
+            for ($i = 1; $i <= $days; $i++){
+                $html .= '<option value="' . $this->normalizeDate($i) . '">' . $i . '</option>';
+            }
+        }
+        echo $html;
+    }
 }

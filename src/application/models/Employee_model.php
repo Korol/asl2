@@ -1547,9 +1547,11 @@ class Employee_model extends MY_Model {
     }
 
     /**
+     * данные для таблицы Ежедневный отчет по сотрудникам
      * @param string $year
      * @param string $month
      * @param string $day
+     * @return array
      */
     public function getReportDailyEmployees($year, $month, $day = '')
     {

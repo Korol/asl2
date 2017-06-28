@@ -213,6 +213,8 @@ $route['reports/overlay/salary/(:any)']     = 'Reports_OverlaySalary/$1';
 $route['reports/approved/salary/(:any)']    = 'Reports_ApprovedSalary/$1';
 $route['reports/general/salary/(:any)']     = 'Reports_GeneralSalary/$1';
 $route['reports/overall/allocation/(:any)'] = 'Reports_OverallAllocation/$1';
+$route['reports/daily/employees']           = 'Reports_Daily/employees';
+$route['reports/daily/days']                = 'Reports_Daily/days';
 
 // Маршрутизация для раздела "Отчеты" - LoveStory
 $route['reports/lovestory/daily/(:any)']                = 'Reports_LoveStory_Daily/$1';
