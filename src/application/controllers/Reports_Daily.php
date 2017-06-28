@@ -148,4 +148,76 @@ class Reports_Daily extends MY_Controller {
         }
         echo $html;
     }
+
+    /**
+     * данные для таблицы Ежедневный отчет
+     */
+    public function report()
+    {
+        $year = $this->input->post('year', true);
+        $month = $this->input->post('month', true);
+        $day = $this->input->post('day', true);
+        $mode = $this->input->post('mode', true);
+        $html = '';
+        $daily_reports = array();
+        $employee = $this->isDirector()
+            ? (int)$this->session->userdata('translator_id')
+            : $this->getUserID();
+        
+//        echo $year . ' ' . $month . ' ' . $day . ' ' . $mode . ' ' . $employee; return; // test
+
+        if ($this->isDirector() || $this->isTranslate()){
+            // проверяем данные
+            if(in_array($mode, array('year', 'month'))){
+                if(!empty($year) && !empty($month)){
+                    // данные за месяц, без дня
+                    $daily_reports = $this->getReportModel()->reportDailyGroupMonthNew($employee, $year, $month);
+                }
+            }
+            elseif($mode == 'day'){
+                if(!empty($year) && !empty($month) && !empty($day)){
+                    // данные за указанную дату
+                    $date = date("Y-m-d", mktime(0, 0, 0, $month, $day, $year));
+                    $daily_reports = $this->getReportModel()->reportDailyNew($employee, $date);
+                }
+                elseif(!empty($year) && !empty($month)){
+                    // данные за месяц, без дня
+                    $daily_reports = $this->getReportModel()->reportDailyGroupMonthNew($employee, $year, $month);
+                }
+            }
+            else{
+                echo $html; return;
+            }
+
+            $data = array(
+                'sites' => $this->getEmployeeModel()->siteGetListNew($employee),
+                'daily_reports' => $daily_reports,
+            );
+
+            if(!empty($year) && !empty($month)){
+                $date = $year . '-'
+                    . $this->normalizeDate($month) . '-'
+                    . ((empty($day)) ? date('d') : $this->normalizeDate($day));
+                $data['customers'] = $this->getEmployeeModel()->employeeCustomerGetListByDate($employee, $date);
+            }
+            else{
+                $data['customers'] = $this->getEmployeeModel()->employeeCustomerGetList($employee);
+            }
+
+            $data['isTranslate'] = $this->isTranslate();
+
+            $html = $this->load->view('form/reports/individual/dr_table', $data, true);
+        }
+
+        echo $html;
+    }
+
+    public function savetranslator()
+    {
+        $id = $this->input->post('id', true);
+        if(!empty($id)){
+            $this->session->set_userdata('translator_id', $id);
+        }
+        return;
+    }
 }

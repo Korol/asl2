@@ -474,6 +474,7 @@ $(document).ready(function(){
                 var idEmployeeSite = $(this).attr('id-employee-site');
                 var footMail = $('#foot_mail_' + idEmployeeSite);
                 footMail.html(parseFloat(footMail.html()) + parseFloat($(this).find('div').html()));
+                footMail.html(parseFloat(footMail.html()).toFixed(2)); // округляем до 2-х знаков
 
                 // Подсчет количества email в разрезе клиента
                 var idCustomer = $(this).attr('id-customer');
@@ -487,6 +488,7 @@ $(document).ready(function(){
                 var idEmployeeSite = $(this).attr('id-employee-site');
                 var footChat = $('#foot_chat_' + idEmployeeSite);
                 footChat.html(parseFloat(footChat.html()) + parseFloat($(this).find('div').html()));
+                footChat.html(parseFloat(footChat.html()).toFixed(2)); // округляем до 2-х знаков
 
                 // Подсчет количества сообщений чата в разрезе клиента
                 var idCustomer = $(this).attr('id-customer');
@@ -497,14 +499,16 @@ $(document).ready(function(){
 
                 totalChat.html(parseFloat(totalChat.html()) + parseFloat($(this).find('div').html()));
                 totalAll.html(parseFloat(totalChat.html()) + parseFloat(totalMail.html()));
-                $('#rid_slide_total_' + idCustomer).find('td').html(totalAll.html());
+                // $('#rid_slide_total_' + idCustomer).find('td').html(totalAll.html());
+                $('#rid_slide_total_' + idCustomer).html(parseFloat(totalAll.html()).toFixed(2));
             });
 
             // Заполняем футер для сводных данных в разрезе клиента
             var totalFooter = $(summaryData).find('tfoot>tr');
             var totalFooterMail = totalFooter.find('td:eq(0)');
             var totalFooterChat = totalFooter.find('td:eq(1)');
-            var totalFooterAll = totalFooter.find('td:eq(2)');
+            // var totalFooterAll = totalFooter.find('td:eq(2)');
+            var totalFooterAll = $('#dr_foot_total');
 
             $(summaryData).find('tbody>tr').each(function () {
                 totalFooterMail.html(parseFloat(totalFooterMail.html()) + parseFloat($(this).find('td:eq(0)').html()));
@@ -513,6 +517,14 @@ $(document).ready(function(){
             });
 
             $(fixedSummaryData).find('tfoot>tr>td').html(totalFooterAll.html());
+
+            // округляем до 2-х знаков итоговую сумму
+            var ttl = parseFloat($('#dr_foot_total').html());
+            $('#dr_foot_total').html(ttl.toFixed(2));
+
+            $("#ReportIndividualDaily_data").tablesorter({
+                selectorHeaders: 'thead th.sortable'
+            });
         },
         ReloadReportMailing: function () {
             var mailingSites = $('#mailingSite').find('ul');

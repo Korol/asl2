@@ -6,6 +6,7 @@
     <div class="col-md-12 clearfix">
         <div class="reports-title">
             Ежедневный отчет по сотрудникам
+            <span class="pull-right history-small-help">Для скролла: "Наведите на таблицу и используйте Shift + прокрутка колесом мышки"</span>
         </div>
     </div>
 </div>

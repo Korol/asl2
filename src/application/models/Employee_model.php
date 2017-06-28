@@ -1652,4 +1652,20 @@ class Employee_model extends MY_Model {
         return $return;
     }
 
+    /**
+     * Получить список сайтов сотрудника - новый вариант
+     *
+     * @param int $idEmployee ID сотрудника
+     */
+    public function siteGetListNew($idEmployee) {
+        return $this->db()
+            ->from(self::TABLE_EMPLOYEE_SITE_NAME . ' AS es')
+            ->select('es.*, s.Name')
+            ->join(self::TABLE_SITE_NAME . ' AS s', 's.ID = es.SiteID', 'inner')
+            ->where('es.EmployeeID', $idEmployee)
+            ->where('es.IsDeleted', 0)
+            ->order_by('s.Name', 'ASC')
+            ->get()->result_array();
+    }
+
 }

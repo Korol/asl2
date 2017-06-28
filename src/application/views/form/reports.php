@@ -9,6 +9,60 @@
     .report-table {
         display: none;
     }
+    .history-small-help {
+        font-size: 11px;
+        font-weight: normal;
+        color: #5d5d5d;
+        padding-top: 5px;
+    }
+</style>
+
+<link rel="stylesheet" href="/public/stickytable/jquery.stickytable.min.css">
+<script src="/public/stickytable/jquery.stickytable.min.js?v=1"></script>
+<script src="/public/tablesorter/jquery.tablesorter.min.js"></script>
+<link rel="stylesheet" href="/public/tablesorter/blue/style.css">
+<style>
+    .sticky-table table td.sticky-cell, .sticky-table table th.sticky-cell,
+    .sticky-table table tr.sticky-row td, .sticky-table table tr.sticky-row th {
+        outline: #ddd solid 1px !important;
+    }
+    .site-table .table > thead > tr > th, .table > tbody > tr > td{
+        border: 1px solid #ddd;
+    }
+    td.sticky-cell{
+        font-weight: bold !important;
+        background-color: #ecf0f3 !important;
+    }
+    tr.sticky-row > th{
+        background-color: #ecf0f3 !important;
+    }
+    .thVal{
+        max-width: 100%;
+    }
+    .editable-table>thead>tr>th{
+        border-bottom-width: 1px !important;
+    }
+    .th-centered{
+        text-align: center !important;
+    }
+    .th-vcentered{
+        vertical-align: middle !important;
+    }
+    .th-sitename{
+        color: #2067b0;
+    }
+    .td-bold{
+        font-weight: bold !important;
+    }
+    .th-result-vertical{
+        min-width: 100px;
+    }
+    .td-light-grey{
+        color: lightgrey !important;
+    }
+    .td-result{
+        background-color: #ecf0f3;
+    }
 </style>
 
 <? if (IS_LOVE_STORY): ?>
@@ -824,7 +878,13 @@
 	</style>
 
 	<div id="ReportIndividualDaily" class="day-reports report-table" style="margin-bottom: 50px">
-		<div class="reports-title">Ежедневный отчет</div>
+        <?php
+//        $this->load->view('form/reports/individual/daily_report'); // не пригодилось – но как вариант
+        ?>
+		<div class="reports-title">
+            Ежедневный отчет
+            <span class="pull-right history-small-help">Для скролла: "Наведите на таблицу и используйте Shift + прокрутка колесом мышки"</span>
+        </div>
 
 		<div class="panel assol-grey-panel">
 			<div class="report-filter-wrap clear">
@@ -913,12 +973,12 @@
             </tr>
         </script>
 
-		<div class="day-main-fixed-wrap">
+		<?php /*div class="day-main-fixed-wrap">
 			<div class="day-main-fixed-table reports-table-wrap">
 				<table id="ReportIndividualDaily_fixedWrapBody">
 					<thead>
-						<tr><th>&nbsp;</th></tr>
-						<tr><th>&nbsp;</th></tr>
+                        <tr><th>&nbsp;</th></tr>
+                        <tr><th>&nbsp;</th></tr>
 					</thead>
                     <tbody></tbody>
 					<tfoot class="day-main-table-footer">
@@ -926,21 +986,23 @@
 					</tfoot>
 				</table>
 			</div>
-		</div>
+		</div*/?>
 		<div class="day-reports-tables clear reports-table-wrap">
 
 			<div class="day-reports-tables-in">
 
                 <script id="reportIndividualDailyTemplate" type="text/x-jquery-tmpl">
                     <thead>
-                        <tr>
-                            <th rowspan="2">Клиенты</th>
+                        <tr class="sticky-row">
+                            <th rowspan="2" class="sticky-cell th-centered">Клиенты</th>
 
                             {{each work_sites}}
-                                <th colspan="2"><span class="site-name">${Sites[$value.SiteID]}</span></th>
+                                <th colspan="2" class="th-centered"><span class="site-name">${Sites[$value.SiteID]}</span></th>
                             {{/each}}
+
+                            <th rowspan="2" class="th-result-vertical th-centered sortable">Итого</th>
                         </tr>
-                        <tr>
+                        <tr class="sticky-row">
                             {{each work_sites}}
                                 <th><div>письма</div></th>
                                 <th><div>чат</div></th>
@@ -951,30 +1013,34 @@
                     <tbody>
                         {{each customers}}
                             <tr>
-                                <td title="${SName} ${FName}"><div>${SName} ${FName}</div></td>
+                                <td class="sticky-cell" title="${SName} ${FName}"><div>${SName} ${FName}</div></td>
 
                                 {{each work_sites}}
                                     <td class="decimal" id="mail_${CustomerID}_${ID}" title="${SName} ${FName}"><div>0</div></td>
                                     <td class="decimal" id="chat_${CustomerID}_${ID}" title="${SName} ${FName}"><div>0</div></td>
                                 {{/each}}
+
+                                <td class="td-bold td-result" style="padding-left: 10px;" id="rid_slide_total_${CustomerID}">0.00</td>
                             </tr>
                         {{/each}}
                     </tbody>
 
                     <tfoot class="day-main-table-footer">
                         <tr>
-                            <td></td>
+                            <td class="sticky-cell td-bold td-result text-right" style="padding-right: 10px;">Итого:</td>
 
                             {{each work_sites}}
-                                <td><div id="foot_mail_${$value.ID}">0.00</div></td>
-                                <td><div id="foot_chat_${$value.ID}">0.00</div></td>
+                                <td class="td-bold td-result"><div id="foot_mail_${$value.ID}">0.00</div></td>
+                                <td class="td-bold td-result"><div id="foot_chat_${$value.ID}">0.00</div></td>
                             {{/each}}
+
+                            <td class="td-bold td-result" style="padding-left: 10px;" id="dr_foot_total">0.00</td>
                         </tr>
                     </tfoot>
                 </script>
 
-				<div class="day-main-table">
-                   	<table id="ReportIndividualDaily_data"></table>
+				<div class="day-main-table sticky-table sticky-headers sticky-ltr-cells">
+                   	<table id="ReportIndividualDaily_data" class="tablesorter"></table>
 				</div>
 
                 <script id="reportIndividualDaily_total_Template" type="text/x-jquery-tmpl">
@@ -985,7 +1051,7 @@
                     </tr>
                 </script>
 
-				<div class="day-total-table reports-table-wrap">
+				<div class="day-total-table reports-table-wrap" style="display: none;">
 					<table id="ReportIndividualDaily_total">
 						<thead>
 							<tr>
@@ -2324,12 +2390,6 @@
     <div id="ReportOverallCustomersSites" class="report-table overall-customer-sites">
         <div class="row">
             <style>
-                .history-small-help {
-                    font-size: 11px;
-                    font-weight: normal;
-                    color: #5d5d5d;
-                    padding-top: 5px;
-                }
                 .cs-table > tbody > tr > td {
                     border: 1px solid #ddd;
                 }

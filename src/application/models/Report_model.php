@@ -1024,4 +1024,49 @@ class Report_model extends MY_Model {
             ->get()->result_array();
     }
 
+    /**
+     * Получить ежедневный отчет - новый вариант, для новых таблиц
+     *
+     * @param int $idEmployee ID сотрудника
+     * @param string $date дата
+     *
+     * @return
+     */
+    public function reportDailyNew($idEmployee, $date) {
+        return $this->db()
+            ->select("c.ID as 'CustomerID', es2c.ID as 'es2cID', es2c.EmployeeSiteID, es.SiteID, rd.date, rd.emails, rd.chat")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es.EmployeeID = '.$idEmployee.' AND es.IsDeleted = 0 AND es2c.EmployeeSiteID = es.ID', 'inner')
+            ->join(self::TABLE_REPORT_DAILY_NAME.' AS rd',
+                "rd.EmployeeSiteCustomerID = es2c.ID AND rd.date='".$date."'", 'left')
+            ->get()->result_array();
+    }
+
+    /**
+     * Получить суммарную статистику по Ежедневным отчетам
+     * за указанный год и месяц
+     *
+     * @param $idEmployee
+     * @param $year
+     * @param $month
+     * @return mixed
+     */
+    public function reportDailyGroupMonthNew($idEmployee, $year, $month) {
+        $result = $this->db()
+            ->select("c.ID as 'CustomerID', es2c.ID as 'es2cID', es.SiteID, es2c.EmployeeSiteID, SUM(rd.emails) as 'emails', SUM(rd.chat) as 'chat'")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es.EmployeeID = '.$idEmployee.' AND es.IsDeleted = 0 AND es2c.EmployeeSiteID = es.ID', 'inner')
+            ->join(self::TABLE_REPORT_DAILY_NAME.' AS rd',
+                "rd.EmployeeSiteCustomerID = es2c.ID AND DATE_FORMAT(rd.date, '%Y-%m')='".($year.'-'.$this->normalizeMonth($month))."'", 'left')
+            ->group_by('es2c.ID')
+            ->get()->result_array();
+        return (!empty($result)) ? get_grouped_array($result, 'CustomerID') : array();
+    }
+
 }
