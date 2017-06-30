@@ -1183,8 +1183,8 @@
 
         <script id="reportIndividualMailingTemplate" type="text/x-jquery-tmpl">
             <thead>
-                <tr>
-                    <th>Девушка</th>
+                <tr class="sticky-row">
+                    <th class="sticky-cell">Девушка</th>
                     <th>ID</th>
                     <th>Возраст</th>
                     {{each days}}
@@ -1195,7 +1195,7 @@
             <tbody>
                 {{each customers}}
                     <tr id-cross="${es2cID}">
-                        <td><span class="nobr">${SName} ${FName}</span></td>
+                        <td class="sticky-cell"><span class="nobr">${SName} ${FName}</span></td>
                         <td day="101"><div></div></td>
                         <td day="102"><div></div></td>
                         {{each days}}
@@ -1206,7 +1206,7 @@
             </tbody>
         </script>
 
-		<div class="newsletter-report-table reports-table-wrap">
+		<div class="newsletter-report-table reports-table-wrap sticky-table sticky-headers sticky-ltr-cells">
 			<table id="ReportIndividualMailing_data"></table>
 		</div>
 	</div>
@@ -2411,55 +2411,41 @@
         <div class="row" style="padding-right: 15px;">
         <?php if(!empty($sites) && !empty($cs_customers)): ?>
             <div class="col-md-12 clearfix" style="padding-right: 0;">
-                <div style="width: 150px; float: left;">
-                    <table class="table table-bordered table-striped cs-table">
+                <div class="sticky-table sticky-headers sticky-ltr-cells" style="margin-bottom: 50px;">
+                    <table class="table table-bordered table-striped">
                         <thead>
-                        <tr>
-                            <th>ФИО</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach($cs_customers as $cs_item): ?>
-                            <?php
-                            $fname = mb_substr($cs_item['FName'], 0, 1, 'UTF-8');
-                            $mname = mb_substr($cs_item['MName'], 0, 1, 'UTF-8');
-                            ?>
-                        <tr>
-                            <td nowrap>
-                                <?= $cs_item['SName'] . ' ' . $fname . '.' . $mname . '.'; ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive" style="width: 785px; float: left;">
-                    <table class="table table-bordered table-striped cs-table">
-                        <thead>
-                        <tr>
+                        <tr class="sticky-row">
+                            <th class="sticky-cell">ФИО</th>
                             <?php foreach($sites as $th_site): ?>
-                                <th nowrap><?= $th_site['Name']; ?></th>
+                                <th nowrap class="site-name"><?= $th_site['Name']; ?></th>
                             <?php endforeach; ?>
                         </tr>
                         </thead>
                         <tbody>
                         <?php foreach($cs_customers as $cs_item): ?>
                             <tr>
-                                <?php foreach($sites as $tb_site): ?>
-                                <td nowrap>
-                                    <?php
-                                    $tb_text = '&dash;';
-                                    if(!empty($cs_item['CS'][$tb_site['ID']])){
-                                        $tb_text = $cs_item['CS'][$tb_site['ID']];
-                                    }
-                                    elseif(in_array($tb_site['ID'], array_keys($cs_item['CS']))){
-                                        $tb_text = 'Есть';
-                                    }
-                                    echo ($tb_text !== '&dash;')
-                                        ? '<a class="cs-tb-link" href="/customer/' . $cs_item['ID'] . '/profile#Sites" target="_blank">' . $tb_text . '</a>'
-                                        : $tb_text;
-                                    ?>
+                                <?php
+                                $fname = mb_substr($cs_item['FName'], 0, 1, 'UTF-8');
+                                $mname = mb_substr($cs_item['MName'], 0, 1, 'UTF-8');
+                                ?>
+                                <td nowrap class="sticky-cell">
+                                    <?= $cs_item['SName'] . ' ' . $fname . '.' . $mname . '.'; ?>
                                 </td>
+                                <?php foreach($sites as $tb_site): ?>
+                                    <td nowrap>
+                                        <?php
+                                        $tb_text = '&dash;';
+                                        if(!empty($cs_item['CS'][$tb_site['ID']])){
+                                            $tb_text = $cs_item['CS'][$tb_site['ID']];
+                                        }
+                                        elseif(in_array($tb_site['ID'], array_keys($cs_item['CS']))){
+                                            $tb_text = 'Есть';
+                                        }
+                                        echo ($tb_text !== '&dash;')
+                                            ? '<a class="cs-tb-link" href="/customer/' . $cs_item['ID'] . '/profile#Sites" target="_blank">' . $tb_text . '</a>'
+                                            : $tb_text;
+                                        ?>
+                                    </td>
                                 <?php endforeach; ?>
                             </tr>
                         <?php endforeach; ?>
