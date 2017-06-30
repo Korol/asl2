@@ -32,6 +32,8 @@
     td.sticky-cell{
         font-weight: bold !important;
         background-color: #ecf0f3 !important;
+        padding-right: 6px !important;
+        padding-left: 6px !important;
     }
     tr.sticky-row > th{
         background-color: #ecf0f3 !important;
@@ -2253,20 +2255,20 @@
             </div>
         </script>
 
-        <div class="total-salary-report-table reports-table-wrap">
+        <div class="total-salary-report-table reports-table-wrap sticky-table sticky-headers sticky-ltr-cells">
             <table id="ReportGeneralSalary_data">
                 <thead>
-                <tr>
-                    <th class="fixed"></th>
-                    <th class="fixed-nxt">итого</th>
+                <tr class="sticky-row">
+                    <th class="sticky-cell">ФИО</th>
+                    <th class="sticky-cell">итого</th>
 
                     <? foreach($sites as $item): ?>
-                        <th><span class="site-name"><?= empty($item['Name']) ? $item['Domen'] : $item['Name'] ?></span></th>
+                        <th nowrap><span class="site-name"><?= empty($item['Name']) ? $item['Domen'] : $item['Name'] ?></span></th>
                     <? endforeach ?>
                 </tr>
-                <tr id-employee="0">
-                    <th class="fixed">Зашло</th>
-                    <th class="fixed-nxt" data-total></th>
+                <tr class="sticky-row" id-employee="0">
+                    <th class="sticky-cell" style="text-align: right !important; text-transform: uppercase; padding-right: 6px;">Зашло:</th>
+                    <th class="sticky-cell" data-total id="pay_enter_total"></th>
 
                     <? foreach($sites as $site): ?>
                         <td class="decimal" id-site="<?= $site['ID'] ?>"><div></div></td>
@@ -2276,8 +2278,10 @@
                 <tbody>
                 <?php foreach($translators as $translator): ?>
                     <tr id-employee="<?= $translator['ID'] ?>">
-                        <td class="fixed"><?= $translator['SName'] ?> <?= $translator['FName'] ?></td>
-                        <td class="fixed-nxt" data-total></td>
+                        <td class="sticky-cell" nowrap style="padding-right: 6px;">
+                            <?= $translator['SName'] ?> <?= $translator['FName'] ?>
+                        </td>
+                        <td class="sticky-cell" data-total id="pay_row_total_<?= $translator['ID'] ?>"></td>
 
                         <? foreach($sites as $site): ?>
                             <td id-site="<?= $site['ID'] ?>"><div></div></td>
@@ -2288,17 +2292,17 @@
 
                 <tfoot class="total-salary-report-sum">
                 <tr>
-                    <td class="fixed"></td>
-                    <td class="fixed-nxt"></td>
+                    <td class="sticky-cell"></td>
+                    <td class="sticky-cell"></td>
 
                     <? foreach($sites as $item): ?>
                         <td></td>
                     <? endforeach ?>
                 </tr>
 
-                <tr>
-                    <td class="fixed">Остаток</td>
-                    <td class="fixed-nxt" data-total></td>
+                <tr id="pay_total_row">
+                    <td class="sticky-cell" style="text-align: right !important; text-transform: uppercase; padding-right: 6px;">Остаток:</td>
+                    <td class="sticky-cell" data-total id="pay_cell_rows_total"></td>
 
                     <? foreach($sites as $site): ?>
                         <td id-site="<?= $site['ID'] ?>">0</td>

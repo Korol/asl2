@@ -437,6 +437,41 @@ $(document).ready(function(){
 
                 $('.total-salary-report-table tfoot td[id-site="'+SiteID+'"]').html(InputValue.toFixed(2));
             });
+
+            // суммируем данные по сотруднику (колонка Итого) - строка таблицы
+            // проходим по строкам тела таблицы
+            $('.total-salary-report-table tbody tr').each(function () {
+                var mIdEmployee = $(this).attr('id-employee'); // ID сотрудника
+                var mRowSum = 0.00; // сумма в строке
+                // находим в строке ячейки с атрибутом id-site и проходим по каждой из них
+                $(this).find('td').each(function () {
+                    if($(this).attr('id-site')){
+                        mRowSum += parseFloat($(this).find('div>a').html()) || 0.00;
+                    }
+                });
+                $('#pay_row_total_'+mIdEmployee).html(mRowSum.toFixed(2));
+            });
+
+            // суммируем строку «Зашло»
+            var vEnterTotal = 0.00;
+            // проходим по ячейкам в строке
+            $('.total-salary-report-table thead tr[id-employee="0"]').find('td.decimal').each(function () {
+                if($(this).attr('id-site')){
+                    vEnterTotal += parseFloat($(this).find('div').html()) || 0.00;
+                }
+            });
+            $('#pay_enter_total').html(vEnterTotal.toFixed(2));
+
+            // суммируем «Остаток»
+            var CellRowsTotal = 0.00;
+            // проходим по ячейкам в строке
+            $('#pay_total_row').find('td').each(function () {
+                if($(this).attr('id-site')){
+                    CellRowsTotal += parseFloat($(this).html()) || 0.00;
+                }
+            });
+            $('#pay_cell_rows_total').html(CellRowsTotal.toFixed(2));
+
         },
         ReloadReportGeneralOfCustomers: function () {
             $.ReportDirector.ReloadGeneralOfCustomersMeta();
