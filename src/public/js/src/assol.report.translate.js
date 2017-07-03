@@ -38,11 +38,7 @@ $(document).ready(function(){
                 }
 
                 if (lastValue != newValue) {
-                    var date = moment([
-                        $('#daily-year').data("DateTimePicker").date().year(),
-                        $('#daily-month').val(),
-                        $('#daily-day').val()
-                    ]).format('YYYY-MM-DD');
+                    var date = $('#daily-from').data("DateTimePicker").date().format('YYYY-MM-DD');
 
                     var data = {
                         dateRecord: date,
@@ -403,31 +399,31 @@ $(document).ready(function(){
                     $.tmpl('reportIndividualDaily_fixedWrapBody_Template', data.records.customers).appendTo('#ReportIndividualDaily_fixedWrapBody>tbody');
                     $.tmpl('reportIndividualDaily_total_Template', data.records.customers).appendTo('#ReportIndividualDaily_total>tbody');
                     if(!norefresh)
-                    $.ReportTranslate.RefreshReportDailyDate();
+                    $.ReportTranslate.ReloadReportDailyData();
                 }
             }
 
             var data = {
-                year: $('#daily-year').data("DateTimePicker").date().year(),
-                month: $('#daily-month').val(),
-                day: $('#daily-day').val(),
+                from: $('#daily_from_input').val(),
+                to: $('#daily_to_input').val(),
                 employee: $.ReportTranslate.getEmployee()
             };
 
             $.post(BaseUrl + 'reports/daily/meta', data, callback, 'json');
         },
         ReloadReportDailyData: function () {
+            var from = $('#daily_from_input').val();
+            var to = $('#daily_to_input').val();
             var data = {
                 employee: $.ReportTranslate.getEmployee(),
-                year: $('#daily-year').data("DateTimePicker").date().year(),
-                month: $('#daily-month').val(),
-                day: $('#daily-day').val()
+                from: from,
+                to: to
             };
 
-            // Редактирование записей возможно только для переводчика и если выбран конкретный день
-            var isEdit = ($.ReportTranslate.getEmployee() == 0) &&  // Проверяем что это не директор
-                         (data.day > 0) &&                          // Проверяем что не выбран отчет за месяц
-                         (data.month == moment().month());          // Проверяем что это текущий месяц
+            var from_ex = from.split('-');
+            var isEdit = ($.ReportTranslate.getEmployee() == 0) &&               // Проверяем что это не директор
+                ($('#daily_from_input').val() == $('#daily_to_input').val()) &&  // Проверяем что выбран отчет за один день
+                (from_ex[1] == moment().format('MM'));                           // Проверяем что это текущий месяц
 
             function callback(data) {
                 function initEditCell(cell, isEdit, typeClass, es2cID, idCustomer, idEmployeeSite, value) {
@@ -452,6 +448,12 @@ $(document).ready(function(){
                     initEditCell($('#mail_' + suffix), isEdit, 'mail', value.es2cID, value.CustomerID, value.EmployeeSiteID, value.emails);
                     initEditCell($('#chat_' + suffix), isEdit, 'chat', value.es2cID, value.CustomerID, value.EmployeeSiteID, value.chat);
                 });
+
+                // заголовок
+                $('.day-report-my-title').html('');
+                if(data.title !== ''){
+                    $('.day-report-my-title').html(data.title);
+                }
 
                 $.ReportTranslate.RefreshReportDailyDataSummary();
             }

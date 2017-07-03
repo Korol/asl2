@@ -890,8 +890,64 @@
 
 		<div class="panel assol-grey-panel">
 			<div class="report-filter-wrap clear">
+<!--                New-->
+                <div class="date-filter-block">
+                    <div class="form-group calendar-block">
+                        <label for="daily-from">С</label>
 
-				<div class="date-filter-block">
+                        <div class='input-group date' id='daily-from'>
+                            <input type='text' class="assol-btn-style" id="daily_from_input" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar">
+                                    <img src="<?= base_url() ?>/public/img/calendar-icon.png" alt="">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="date-filter-block">
+                    <div class="form-group calendar-block">
+                        <label for="daily-to">До</label>
+
+                        <div class='input-group date' id='daily-to'>
+                            <input type='text' class="assol-btn-style" id="daily_to_input" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar">
+                                    <img src="<?= base_url() ?>/public/img/calendar-icon.png" alt="">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    $(function() {
+                        var daily_from = $('#daily-from');
+                        var daily_to = $('#daily-to');
+
+                        daily_from.datetimepicker({
+                            locale: 'ru',
+                            format: 'DD-MM-YYYY',
+                            viewMode: 'days',
+                            defaultDate: 'now',
+                            showTodayButton: true
+                        }).on('dp.change', function (e) {
+                            $.ReportTranslate.ReloadReportDailyMeta();
+                        });
+
+                        daily_to.datetimepicker({
+                            locale: 'ru',
+                            format: 'DD-MM-YYYY',
+                            viewMode: 'days',
+                            defaultDate: 'now',
+                            showTodayButton: true
+                        }).on('dp.change', function (e) {
+                            $.ReportTranslate.ReloadReportDailyMeta();
+                        });
+                    });
+                </script>
+<!--                /New-->
+				<?php /*div class="date-filter-block">
 					<div class="form-group">
 						<label for="daily-day">Число</label>
 						<select class="assol-btn-style" id="daily-day">
@@ -964,7 +1020,7 @@
 
                         months.find("[value='" + moment().month() + "']").attr("selected", "selected");
                     });
-                </script>
+                </script*/?>
 
 			</div>
 		</div>
@@ -989,6 +1045,7 @@
 				</table>
 			</div>
 		</div*/?>
+        <div style="margin: 10px 0;"><h5 class="day-report-my-title"></h5></div>
 		<div class="day-reports-tables clear reports-table-wrap">
 
 			<div class="day-reports-tables-in">
