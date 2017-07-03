@@ -176,4 +176,38 @@ class Calendar_model extends MY_Model {
         $this->db()->update(self::TABLE_CALENDAR_EVENT_NAME, $data, array('id' => $id));
     }
 
+    /**
+     * Восстанавливаем событие
+     *
+     * @param int $id
+     * @return int
+     */
+    public function eventRestore($id)
+    {
+        $data = array(
+            'completed' => 0
+        );
+
+        $this->db()->update(self::TABLE_CALENDAR_EVENT_NAME, $data, array('id' => $id));
+        return $this->db()->affected_rows();
+    }
+
+    /**
+     * Удаляем событие
+     *
+     * @param int $id
+     * @return int
+     */
+    public function eventRemove($id)
+    {
+        $this->db()->delete(self::TABLE_CALENDAR_EVENT_NAME, array('id' => $id));
+        return $this->db()->affected_rows();
+    }
+
+    public function getEvent($id)
+    {
+        return $this->db()
+            ->get_where(self::TABLE_CALENDAR_EVENT_NAME, array('id' => $id))->row_array();
+    }
+
 }

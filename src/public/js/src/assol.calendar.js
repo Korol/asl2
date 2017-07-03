@@ -182,11 +182,7 @@ $(document).ready(function(){
                         $.AssolCalendar.DialogCalendarEvent(start, end, id, title, description, remind);
                     });
 
-                $('#btnDoneEvent')
-                    .off('click.done-event')
-                    .on('click.done-event', function() {
-                        $.AssolCalendar.DoneEvent(id);
-                    });
+                checkCompleted(id); // для выполненных задач меняем кнопки
 
                 // 3. Отображение формы с отключением части формы для дней рождения
                 $('#ShowCalendarEvent')
@@ -255,6 +251,7 @@ $(document).ready(function(){
         }
     };
 
+    //var mcompleted = 0;
     // Инициализация объекта
     $.AssolCalendar.Init();
 
@@ -264,5 +261,81 @@ $(document).ready(function(){
     }
     function hideAlerts() {
         $('#alertError').hide();
+    }
+    function checkCompleted(id) {
+        $.post(
+            BaseUrl + 'calendar/completed',
+            { id: id },
+            function(data){
+                if(data*1 === 1){
+                    // задача завершена
+                    // скрываем кнопку Выполнено
+                    $('#btnDoneEvent').addClass('hide');
+                    // показываем кнопки Восстановить и Удалить
+                    $('#btnRestoreEvent').removeClass('hide');
+                    $('#btnRemoveEvent').removeClass('hide');
+                    // Восстанавливаем событие
+                    $('#btnRestoreEvent')
+                        .off('click.restore-event')
+                        .on('click.restore-event', function() {
+                            bootbox.confirm("Снять метку «Выполнено» для этого события?", function(result) {
+                                if(result){
+                                    $.post(
+                                        BaseUrl + 'calendar/restore',
+                                        { id: id },
+                                        function (data) {
+                                            if (data * 1 === 1) {
+                                                $('#ShowCalendarEvent').modal('hide');
+                                                $('#calendar').fullCalendar('refetchEvents');
+                                            }
+                                            else{
+                                                console.log(data);
+                                            }
+                                        },
+                                        'text'
+                                    );
+                                }
+                            });
+                        });
+                    // Удаляем событие
+                    $('#btnRemoveEvent')
+                        .off('click.remove-event')
+                        .on('click.remove-event', function() {
+                            bootbox.confirm("Удалить это событие безвозвратно?", function(result) {
+                                if(result){
+                                    $.post(
+                                        BaseUrl + 'calendar/remove',
+                                        { id: id },
+                                        function (data) {
+                                            if (data * 1 === 1) {
+                                                $('#ShowCalendarEvent').modal('hide');
+                                                $('#calendar').fullCalendar('refetchEvents');
+                                            }
+                                            else{
+                                                console.log(data);
+                                            }
+                                        },
+                                        'text'
+                                    );
+                                }
+                            });
+                        });
+                }
+                else{
+                    // задача не завершена
+                    // скрываем кнопки Восстановить и Удалить
+                    $('#btnRestoreEvent').addClass('hide');
+                    $('#btnRemoveEvent').addClass('hide');
+                    // показываем кнопку Выполнено
+                    $('#btnDoneEvent').removeClass('hide');
+                    $('#btnDoneEvent')
+                        .off('click.done-event')
+                        .on('click.done-event', function() {
+                            $.AssolCalendar.DoneEvent(id);
+                        });
+                }
+            },
+            'text'
+        );
     }
 });

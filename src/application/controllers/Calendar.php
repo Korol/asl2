@@ -263,4 +263,34 @@ class Calendar extends MY_Controller {
 
         return sprintf('%d-%s', $startYear, $dob->format('m-d'));
     }
+
+    /**
+     * Восстанавливаем событие
+     */
+    public function restore()
+    {
+        $id = $this->input->post('id', true);
+        $res = $this->getCalendarModel()->eventRestore($id);
+        echo (!empty($res)) ? 1 : 0;
+    }
+
+    /**
+     * Удаляем событие
+     */
+    public function remove()
+    {
+        $id = $this->input->post('id', true);
+        $res = $this->getCalendarModel()->eventRemove($id);
+        echo (!empty($res)) ? 1 : 0;
+    }
+
+    /**
+     * Проверяем, выполнено ли событие
+     */
+    public function completed()
+    {
+        $id = $this->input->post('id', true);
+        $event = $this->getCalendarModel()->getEvent($id);
+        echo (!empty($event['completed'])) ? 1 : 0;
+    }
 }

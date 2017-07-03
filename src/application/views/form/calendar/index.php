@@ -254,6 +254,8 @@
                     <div class="form-group clear save-edit-wrap">
                         <button id="btnEditEvent" class="btn assol-btn add right download active">РЕДАКТИРОВАТЬ</button>
                         <button id="btnDoneEvent" class="btn assol-btn add right" role="button">ВЫПОЛНЕНО</button>
+                        <button id="btnRestoreEvent" class="btn assol-btn add right hide" role="button">ВОССТАНОВИТЬ</button>
+                        <button id="btnRemoveEvent" class="btn assol-btn remove right hide" role="button">УДАЛИТЬ</button>
                     </div>
                 </div>
             </div>
