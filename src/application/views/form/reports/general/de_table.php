@@ -1,3 +1,52 @@
+<link rel="stylesheet" href="/public/stickytable/jquery.stickytable.min.css">
+<script src="/public/stickytable/jquery.stickytable.min.js?v=1"></script>
+<script src="/public/tablesorter/jquery.tablesorter.min.js"></script>
+<link rel="stylesheet" href="/public/tablesorter/blue/style.css">
+<style>
+    .sticky-table table td.sticky-cell, .sticky-table table th.sticky-cell,
+    .sticky-table table tr.sticky-row td, .sticky-table table tr.sticky-row th {
+        outline: #ddd solid 1px !important;
+    }
+    .site-table .table > thead > tr > th, .table > tbody > tr > td{
+        border: 1px solid #ddd;
+    }
+    td.sticky-cell{
+        font-weight: bold !important;
+        background-color: #ecf0f3 !important;
+        padding-right: 6px !important;
+        padding-left: 6px !important;
+    }
+    tr.sticky-row > th{
+        background-color: #ecf0f3 !important;
+    }
+    .thVal{
+        max-width: 100%;
+    }
+    .editable-table>thead>tr>th{
+        border-bottom-width: 1px !important;
+    }
+    .th-centered{
+        text-align: center !important;
+    }
+    .th-vcentered{
+        vertical-align: middle !important;
+    }
+    .th-sitename{
+        color: #2067b0;
+    }
+    .td-bold{
+        font-weight: bold !important;
+    }
+    .th-result-vertical{
+        min-width: 100px;
+    }
+    .td-light-grey{
+        color: lightgrey !important;
+    }
+    .td-result{
+        background-color: #ecf0f3;
+    }
+</style>
 <div style="margin: 10px 0;"><h5><?=(!empty($title)) ? $title : ''; ?></h5></div>
 <div class="row">
     <div class="col-md-12">

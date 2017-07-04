@@ -44,6 +44,26 @@
                     </div>
                 </div>
             </div>
+            <style>
+                .refresh-rotate{
+                    -moz-transition: all 1s linear;
+                    -webkit-transition: all 1s linear;
+                    transition: all 1s linear;
+                }
+            </style>
+            <div class="date-filter-block">
+                <div class="form-group calendar-block">
+                    <label for="daily-to">&nbsp;</label>
+
+                    <div class='input-group date'>
+                        <a href="#" class="btn btn-default" id="daily_employee_refresh">
+                            <span class="glyphicon glyphicon-refresh refresh-rotate" aria-hidden="true"></span>
+                            &nbsp;Обновить
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <script type="text/javascript">
                 $(function() {
                     var daily_from = $('#e-daily-from');
@@ -66,6 +86,15 @@
                         defaultDate: 'now',
                         showTodayButton: true
                     }).on('dp.change', function (e) {
+                        reloadEmployeesTable();
+                    });
+
+                    var refresh_de_counter = 0;
+                    $('#daily_employee_refresh').click(function (e) {
+                        e.preventDefault();
+                        refresh_de_counter += 360;
+                        $(this).find('.glyphicon.glyphicon-refresh').css('transform', 'rotate(' + refresh_de_counter + 'deg)');
+//                            $(this).find('.glyphicon.glyphicon-refresh').toggleClass('refresh-down');
                         reloadEmployeesTable();
                     });
                 });
