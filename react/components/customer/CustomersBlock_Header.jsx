@@ -129,7 +129,9 @@ export default class CustomersBlock_Header extends React.Component {
                     data={[
                         { value: 0, label: "Активные" },
                         { value: 1, label: "Удаленные" },
-                        { value: 2, label: "В очереди" }
+                        { value: 2, label: "В очереди" },
+                        { value: 3, label: "На утверждение" },
+                        { value: 4, label: "Подтвержденные" }
                     ]}
                     defaultValue={filter.status}
                     onChange={this.onChangeFilterStatus}

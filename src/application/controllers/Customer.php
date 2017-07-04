@@ -32,15 +32,15 @@ class Customer extends MY_Controller {
                 $filterUserId = ($this->isTranslate() || $this->isEmployee()) ? $this->getUserID() : FALSE;
             }
 
-            // перехватываем Status на предмет фильтрации анкет клиентов «В очереди»
-            if(!empty($data['Status']) && ((int)$data['Status'] == 2)){
+            // перехватываем Status на предмет фильтрации анкет клиентов по статусам «В очереди», «На утверждение» и «Подтвержденные»
+            if(!empty($data['Status']) && ((int)$data['Status'] > 1)){
                 if($this->isDirector()){
-                    // для Директора – запрашиваем клиентов с ssdStatus = 1 и ssdStatus = 2
-                    $data['ssdStatus'] = array(1, 2);
+                    // для Директора – запрашиваем клиентов с ssdStatus = 1, ssdStatus = 2 или ssdStatus = 3 - зависит от выбранного фильтра
+                    $data['ssdStatus'] = ($data['Status'] - 1); // в фильтре значения статуса больше на 1 - для этого отнимаем 1
                     $data['ssdResponsibleStaff'] = 0;
                     unset($data['Status']); // удаляем ненужный более Status
                 }
-                elseif($this->isTranslate()){
+                elseif($this->isTranslate() && ((int)$data['Status'] == 2)){
                     // для Переводчика - запрашиваем клиентов с ssdStatus = 1
                     $data['ssdStatus'] = array(1);
                     $data['ssdResponsibleStaff'] = $this->getUserID();
