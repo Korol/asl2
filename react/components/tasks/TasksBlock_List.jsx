@@ -423,6 +423,7 @@ export default class TasksBlock_List extends React.Component {
                 <tr>
                     <th>Постановщик</th>
                     <th>Название</th>
+                    <th>Дата постановки</th>
                     <th>Крайний срок</th>
                     <th>Дата выполнения</th>
                     <th>Ответственный</th>
@@ -451,6 +452,9 @@ export default class TasksBlock_List extends React.Component {
                                 <span className="title">{task.Title}</span>
                             </a>
                         </div>
+                    </td>
+                    <td>
+                        {toClientDate(task.DateCreate)}
                     </td>
                     <td>
                         <div className="task-date">
