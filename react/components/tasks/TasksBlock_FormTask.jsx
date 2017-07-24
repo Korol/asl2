@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import TinyMCE from 'react-tinymce'
+import DateField from '../common/DateField'
 
 import { Button, Modal, Alert, Glyphicon } from 'react-bootstrap'
 
 import {
-    hideTask, changeTaskCardMode, changeEditText, appendComment, readComments, updateTask, readTask, removeTask, changeConfirmation
+    hideTask, changeTaskCardMode, changeEditText, appendComment, readComments, updateTask, readTask, removeTask, changeConfirmation, restoreTask, changeDeadline
 } from '../../actions/task-actions'
 
 import LoadingPanel from '../LoadingPanel'
@@ -23,7 +24,8 @@ import { TINYMCE_DEFAULT_CONFIG } from '../../constants/tinymce'
         comments: store.taskCardState.comments,
         editText: store.taskCardState.editText,
         error: store.taskCardState.error,
-        task: store.taskCardState.task
+        task: store.taskCardState.task,
+        deadline: ''
     }
 })
 export default class TasksBlock_FormTask extends React.Component {
@@ -80,9 +82,7 @@ export default class TasksBlock_FormTask extends React.Component {
                                     </div>
                                 </td>
                                 <td>
-                                    <div className="task-date">
-                                        {toClientDate(task.Deadline)}
-                                    </div>
+                                    {this.renderDeadline()}
                                 </td>
                                 <td>
                                     <div className="task-responsible">
@@ -197,6 +197,18 @@ export default class TasksBlock_FormTask extends React.Component {
                             }}
                         >УДАЛИТЬ</button>
                     );
+                    if(parseInt(task.Confirmation) == 1) {
+                        buttons.push(
+                            <button
+                                key="restore"
+                                className="btn assol-btn download right"
+                                onClick={() => {
+                                    dispatch(restoreTask(task.ID, $('.restore-deadline').val()));
+                                    this.close();
+                                }}
+                            >Вернуть в работу</button>
+                        );
+                    }
                 }
                 break;
             case TASK_CARD_MODE_EDIT:
@@ -294,5 +306,31 @@ export default class TasksBlock_FormTask extends React.Component {
         
         dispatch(appendComment(task.ID, editText));
     };
+
+    renderDeadline = () => {
+        const { dispatch, mode, employee, task, deadline } = this.props;
+
+        let idEmployee = parseInt(employee.id);
+        let idAuthor = parseInt(task.AuthorID);
+        let dL = deadline || toClientDate(task.Deadline);
+
+        if((parseInt(task.Confirmation) == 1) && (mode == TASK_CARD_MODE_VIEW) && (idAuthor == idEmployee)){
+            return (
+                <DateField
+                className="assol-input-style fullwidth defaultheight restore-deadline"
+                placeholder="Крайний срок"
+                value={dL}
+                onChange={(e) => dispatch(changeDeadline(e.target.value))}
+                />
+            )
+        }
+        else if((mode == TASK_CARD_MODE_VIEW) || (idAuthor != idEmployee)){
+            return (
+                <div className="task-date">
+                    {toClientDate(task.Deadline)}
+                </div>
+            )
+        }
+    }
 
 }

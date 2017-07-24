@@ -154,4 +154,21 @@ class Tasks extends MY_Controller {
         }
     }
 
+    public function restore($idTask)
+    {
+        try {
+            $deadline = $this->input->post('deadline');
+
+            if (empty($deadline))
+                throw new Exception('Не указан срок завершения');
+
+            $deadline_ex = (strpos($deadline, '.') !== false) ? explode('.', $deadline) : array(date('d'), date('m'), date('Y'));
+            $this->getTaskModel()->taskRestore($idTask, $deadline_ex[2] . '-' . $deadline_ex[1] . '-' . $deadline_ex[0]);
+
+            $this->json_response(['status' => 1, 'deadline' => $deadline, 'task' => $this->getTaskModel()->taskGet($idTask)]);
+        } catch (Exception $e) {
+            $this->json_response(['status' => 0, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

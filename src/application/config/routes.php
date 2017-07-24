@@ -236,6 +236,7 @@ $route['training/(:num)/server']        = 'Training/server/$1';
 // Маршрутизация для раздела "Задачи"
 $route['tasks/(:num)/(:any)']           = 'Tasks/$2/$1';
 $route['task/(:num)/comment/(:any)']    = 'TaskComment/$2/$1';
+$route['task/(:num)/restore']           = 'Tasks/restore/$1';
 
 // Маршрутизация для раздела "Услуги"
 $route['services/western/(:any)']        = 'Services_Western/$1';

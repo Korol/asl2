@@ -433,4 +433,14 @@ class Task_model extends MY_Model {
             $this->db()->insert(self::TABLE_TASK_COMMENT_READ, ['EmployeeID' => $employee, 'CommentID' => $comment['ID']]);
     }
 
+    public function taskRestore($idTask, $Deadline)
+    {
+        $this->db()->set('DateClose', 'NULL', FALSE);
+        $this->db()->set('IsRead', '0', FALSE);
+        $this->db()->set('State', '0', FALSE);
+        $this->db()->set('Deadline', $Deadline);
+        $this->db()->where('ID', $idTask);
+        $this->db()->update(self::TABLE_TASK_NAME);
+    }
+
 }

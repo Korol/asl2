@@ -44,6 +44,13 @@ export function changeEditText(value) {
     }
 }
 
+export function changeDeadline(value) {
+    return {
+        type: types.CHANGE_TASK_CARD_DEADLINE,
+        value
+    }
+}
+
 export function changeConfirmation(value) {
     return {
         type: types.CHANGE_TASK_CARD_CONFIRMATION,
@@ -235,6 +242,24 @@ export function removeTask(id, callback) {
             })
             .catch((error) => {
                 dispatch({type: types.REMOVE_TASK_FAILED, payload: error})
+            })
+    };
+}
+
+export function restoreTask(id, deadline) {
+    return function (dispatch) {
+        dispatch({type: types.RESTORE_TASK_START});
+
+        axios.post(`/tasks/${id}/restore`, qs.stringify({deadline: deadline}))
+            .then((response) => {
+                if (response.data.status) {
+                    dispatch({type: types.RESTORE_TASK_SUCCESS, task: response.data.task});
+                } else {
+                    dispatch({type: types.RESTORE_TASK_FAILED, error: response.data.message})
+                }
+            })
+            .catch((error) => {
+                dispatch({type: types.RESTORE_TASK_FAILED, payload: error})
             })
     };
 }

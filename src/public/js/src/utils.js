@@ -36,6 +36,34 @@ function confirmRemove(callback, message, title) {
     });
 }
 
+/**
+ * Подтверждение возврата задачи в работу
+ *
+ * @param callback функция возврата
+ * @param message пользовательское сообщение
+ * @param title пользовательский заголовок
+ */
+function confirmRestore(callback, message, title) {
+    message = message || 'Вы действительно хотите вернуть задачу в работу?';
+    title = title || 'Возврат задачи в работу';
+
+    bootbox.dialog({
+        message: message,
+        title: title,
+        buttons: {
+            success: {
+                label: "Вернуть в работу",
+                className: "btn-success",
+                callback: callback
+            },
+            main: {
+                label: "Отмена",
+                className: "btn-default"
+            }
+        }
+    });
+}
+
 $.isBlank = function(obj){
     return(!obj || $.trim(obj) === "" || $.isEmptyObject(obj));
 };

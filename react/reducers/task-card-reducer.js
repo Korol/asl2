@@ -25,7 +25,8 @@ const initialState = {
     error: false,
     task: {},
     sites: [],
-    comments: []
+    comments: [],
+    deadline: ''
 };
 
 export default function(state = initialState, action) {
@@ -36,6 +37,8 @@ export default function(state = initialState, action) {
             return {...state, name: action.value};
         case types.CHANGE_TASK_CARD_EDIT_TEXT:
             return {...state, editText: action.value};
+        case types.CHANGE_TASK_CARD_DEADLINE:
+            return {...state, deadline: action.value};
         case types.CHANGE_TASK_CARD_CONFIRMATION:
             return {...state, confirmation: action.value};
 
@@ -79,6 +82,13 @@ export default function(state = initialState, action) {
         case types.REMOVE_TASK_SUCCESS:
             return initialState;
         case types.REMOVE_TASK_FAILED:
+            return {...state, error: action.error};
+
+        case types.RESTORE_TASK_START:
+            return {...state, error: false};
+        case types.RESTORE_TASK_SUCCESS:
+            return {...state, mode: TASK_CARD_MODE_VIEW, task: action.task};
+        case types.RESTORE_TASK_FAILED:
             return {...state, error: action.error};
 
         case types.TASK_CARD_CREATE:
