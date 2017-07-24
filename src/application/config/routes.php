@@ -252,5 +252,9 @@ $route['services/delivery/remove']       = 'Services_Delivery/remove';
 $route['users/template']         = 'Employee_CommentsAccess/template/$1';
 $route['users/template/update']     = 'Employee_CommentsAccess/template_update/$1';
 
+// Контроль доступа сотрудников к разделу Услуги
+$route['services/template']         = 'Employee_ServicesAccess/template/$1';
+$route['services/template/update']     = 'Employee_ServicesAccess/template_update/$1';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

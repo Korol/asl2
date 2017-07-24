@@ -139,3 +139,45 @@ export function updateAccess(id, checked) {
             })
     }
 }
+
+/**
+ * Загрузка списка сотрудников для контроля доступа к Услугам
+ */
+export function fetchServicesTemplate() {
+    return function (dispatch) {
+        dispatch({type: types.FETCH_SETTING_SERVICES_USERS_START});
+
+        axios.get("/services/template")
+            .then((response) => {
+                //console.log(response);
+                dispatch({
+                    type: types.FETCH_SETTING_SERVICES_USERS_SUCCESS,
+                    users: response.data.users
+                })
+            })
+            .catch((error) => {
+                dispatch({type: types.FETCH_SETTING_SERVICES_USERS_FAILED, payload: error})
+            })
+    };
+}
+
+/**
+ * Обновление доступа к Услугам
+ *
+ * @param {number} id - ID пользователя
+ */
+export function updateServiceAccess(id, checked) {
+    return function (dispatch) {
+        dispatch({type: types.UPDATE_SETTING_EMPLOYEE_SERVICES_ACCESS_START});
+
+        var checkval = (checked) ? 1 : 0;
+        axios.post("/services/template/update", qs.stringify({id: id, checked: checkval}))
+            .then((response) => {
+                //console.log(response);
+                dispatch({type: types.UPDATE_SETTING_EMPLOYEE_SERVICES_ACCESS_SUCCESS, id: id, checked: checked})
+            })
+            .catch((error) => {
+                dispatch({type: types.UPDATE_SETTING_EMPLOYEE_SERVICES_ACCESS_FAILED, payload: error})
+            })
+    }
+}

@@ -190,6 +190,14 @@ class Employee_model extends MY_Model {
               PRIMARY KEY (`id`),
               UNIQUE KEY `EmployeeID` (`EmployeeID`)
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Права доступа к комментариям о сотрудниках';";
+
+    private $table_employees_services_access =
+        "CREATE TABLE `assol_employees_comments_access` (
+              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+              `EmployeeID` int(11) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `EmployeeID` (`EmployeeID`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Права доступа сотрудников к разделу Услуги';";
     /**
      * Инициализация таблицы
      */
@@ -209,6 +217,7 @@ class Employee_model extends MY_Model {
         $this->db()->query($this->table_employee_online);
         $this->db()->query($this->table_employee_rights);
         $this->db()->query($this->table_employees_comments_access);
+        $this->db()->query($this->table_employees_services_access);
     }
 
     /** Удаление таблиц */
@@ -1551,6 +1560,7 @@ class Employee_model extends MY_Model {
             ->get()->result_array();
     }
 
+    /* Доступ к комментариям для сотрудников */
     public function getCommentsAccessList()
     {
         return $this->db()->get(self::TABLE_EMPLOYEES_COMMENTS_ACCESS)->result_array();
@@ -1800,6 +1810,30 @@ class Employee_model extends MY_Model {
         }
 
         return $return;
+    }
+
+    /* Доступ к разделу Услуги для сотрудников */
+    public function getServicesAccessList()
+    {
+        return $this->db()->get(self::TABLE_EMPLOYEES_SERVICES_ACCESS)->result_array();
+    }
+
+    public function addServicesAccessId($id)
+    {
+        $this->removeServicesAccessId($id);
+        return $this->db()->insert(self::TABLE_EMPLOYEES_SERVICES_ACCESS, array('EmployeeID' => $id));
+    }
+
+    public function removeServicesAccessId($id)
+    {
+        return $this->db()->delete(self::TABLE_EMPLOYEES_SERVICES_ACCESS, array('EmployeeID' => $id));
+    }
+
+    public function checkServicesAccess($employeeId)
+    {
+        if($employeeId == 1) return true;
+        $res = $this->db()->get_where(self::TABLE_EMPLOYEES_SERVICES_ACCESS, array('EmployeeID' => $employeeId))->row_array();
+        return (!empty($res)) ? true : false;
     }
 
 }

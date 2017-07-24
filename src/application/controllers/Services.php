@@ -4,6 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Services extends MY_Controller {
 
     public function index() {
+        // проверка прав доступа
+        $this->checkServicesAccess();
+
         $data = array(
             'sites' => $this->getSiteModel()->getRecords(),
             'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole())
@@ -90,5 +93,19 @@ class Services extends MY_Controller {
         $this->db->limit(5);
         $res = $this->db->get($table)->result_array();//print $this->db->last_query();
         return (!empty($res)) ? $res : array();
+    }
+
+    public function checkServicesAccess()
+    {
+        $user_id = $this->getUserID();
+        if($user_id == 1){
+            $check = true;
+        }
+        else{
+            $check = $this->getEmployeeModel()->checkServicesAccess($user_id);
+        }
+        if(empty($check)){
+            show_error('Данный раздел для вас не доступен!', 403, 'Доступ запрещен');
+        }
     }
 }

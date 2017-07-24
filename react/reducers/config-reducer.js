@@ -70,6 +70,22 @@ export default function(state = initialState, action) {
                 }
             });
             return {...state, setting: {...state.setting, users: usersUpdate}};
+        /** Доступ сотрудников к разделу Услуги */
+        case types.FETCH_SETTING_SERVICES_USERS_START:
+            return {...state, setting: {...state.setting, isFetchUsers: true}};
+        case types.FETCH_SETTING_SERVICES_USERS_SUCCESS:
+            return {...state, setting: {...state.setting, isFetchUsers: false, users: action.users}};
+        case types.FETCH_SETTING_SERVICES_USERS_FAILED:
+            return {...state, setting: {...state.setting, isFetchUsers: false}};
+        case types.UPDATE_SETTING_EMPLOYEE_SERVICES_ACCESS_SUCCESS:
+            var usersServicesUpdate = [...state.setting.users];
+            usersServicesUpdate.forEach(function (item) {
+                if(item.ID == action.id) {
+                    item.Access = action.checked;
+                }
+            });
+            return {...state, setting: {...state.setting, users: usersServicesUpdate}};
+
         default:
             return state;
     }

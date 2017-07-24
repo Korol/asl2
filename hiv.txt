@@ -1,6 +1,6 @@
 Добавление новой вкладки в Настройках (через webpack и bundle.js):
 1. Создаём нужный компонент в react/components/settings по примерам, которые уже есть и работают.
-2. Добавляем новую вкладку с компонентом в react/components/SettingPage.jsx
+2. Добавляем новую вкладку с компонентом в react/components/settings/SettingPage.jsx
 3. Прописываем нужные функции (actions) в react/actions/setting-action.js
 4. Прописываем роуты для этих actions в src/application/config/routes.php
 5. Создаём необходимые контроллеры/методы, методы в моделях.
