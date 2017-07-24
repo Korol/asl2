@@ -267,6 +267,11 @@ class Task_model extends MY_Model {
         if (isset($data['WhomTask']) && !empty($data['WhomTask']))
             $this->db()->where('task.EmployeeID', $data['WhomTask']);
 
+        // в Исходящих – только активные задачи, State = 0
+        if(isset($data['State']) && ($data['State'] == 0)){
+            $this->db()->where('task.State', 0);
+        }
+
         // Подключение информации о непрочитанных комментариях
         $this->db()
             ->join(self::TABLE_TASK_COMMENT . ' AS c', 'c.TaskID = task.ID', 'left')

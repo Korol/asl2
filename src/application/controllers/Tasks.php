@@ -51,6 +51,7 @@ class Tasks extends MY_Controller {
                     $records = $this->getTaskModel()->taskInGetList($this->getUserID(), $data);
                     break;
                 case 1;
+                    $data['State'] = 0; // в Исходящих – только активные задачи, State = 0
                     $records = $this->getTaskModel()->taskOutGetList($this->getUserID(), $data);
                     break;
                 case 2;
