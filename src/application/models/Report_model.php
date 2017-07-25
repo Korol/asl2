@@ -505,6 +505,35 @@ class Report_model extends MY_Model {
         return $result;
     }
 
+    /**
+     * Общая таблица по клиентам - за период
+     *
+     * @param string $from
+     * @param string $to
+     * @return mixed
+     */
+    public function reportGeneralOfCustomersGroupPeriod($from, $to) {
+        $result = $this->db()
+            ->select("c.ID as 'CustomerID', es.SiteID, SUM(rd.emails) as 'emails', SUM(rd.chat) as 'chat'")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0', 'inner')
+            ->join(self::TABLE_REPORT_DAILY_NAME.' AS rd',
+                "rd.EmployeeSiteCustomerID = es2c.ID AND rd.date BETWEEN '" . $from . "' AND '" . $to . "'", 'left')
+            ->group_start()
+            ->where(array(
+                'c.IsDeleted' => 0,
+            ))
+            ->or_where("DATE_FORMAT(c.`DateRemove`, '%Y-%m-d') >= '" . $to . "'", null, false)
+            ->group_end()
+            ->group_by('c.ID')
+            ->group_by('es.SiteID')
+            ->get()->result_array();
+        return $result;
+    }
+
     public function reportMailingFind($dateRecord, $idCross) {
         return $this->db()->get_where(self::TABLE_REPORT_MAILING_NAME, array('date' => $dateRecord, 'EmployeeSiteCustomerID' => $idCross))->row_array();
     }

@@ -1817,12 +1817,107 @@
 <?php if($role['isDirector']): ?>
 
 	<div id="ReportGeneralOfCustomers" class="day-reports report-table">
-		<div class="reports-title">Общая таблица по клиентам</div>
+		<div class="reports-title">
+            Общая таблица по клиентам
+            <span class="pull-right history-small-help">Для скролла: "Наведите на таблицу и используйте Shift + прокрутка колесом мышки"</span>
+        </div>
 
         <div class="panel assol-grey-panel">
             <div class="report-filter-wrap clear">
 
+                <!--                New-->
                 <div class="date-filter-block">
+                    <div class="form-group calendar-block">
+                        <label for="goc-daily-from">С</label>
+
+                        <div class='input-group date' id='goc-daily-from'>
+                            <input type='text' class="assol-btn-style" id="goc_daily_from_input" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar">
+                                    <img src="<?= base_url() ?>/public/img/calendar-icon.png" alt="">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="date-filter-block">
+                    <div class="form-group calendar-block">
+                        <label for="goc-daily-to">До</label>
+
+                        <div class='input-group date' id='goc-daily-to'>
+                            <input type='text' class="assol-btn-style" id="goc_daily_to_input" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar">
+                                    <img src="<?= base_url() ?>/public/img/calendar-icon.png" alt="">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .refresh-rotate{
+                        -moz-transition: all 1s linear;
+                        -webkit-transition: all 1s linear;
+                        transition: all 1s linear;
+                    }
+
+                    .refresh-rotate.refresh-down{
+                        -moz-transform:rotate(360deg);
+                        -webkit-transform:rotate(360deg);
+                        transform:rotate(360deg);
+                    }
+                </style>
+                <div class="date-filter-block">
+                    <div class="form-group calendar-block">
+                        <label for="goc-daily-to">&nbsp;</label>
+
+                        <div class='input-group date'>
+                            <a href="#" class="btn btn-default" id="goc_daily_refresh">
+                                <span class="glyphicon glyphicon-refresh refresh-rotate" aria-hidden="true"></span>
+                                &nbsp;Обновить
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    $(function() {
+                        var daily_from = $('#goc-daily-from');
+                        var daily_to = $('#goc-daily-to');
+
+                        daily_from.datetimepicker({
+                            locale: 'ru',
+                            format: 'DD-MM-YYYY',
+                            viewMode: 'days',
+                            defaultDate: 'now',
+                            showTodayButton: true
+                        }).on('dp.change', function (e) {
+                            $.ReportDirector.ReloadGeneralOfCustomersMeta();
+                        });
+
+                        daily_to.datetimepicker({
+                            locale: 'ru',
+                            format: 'DD-MM-YYYY',
+                            viewMode: 'days',
+                            defaultDate: 'now',
+                            showTodayButton: true
+                        }).on('dp.change', function (e) {
+                            $.ReportDirector.ReloadGeneralOfCustomersMeta();
+                        });
+
+                        var goc_refresh_counter = 0;
+                        $('#goc_daily_refresh').click(function (e) {
+                            e.preventDefault();
+                            goc_refresh_counter += 360;
+                            $(this).find('.glyphicon.glyphicon-refresh').css('transform', 'rotate(' + goc_refresh_counter + 'deg)');
+//                            $(this).find('.glyphicon.glyphicon-refresh').toggleClass('refresh-down');
+                            $.ReportDirector.ReloadGeneralOfCustomersMeta();
+                        });
+                    });
+                </script>
+                <!--                /New-->
+                <?php /*div class="date-filter-block">
                     <div class="form-group">
                         <label for="general-customers-day">Число</label>
                         <select class="assol-btn-style" id="general-customers-day">
@@ -1895,7 +1990,7 @@
 
                         months.find("[value='" + moment().month() + "']").attr("selected", "selected");
                     });
-                </script>
+                </script*/?>
 
             </div>
         </div>
@@ -1921,20 +2016,23 @@
             </div>
         </div>
 
+        <div style="margin: 10px 0;"><h5 class="goc-report-my-title"></h5></div>
 		<div class="day-reports-tables clear reports-table-wrap">
 
 			<div class="day-reports-tables-in">
 
                 <script id="reportGeneralOfCustomersTemplate" type="text/x-jquery-tmpl">
                     <thead>
-                        <tr>
-                            <th rowspan="2">Клиенты</th>
+                        <tr class="sticky-row">
+                            <th rowspan="2" class="sticky-cell">Клиенты</th>
 
                             {{each work_sites}}
                                 <th colspan="2"><span class="site-name">${Sites[$value.SiteID]}</span></th>
                             {{/each}}
+
+                            <th rowspan="2" class="th-result-vertical th-centered sortable">Итого</th>
                         </tr>
-                        <tr>
+                        <tr class="sticky-row">
                             {{each work_sites}}
                                 <th><div>письма</div></th>
                                 <th><div>чат</div></th>
@@ -1945,30 +2043,34 @@
                     <tbody>
                         {{each customers}}
                             <tr>
-                                <td title="${SName} ${FName}"><div>${SName} ${FName}</div></td>
+                                <td title="${SName} ${FName}" class="sticky-cell"><div>${SName} ${FName}</div></td>
 
                                 {{each work_sites}}
                                     <td id="gc_mail_${CustomerID}_${SiteID}" title="${SName} ${FName}"><div>0</div></td>
                                     <td id="gc_chat_${CustomerID}_${SiteID}" title="${SName} ${FName}"><div>0</div></td>
                                 {{/each}}
+
+                                <td class="td-bold td-result" style="padding-left: 10px;" id="goc_slide_total_${CustomerID}">0.00</td>
                             </tr>
                         {{/each}}
                     </tbody>
 
                     <tfoot class="day-main-table-footer">
                         <tr>
-                            <td></td>
+                            <td class="sticky-cell td-bold td-result text-right" style="padding-right: 10px;">Итого:</td>
 
                             {{each work_sites}}
-                                <td><div id="gc_foot_mail_${$value.SiteID}">0</div></td>
-                                <td><div id="gc_foot_chat_${$value.SiteID}">0</div></td>
+                                <td class="td-bold td-result"><div id="gc_foot_mail_${$value.SiteID}">0.00</div></td>
+                                <td class="td-bold td-result"><div id="gc_foot_chat_${$value.SiteID}">0.00</div></td>
                             {{/each}}
+
+                            <td class="td-bold td-result" style="padding-left: 10px;" id="goc_foot_total">0.00</td>
                         </tr>
                     </tfoot>
                 </script>
 
-                <div class="day-main-table">
-                    <table id="ReportGeneralOfCustomers_data"></table>
+                <div class="day-main-table sticky-table sticky-headers sticky-ltr-cells">
+                    <table id="ReportGeneralOfCustomers_data" class="tablesorter"></table>
                 </div>
 
                 <script id="reportGeneralOfCustomers_total_Template" type="text/x-jquery-tmpl">
@@ -1979,7 +2081,7 @@
                     </tr>
                 </script>
 
-                <div class="day-total-table reports-table-wrap">
+                <div class="day-total-table reports-table-wrap" style="display: none;">
                     <table id="ReportGeneralOfCustomers_total">
                         <thead>
                         <tr>

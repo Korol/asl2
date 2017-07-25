@@ -981,7 +981,7 @@ class Employee_model extends MY_Model {
             ->group_end()
             ->order_by('c.SName, c.FName', 'ASC')
             ->group_by('c.ID')
-            ->get()->result_array();log_message('error', $this->db()->last_query());
+            ->get()->result_array();//log_message('error', $this->db()->last_query());
         return $result;
     }
 
@@ -1000,6 +1000,30 @@ class Employee_model extends MY_Model {
                 ->where(array(
                     'c.IsDeleted' => 0,
                 ))
+            ->group_end()
+            ->order_by('c.SName, c.FName', 'ASC')
+            ->group_by('c.ID')
+            ->get()->result_array();
+    }
+
+    /**
+     * Получить список клиентов привязанных к сотруднику
+     * @param string $from
+     * @param string $to
+     */
+    public function allEmployeeCustomerGetListByPeriod($from, $to) {
+        return $this->db()
+            ->select("c.ID as 'CustomerID', c.FName, c.SName")
+            ->from(self::TABLE_CUSTOMER_NAME.' AS c')
+            ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c',
+                'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
+            ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS es',
+                'es2c.EmployeeSiteID = es.ID AND es.IsDeleted = 0', 'inner')
+            ->group_start()
+            ->where(array(
+                'c.IsDeleted' => 0,
+            ))
+            ->or_where("(DATE(c.`DateRemove`) > '" . $from . "' OR DATE(c.`DateRemove`) > '" . $to . "')", null, false)
             ->group_end()
             ->order_by('c.SName, c.FName', 'ASC')
             ->group_by('c.ID')

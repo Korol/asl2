@@ -282,9 +282,9 @@ $(document).ready(function(){
             var fixedSummaryData = $('#ReportGeneralOfCustomers_fixedWrapBody');   // Фиксированная таблица с сводными данными
 
             // Очищаем данные и сводные данные
-            $(reportData).find('tfoot td div').html(0);
-            $(summaryData).find('tbody td, tfoot td').html(0);
-            $(fixedSummaryData).find('tbody td, tfoot td').html(0);
+            $(reportData).find('tfoot td div').html(0.00);
+            $(summaryData).find('tbody td, tfoot td').html(0.00);
+            $(fixedSummaryData).find('tbody td, tfoot td').html(0.00);
 
             // Заполняем сводные данные по письмам в разрезе сайта + в разрезе клиента
             $(reportData).find('tbody .mail').each(function() {
@@ -292,6 +292,7 @@ $(document).ready(function(){
                 var idEmployeeSite = $(this).attr('id-site');
                 var footMail = $('#gc_foot_mail_' + idEmployeeSite);
                 footMail.html(parseFloat(footMail.html()) + parseFloat($(this).find('div').html()));
+                footMail.html(parseFloat(footMail.html()).toFixed(2)); // округляем до 2-х знаков
 
                 // Подсчет количества email в разрезе клиента
                 var idCustomer = $(this).attr('id-customer');
@@ -305,6 +306,7 @@ $(document).ready(function(){
                 var idEmployeeSite = $(this).attr('id-site');
                 var footChat = $('#gc_foot_chat_' + idEmployeeSite);
                 footChat.html(parseFloat(footChat.html()) + parseFloat($(this).find('div').html()));
+                footChat.html(parseFloat(footChat.html()).toFixed(2)); // округляем до 2-х знаков
 
                 // Подсчет количества сообщений чата в разрезе клиента
                 var idCustomer = $(this).attr('id-customer');
@@ -315,14 +317,15 @@ $(document).ready(function(){
 
                 totalChat.html(parseFloat(totalChat.html()) + parseFloat($(this).find('div').html()));
                 totalAll.html(parseFloat(totalChat.html()) + parseFloat(totalMail.html()));
-                $('#gc_slide_total_' + idCustomer).find('td').html(totalAll.html());
+                $('#goc_slide_total_' + idCustomer).html(parseFloat(totalAll.html()).toFixed(2));
             });
 
             // Заполняем футер для сводных данных в разрезе клиента
             var totalFooter = $(summaryData).find('tfoot>tr');
             var totalFooterMail = totalFooter.find('td:eq(0)');
             var totalFooterChat = totalFooter.find('td:eq(1)');
-            var totalFooterAll = totalFooter.find('td:eq(2)');
+            // var totalFooterAll = totalFooter.find('td:eq(2)');
+            var totalFooterAll = $('#goc_foot_total');
 
             $(summaryData).find('tbody>tr').each(function () {
                 totalFooterMail.html(parseFloat(totalFooterMail.html()) + parseFloat($(this).find('td:eq(0)').html()));
@@ -331,6 +334,14 @@ $(document).ready(function(){
             });
 
             $(fixedSummaryData).find('tfoot>tr>td').html(totalFooterAll.html());
+
+            // округляем до 2-х знаков итоговую сумму
+            var ttl = parseFloat($('#goc_foot_total').html());
+            $('#goc_foot_total').html(ttl.toFixed(2));
+
+            $("#ReportGeneralOfCustomers_data").tablesorter({
+                selectorHeaders: 'thead th.sortable'
+            });
         },
         ReloadReportOverallSalary: function (SiteID) {
             SiteID = SiteID || $('#overlaySalarySite').find("input:radio:checked").val();
@@ -496,9 +507,8 @@ $(document).ready(function(){
         },
         ReloadGeneralOfCustomersMeta: function (norefresh = false) {
             var data = {
-                year: $('#general-customers-year').data("DateTimePicker").date().year(),
-                month: $('#general-customers-month').val(),
-                day: $('#general-customers-day').val()
+                from: $('#goc_daily_from_input').val(),
+                to: $('#goc_daily_to_input').val()
             };
 
             $('#ReportGeneralOfCustomers_data').empty();
@@ -511,17 +521,16 @@ $(document).ready(function(){
                     $.tmpl('reportGeneralOfCustomers_fixedWrapBody_Template', data.records.customers).appendTo('#ReportGeneralOfCustomers_fixedWrapBody>tbody');
                     $.tmpl('reportGeneralOfCustomers_total_Template', data.records.customers).appendTo('#ReportGeneralOfCustomers_total>tbody');
                     if(!norefresh)
-                    $.ReportDirector.RefreshReportGeneralOfCustomersDate();
+                    $.ReportDirector.ReloadReportGeneralOfCustomersData();
                 }
             }
 
-            $.getJSON(BaseUrl + 'reports/general/customers/meta', data, callback);
+            $.post(BaseUrl + 'reports/general/customers/meta', data, callback, 'json');
         },
         ReloadReportGeneralOfCustomersData: function () {
             var data = {
-                year: $('#general-customers-year').data("DateTimePicker").date().year(),
-                month: $('#general-customers-month').val(),
-                day: $('#general-customers-day').val()
+                from: $('#goc_daily_from_input').val(),
+                to: $('#goc_daily_to_input').val()
             };
 
             function callback(data) {
@@ -543,6 +552,12 @@ $(document).ready(function(){
                     initEditCell($('#gc_mail_' + suffix), 'mail', value.CustomerID, value.SiteID, value.emails);
                     initEditCell($('#gc_chat_' + suffix), 'chat', value.CustomerID, value.SiteID, value.chat);
                 });
+
+                // заголовок
+                $('.goc-report-my-title').html('');
+                if(data.title !== ''){
+                    $('.goc-report-my-title').html(data.title);
+                }
 
                 $.ReportDirector.RefreshReportGeneralOfCustomersDataSummary();
             }
