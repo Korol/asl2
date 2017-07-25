@@ -5,7 +5,7 @@ class Services extends MY_Controller {
 
     public function index() {
         // проверка прав доступа
-        $this->checkServicesAccess();
+        // $this->checkServicesAccess();
 
         $data = array(
             'sites' => $this->getSiteModel()->getRecords(),

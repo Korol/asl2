@@ -386,7 +386,8 @@ class MY_Controller extends CI_Controller {
         $menu[] = ['controller'=>'messages',  'description'=>'Сообщения'];
 
         // 4. Пункт меню для всех ролей кроме "Сотрудник" + проверка доступа для остальных групп
-        if (!$this->isEmployee() && $this->getEmployeeModel()->checkServicesAccess($this->getUserID()))
+        // if (!$this->isEmployee() && $this->getEmployeeModel()->checkServicesAccess($this->getUserID()))
+        if (!$this->isEmployee())
             $menu[] = ['controller'=>'services', 'description'=>'Услуги'];
 
         // 5. Пункт меню для ролей "Директор", "Секретарь", "Переводчик"
