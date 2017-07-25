@@ -120,7 +120,8 @@ export function fetchTasks(mode, filterWhomTask, filterByWhomTask) {
                 dispatch({
                     type: types.FETCH_TASKS_SUCCESS,
                     tasks: response.data.records,
-                    expired: response.data.expired
+                    expiredInbox: response.data.expiredInbox,
+                    expiredOutbox: response.data.expiredOutbox
                 })
             })
             .catch((error) => {

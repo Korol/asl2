@@ -6,7 +6,7 @@ import { Button, Modal, Alert, Glyphicon } from 'react-bootstrap'
 import LoadingPanel from '../LoadingPanel'
 import FormTask from './TasksBlock_FormTask'
 
-import { TASK_MODE_INBOX, TASK_MODE_OUTBOX, TASK_MODE_ARCHIVE, TASK_MODE_EXPIRED } from "../../constants/task";
+import { TASK_MODE_INBOX, TASK_MODE_OUTBOX, TASK_MODE_ARCHIVE, TASK_MODE_EXPIRED_INBOX, TASK_MODE_EXPIRED_OUTBOX } from "../../constants/task";
 
 import { showTask, doneTask } from '../../actions/task-actions'
 
@@ -41,7 +41,9 @@ export default class TasksBlock_List extends React.Component {
                 return taskViewExtended ? this.renderInboxExTask() : this.renderInboxTask();
             case TASK_MODE_OUTBOX:
                 return taskViewExtended ? this.renderOutboxExTask() : this.renderOutboxTask();
-            case TASK_MODE_EXPIRED:
+            case TASK_MODE_EXPIRED_INBOX:
+                return this.renderExpiredExTask();
+            case TASK_MODE_EXPIRED_OUTBOX:
                 return this.renderExpiredExTask();
             case TASK_MODE_ARCHIVE:
                 return taskViewExtended ? this.renderArchiveExTask() : this.renderArchiveTask();

@@ -5,7 +5,7 @@ import { Button, Modal, Alert, Badge, FormGroup, FormControl, ControlLabel, Glyp
 import SelectDropdown from './../common/SelectDropdown'
 import CreateForm from './TasksBlock_CreateForm'
 
-import { TASK_MODE_INBOX, TASK_MODE_OUTBOX, TASK_MODE_ARCHIVE, TASK_MODE_EXPIRED } from "../../constants/task";
+import { TASK_MODE_INBOX, TASK_MODE_OUTBOX, TASK_MODE_ARCHIVE, TASK_MODE_EXPIRED_INBOX, TASK_MODE_EXPIRED_OUTBOX } from "../../constants/task";
 import { changeMode, changeFilterWhomTask, changeFilterByWhomTask, createTask } from './../../actions/task-actions'
 
 @connect((store) => {
@@ -13,7 +13,8 @@ import { changeMode, changeFilterWhomTask, changeFilterByWhomTask, createTask } 
         taskViewExtended: store.configState.config.taskViewExtended,
         employees: store.configState.employees,
         mode: store.taskState.mode,
-        expired: store.taskState.expired,
+        expiredInbox: store.taskState.expiredInbox,
+        expiredOutbox: store.taskState.expiredOutbox,
         filterWhomTask: store.taskState.filterWhomTask,
         filterByWhomTask: store.taskState.filterByWhomTask
     }
@@ -56,7 +57,7 @@ export default class TasksBlock_Toolbar extends React.Component {
     }
 
     renderNavigationGroup = () => {
-        const { dispatch, mode, expired } = this.props;
+        const { dispatch, mode, expiredInbox, expiredOutbox } = this.props;
 
         return (
             <div className="form-group">
@@ -64,7 +65,7 @@ export default class TasksBlock_Toolbar extends React.Component {
                     <ul>
                         <li className={mode == TASK_MODE_INBOX ? 'active' : ''}>
                             <button
-                                className="btn assol-btn download"
+                                className="btn assol-btn download small-btn-text"
                                 onClick={(e) => dispatch(changeMode(TASK_MODE_INBOX))}
                             >
                                 <span className="glyphicon" /> Входящие
@@ -72,23 +73,31 @@ export default class TasksBlock_Toolbar extends React.Component {
                         </li>
                         <li className={mode == TASK_MODE_OUTBOX ? 'active' : ''}>
                             <button
-                                className="btn assol-btn upload"
+                                className="btn assol-btn upload small-btn-text"
                                 onClick={(e) => dispatch(changeMode(TASK_MODE_OUTBOX))}
                             >
                                 <span className="glyphicon" /> Исходящие
                             </button>
                         </li>
-                        <li className={mode == TASK_MODE_EXPIRED ? 'active' : ''}>
+                        <li className={mode == TASK_MODE_EXPIRED_INBOX ? 'active' : ''}>
                             <button
-                                className="btn assol-btn expired"
-                                onClick={(e) => dispatch(changeMode(TASK_MODE_EXPIRED))}
+                                className="btn assol-btn expired download small-btn-text"
+                                onClick={(e) => dispatch(changeMode(TASK_MODE_EXPIRED_INBOX))}
                             >
-                                Просроченные <Badge>{expired}</Badge>
+                                <span className="glyphicon" /> Просроченные <Badge>{expiredInbox}</Badge>
+                            </button>
+                        </li>
+                        <li className={mode == TASK_MODE_EXPIRED_OUTBOX ? 'active' : ''}>
+                            <button
+                                className="btn assol-btn expired upload small-btn-text"
+                                onClick={(e) => dispatch(changeMode(TASK_MODE_EXPIRED_OUTBOX))}
+                            >
+                                <span className="glyphicon" /> Просроченные <Badge>{expiredOutbox}</Badge>
                             </button>
                         </li>
                         <li className={mode == TASK_MODE_ARCHIVE ? 'active' : ''}>
                             <button
-                                className="btn assol-btn archive"
+                                className="btn assol-btn archive small-btn-text"
                                 onClick={(e) => dispatch(changeMode(TASK_MODE_ARCHIVE))}
                             >
                                 Архив
@@ -103,7 +112,7 @@ export default class TasksBlock_Toolbar extends React.Component {
     renderFilterWhomTask = () => {
         const { mode, dispatch, filterWhomTask } = this.props;
 
-        if ((mode == TASK_MODE_OUTBOX) || (mode == TASK_MODE_ARCHIVE )|| (mode == TASK_MODE_EXPIRED)) {
+        if ((mode == TASK_MODE_OUTBOX) || (mode == TASK_MODE_ARCHIVE ) || (mode == TASK_MODE_EXPIRED_INBOX) || (mode == TASK_MODE_EXPIRED_OUTBOX)) {
             const employees = [{ value: 0, label: "Всем" }];
             this.props.employees.forEach((employee) =>
                 employees.push({ value: employee.ID, label: employee.name }));

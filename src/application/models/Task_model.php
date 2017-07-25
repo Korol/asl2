@@ -167,6 +167,7 @@ class Task_model extends MY_Model {
                 "task.*,
                 0 as 'TypeTasks',
                 (COUNT(c.ID) - COUNT(cr.ID)) AS 'CountNewComment',
+                task.Deadline < NOW() as 'IsExpired',
                 aut.FName as 'Author_FName', aut.SName as 'Author_SName',
                 emp.FName as 'Employee_FName', emp.SName as 'Employee_SName'", false)
             ->from(self::TABLE_TASK_NAME . ' AS task')
@@ -209,6 +210,44 @@ class Task_model extends MY_Model {
         // Используем array_merge, так как, array_filter один элемент не обарачивает в массив. TODO: Разобраться почему так
         return array_merge(array_filter(
             $this->taskOutGetList($idEmployee, $data),
+            function ($task) {
+                // Если задача не выполнена и истек срок
+                return empty($task['State']) && !empty($task['IsExpired']);
+            }
+        ), []);
+    }
+
+    /**
+     * Получить список просроченных исходящих задач для сотрудника
+     *
+     * @param int $idEmployee ID сотрудника
+     * @param array $data фильтр
+     *
+     * @return array список задач
+     */
+    public function taskExpiredOutGetList($idEmployee, $data) {
+        // Используем array_merge, так как, array_filter один элемент не обарачивает в массив. TODO: Разобраться почему так
+        return array_merge(array_filter(
+            $this->taskOutGetList($idEmployee, $data),
+            function ($task) {
+                // Если задача не выполнена и истек срок
+                return empty($task['State']) && !empty($task['IsExpired']);
+            }
+        ), []);
+    }
+
+    /**
+     * Получить список просроченных входящих задач для сотрудника
+     *
+     * @param int $idEmployee ID сотрудника
+     * @param array $data фильтр
+     *
+     * @return array список задач
+     */
+    public function taskExpiredInGetList($idEmployee, $data) {
+        // Используем array_merge, так как, array_filter один элемент не обарачивает в массив. TODO: Разобраться почему так
+        return array_merge(array_filter(
+            $this->taskInGetList($idEmployee, $data),
             function ($task) {
                 // Если задача не выполнена и истек срок
                 return empty($task['State']) && !empty($task['IsExpired']);

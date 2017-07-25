@@ -44,7 +44,9 @@ class Tasks extends MY_Controller {
 
             $data = $this->input->post('data');
 
-            $expired = $this->getTaskModel()->taskExpiredGetList($this->getUserID(), $data);
+//            $expired = $this->getTaskModel()->taskExpiredGetList($this->getUserID(), $data);
+            $expiredInbox = $this->getTaskModel()->taskExpiredInGetList($this->getUserID(), $data);
+            $expiredOutbox = $this->getTaskModel()->taskExpiredOutGetList($this->getUserID(), $data);
 
             switch($data['TypeTask']) {
                 case 0;
@@ -58,13 +60,17 @@ class Tasks extends MY_Controller {
                     $records = $this->getTaskModel()->taskArchiveGetList($this->getUserID(), $data);
                     break;
                 case 3;
-                    $records = $expired;
+                    $records = $expiredInbox;
+                    break;
+                case 4;
+                    $records = $expiredOutbox;
                     break;
                 default:
                     throw new RuntimeException("Не указан тип списка задач");
             }
 
-            $this->json_response(array("status" => 1, 'records' => $records, 'expired' => count($expired)));
+//            $this->json_response(array("status" => 1, 'records' => $records, 'expired' => count($expired)));
+            $this->json_response(array("status" => 1, 'records' => $records, 'expiredInbox' => count($expiredInbox), 'expiredOutbox' => count($expiredOutbox)));
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }

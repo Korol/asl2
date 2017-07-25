@@ -5,7 +5,8 @@ import { TASK_MODE_INBOX } from "../constants/task";
  * @property {number} mode - режим списка (0 - входящие, 1 - исходящие, 2 - просроченные, 3 - архив)
  * @property {number} filterWhomTask - фильтр "Кому была поставлена"
  * @property {number} filterByWhomTask - фильтр "Кем была поставлена"
- * @property {number} expired - количество просроченных задач
+ * @property {number} expiredInbox - количество входящих просроченных задач
+ * @property {number} expiredOutbox - количество исходящих просроченных задач
  * @property {bool} isFetch - флаг загрузки списка задач
  * @property {array} tasks - список задач
  */
@@ -14,7 +15,8 @@ const initialState = {
     filterWhomTask: 0,
     filterByWhomTask: 0,
     isFetch: false,
-    expired: 0,
+    expiredInbox: 0,
+    expiredOutbox: 0,
     tasks: []
 };
 
@@ -28,7 +30,7 @@ export default function(state = initialState, action) {
             return {...state, filterByWhomTask: action.value};
 
         case types.FETCH_TASKS_SUCCESS:
-            return {...state, tasks: action.tasks, expired: action.expired, isFetch: false};
+            return {...state, tasks: action.tasks, expiredInbox: action.expiredInbox, expiredOutbox: action.expiredOutbox, isFetch: false};
         case types.FETCH_TASKS_START:
             return {...state, isFetch: true};
         case types.FETCH_TASKS_FAILED:

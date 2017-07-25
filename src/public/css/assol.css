@@ -325,7 +325,7 @@ body {
   box-shadow: none;
 }
 /* line 262, ../../../scss/assol.scss */
-.assol-btn.upload > span, .assol-btn.download > span {
+.assol-btn.upload > span.glyphicon, .assol-btn.download > span.glyphicon {
   display: inline-block;
   width: 15px;
   height: 15px;
@@ -335,19 +335,19 @@ body {
   top: 2px;
 }
 /* line 274, ../../../scss/assol.scss */
-.assol-btn.download > span {
+.assol-btn.download > span.glyphicon {
   background-position: 0 100%;
 }
 /* line 279, ../../../scss/assol.scss */
-.active .assol-btn.download > span {
+.active .assol-btn.download > span.glyphicon {
   background-position: 0 0;
 }
 /* line 285, ../../../scss/assol.scss */
-.assol-btn.upload > span {
+.assol-btn.upload > span.glyphicon {
   background-position: 100% 100%;
 }
 /* line 290, ../../../scss/assol.scss */
-.active .assol-btn.upload > span {
+.active .assol-btn.upload > span.glyphicon {
   background-position: 100% 0;
 }
 /* line 295, ../../../scss/assol.scss */
@@ -3079,7 +3079,8 @@ label {
 .tasks-view-table-btns ul li {
   list-style: none;
   display: inline-block;
-  margin: 0 7px;
+  /*margin: 0 7px;*/
+  margin: 0 2px;
 }
 /* line 2983, ../../../scss/assol.scss */
 .tasks-view-table-btns a {
@@ -5568,4 +5569,9 @@ code {
 }
 .red {
     color: red;
+}
+
+/* уменьшаем текст для кнопок в разделе Задачи */
+.small-btn-text{
+  font-size: 12px !important;
 }
