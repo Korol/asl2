@@ -329,4 +329,17 @@ class Employee extends MY_Controller {
             'gif' => 'image/gif'
         );
     }
+
+    public function getname()
+    {
+        $return = '';
+        $ID = $this->input->post('ID', true);
+        if(!empty($ID)){
+            $employee = $this->getEmployeeModel()->employeeGet($ID);
+            if(!empty($employee)){
+                $return = trim($employee['SName']) . ' ' . trim($employee['FName']);
+            }
+        }
+        echo $return;
+    }
 }

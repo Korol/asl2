@@ -94,7 +94,7 @@
                     ?>
                     <tr>
                         <td class="sticky-cell" nowrap="nowrap">
-                            <a href="/employee/<?=$cs_item['ID']; ?>/profile" target="_blank">
+                            <a href="/reports#daily_<?= $cs_item['ID']; ?>" target="_blank">
                                 <?= $sname . ' ' . $fname . '.' . $mname . '.'; ?>
                             </a>
                         </td>

@@ -269,4 +269,28 @@ $(document).ready(function(){
 
     // Инициализация объекта
     $.ReportListDirector.Init();
+
+    // hash
+    if(window.location.hash !== ''){
+        var drhash = window.location.hash;
+        if(drhash.length > 0){
+            var drchash = drhash.replace('#', '');
+            var drchash_ex = drchash.split('_');
+            if(drchash_ex[0] == 'daily'){
+                $.post(
+                    '/employee/getname',
+                    { ID : drchash_ex[1] },
+                    function (data) {
+                        if(data !== ''){
+                            pathLevel = 21;
+                            selectEmployeeName = data;
+                            selectEmployeeId = drchash_ex[1];
+                            $.ReportListDirector.ReloadReportList();
+                        }
+                    },
+                    'text'
+                );
+            }
+        }
+    }
 });
