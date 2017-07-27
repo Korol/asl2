@@ -368,6 +368,9 @@ $(document).ready(function(){
                 if(data !== ''){
                     $('#AllEventsList').html(data);
                 }
+                else{
+                    $('#AllEventsList').html('');
+                }
             },
             'html'
         );
