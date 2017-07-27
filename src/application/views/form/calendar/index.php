@@ -15,7 +15,7 @@
 				<h4>События дня</h4>
 				<div class="day-events">
 					<div class="cde-block-in">
-						<ul>
+						<ul id="CalEventsList">
 							<?php foreach($birthdays['employee'] as $birthday): ?>
                                 <li>День рождения сотрудника - <a class="no-link" href="/employee/<?=$birthday['ID']; ?>/profile" target="_blank"><?= $birthday['SName'] ?> <?= $birthday['FName'] ?></a></li>
                             <?php endforeach ?>
@@ -23,6 +23,9 @@
                                 <li>День рождения клиентки - <a class="no-link" href="/customer/<?=$birthday['ID']; ?>/profile" target="_blank"><?= $birthday['SName'] ?> <?= $birthday['FName'] ?></a></li>
                             <?php endforeach ?>
 						</ul>
+                        <ul id="AllEventsList">
+                            <?= $allEvents; ?>
+                        </ul>
 					</div>
 				</div>
 			</td>
@@ -108,7 +111,7 @@
                         <input type="hidden" id="AddCalendarEventID">
                         <table>
                             <tr>
-                                <td>
+                                <td style="<?= ($isDirector) ? 'width: 240px;' : ''; ?>">
                                     <div class="form-group">
                                         <label for="Remind">Напомнить за</label>
                                         <div class="btn-group assol-select-dropdown" id="Remind">
@@ -184,6 +187,23 @@
                                         </div>
                                     </div>
                                 </td>
+                                <?php if($isDirector): ?>
+                                <td>
+                                    <div>
+                                        <div class="checkbox-line">
+                                            <label>
+                                                <input type="checkbox" id="ForAllCheckbox">
+                                                <mark></mark>
+                                                <span>
+                                                    видят все сотрудники
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <?php else: ?>
+                                    <input type="checkbox" id="ForAllCheckbox" class="hidden" value="0">
+                                <?php endif; ?>
                             </tr>
                         </table>
                     </div>
@@ -236,6 +256,11 @@
                                 <th>Время завершения:</th>
                                 <td>
                                     <div id="showEventEnd" class="task-date"></div>
+                                </td>
+                                <?php $showAllStyle = ($isDirector) ? '' : 'display: none;'; ?>
+                                <th style="<?= $showAllStyle; ?>">Видят все сотрудники:</th>
+                                <td style="<?= $showAllStyle; ?>">
+                                    <div id="showAllEvent" style="font-weight: bold; text-transform: uppercase;"></div>
                                 </td>
                             </tr>
                             <tr style="display: none">

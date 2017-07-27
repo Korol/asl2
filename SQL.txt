@@ -1,3 +1,7 @@
+-- 2017-07-27:
+ALTER TABLE `assol_calendar_event` ADD `forall` TINYINT(1)  NULL  DEFAULT '0'  AFTER `completed`;
+-- =====
+
 -- 2017-07-24 (Employees to Services access):
 CREATE TABLE `assol_employees_services_access` (   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,   `EmployeeID` int(11) DEFAULT NULL,   PRIMARY KEY (`id`),   UNIQUE KEY `EmployeeID` (`EmployeeID`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

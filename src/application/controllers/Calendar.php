@@ -16,7 +16,9 @@ class Calendar extends MY_Controller {
                 'customer' => $this->getCustomerModel()->getBirthdays($this->getUserID())
             ),
             'isCalendar' => true,
-            'tasks' => $this->getTaskModel()->taskInGetList($this->getUserID())
+            'tasks' => $this->getTaskModel()->taskInGetList($this->getUserID()),
+            'isDirector' => $this->isDirector(),
+            'allEvents' => $this->allevents(false),
         );
         $this->viewHeader($data);
         $this->view('form/calendar/index');
@@ -43,7 +45,8 @@ class Calendar extends MY_Controller {
                     'description' => $record['description'],
                     'completed' => $record['completed'],
                     'className' => $record['completed'] > 0 ? 'calendar-completed' : '',
-                    'remind' => $record['remind']
+                    'remind' => $record['remind'],
+                    'forall' => $record['forall'],
                 ];
 
                 // Выстовляем флаг полного дня если start и end со временем '00:00:00' и разница между ними в один день
@@ -130,6 +133,8 @@ class Calendar extends MY_Controller {
             $start = $this->input->post('start');
             $end = $this->input->post('end');
             $remind = $this->input->post('remind');
+            $forall = $this->input->post('forall');
+            $forall = (!empty($forall)) ? 1 : 0;
 
             if (empty($title))
                 throw new RuntimeException('Не указан заголовок');
@@ -138,9 +143,9 @@ class Calendar extends MY_Controller {
                 throw new RuntimeException('Не указан временной интервал');
 
             if (empty($id)) {
-                $this->getCalendarModel()->eventInsert($this->getUserID(), $title, $description, $start, $end, $remind);
+                $this->getCalendarModel()->eventInsert($this->getUserID(), $title, $description, $start, $end, $remind, $forall);
             } else {
-                $this->getCalendarModel()->eventUpdate($id, $title, $description, $start, $end, $remind);
+                $this->getCalendarModel()->eventUpdate($id, $title, $description, $start, $end, $remind, $forall);
             }
 
             $this->json_response(array('status' => 1));
@@ -292,5 +297,42 @@ class Calendar extends MY_Controller {
         $id = $this->input->post('id', true);
         $event = $this->getCalendarModel()->getEvent($id);
         echo (!empty($event['completed'])) ? 1 : 0;
+    }
+
+    /**
+     * формируем список общих событий
+     * @param bool $echo - отобразить список – или вернуть HTML
+     * @return string
+     */
+    public function allevents($echo = true)
+    {
+        $return = '';
+        $allEvents = $this->getCalendarModel()->getAllEvents();
+        if(!empty($allEvents)){
+            $return .= '<h5>Общие:</h5>';
+            foreach ($allEvents as $event){
+                $return .= '<li><b>' . $event['title'] . '</b> – ' .$event['description'] . '</li>';
+            }
+        }
+        if($echo)
+            echo $return;
+        else
+            return $return;
+    }
+
+    /**
+     * является ли текущий пользователь автором общего события
+     */
+    public function checkalluser()
+    {
+        $return = '';
+        $ID = $this->input->post('ID', true);
+        if(!empty($ID)){
+            $event = $this->getCalendarModel()->getEvent($ID);
+            if(!empty($event) && ($this->getUserID() == $event['EmployeeID'])){
+                $return = 'y';
+            }
+        }
+        echo $return;
     }
 }

@@ -50,7 +50,9 @@ $(document).ready(function(){
                         $.AssolCalendar.DialogCalendarEvent(
                             calEvent.start, calEvent.end, calEvent.id, calEvent.title,
                             calEvent.description, calEvent.remind, true,
-                            (jQuery.inArray('action-birthday', calEvent.className) > -1));
+                            (jQuery.inArray('action-birthday', calEvent.className) > -1),
+                            calEvent.forall
+                        );
                     }
                 },
                 selectable: true,
@@ -104,10 +106,19 @@ $(document).ready(function(){
                 data['end'] = $('#event-end').data("DateTimePicker").date().format('YYYY-MM-DD HH:mm');
             }
 
+            // checkbox «видят все сотрудники»
+            if($('#ForAllCheckbox').prop('checked')){
+                data['forall'] = 1;
+            }
+            else{
+                data['forall'] = 0;
+            }
+
             function callback(data) {
                 if (data.status) {
                     $('#AddCalendarEvent').modal('hide');
                     $('#calendar').fullCalendar('refetchEvents');
+                    updateAllEventsList(); // обновляем информацию об общих событиях в блоке «События дня»
                 } else {
                     alert(data.message)
                 }
@@ -148,7 +159,7 @@ $(document).ready(function(){
 
             $.post(BaseUrl + 'calendar/report', {data: data}, callback, 'json');
         },
-        DialogCalendarEvent: function(start, end, id, title, description, remind, readonly, isBirthday) {
+        DialogCalendarEvent: function(start, end, id, title, description, remind, readonly, isBirthday, forall) {
             if (id) {
                 end = end || start;
             } else { // Если это новое событие
@@ -173,16 +184,23 @@ $(document).ready(function(){
                 $('#showEventEnd').html(end.format(format));
                 $('#showRemind').html($('label[for="Remind_' + remind + '"]').html());
                 $('#showRemind').closest('tr').css('display', (remind > 0) ? 'table-row' : 'none');
+                $('#showAllEvent').html((forall > 0) ? 'Да' : 'Нет');
 
                 // 2. Подключение событий к кнопкам
                 $('#btnEditEvent')
                     .off('click.edit-event')
                     .on('click.edit-event', function() {
                         $('#ShowCalendarEvent').modal('hide');
-                        $.AssolCalendar.DialogCalendarEvent(start, end, id, title, description, remind);
+                        $.AssolCalendar.DialogCalendarEvent(start, end, id, title, description, remind, false, false, forall);
                     });
 
                 checkCompleted(id); // для выполненных задач меняем кнопки
+
+                if(forall*1 > 0){
+                    // для общих событий – показываем создателю только 2 кнопки:
+                    // Удалить и Редактировать
+                    checkAllEvents(id);
+                }
 
                 // 3. Отображение формы с отключением части формы для дней рождения
                 $('#ShowCalendarEvent')
@@ -199,6 +217,7 @@ $(document).ready(function(){
                 $('#event-start').data("DateTimePicker").date(start);
                 $('#event-end').data("DateTimePicker").date(end);
                 $('#AllDayCheckbox').prop('checked', isAllDay);
+                $('#ForAllCheckbox').prop('checked', forall>0 ? true : false);
                 $('#Remind_' + remind).click();
 
                 $.AssolCalendar.UpdateEventTimeFormat();
@@ -332,6 +351,65 @@ $(document).ready(function(){
                         .off('click.done-event')
                         .on('click.done-event', function() {
                             $.AssolCalendar.DoneEvent(id);
+                        });
+                }
+            },
+            'text'
+        );
+    }
+
+    /*
+    обновляем информацию об общих событиях в блоке «События дня»
+     */
+    function updateAllEventsList() {
+        $.post(
+            '/calendar/allevents',
+            function (data) {
+                if(data !== ''){
+                    $('#AllEventsList').html(data);
+                }
+            },
+            'html'
+        );
+    }
+
+    /*
+     для общих событий – показываем создателю только 2 кнопки: Удалить и Редактировать
+     */
+    function checkAllEvents(id) {
+        $.post(
+            '/calendar/checkalluser',
+            { ID: id },
+            function(data){
+                if(data === 'y'){
+                    // скрываем кнопки Выполнено и Восстановить
+                    $('#btnDoneEvent').addClass('hide');
+                    $('#btnRestoreEvent').addClass('hide');
+                    // показываем кнопку Удалить
+                    $('#btnRemoveEvent').removeClass('hide');
+                    // Удаляем событие
+                    $('#btnRemoveEvent')
+                        .off('click.remove-event')
+                        .on('click.remove-event', function() {
+                            bootbox.confirm("Удалить это событие безвозвратно?", function(result) {
+                                if(result){
+                                    $.post(
+                                        BaseUrl + 'calendar/remove',
+                                        { id: id },
+                                        function (data) {
+                                            if (data * 1 === 1) {
+                                                $('#ShowCalendarEvent').modal('hide');
+                                                $('#calendar').fullCalendar('refetchEvents');
+                                                updateAllEventsList();  // обновляем информацию об общих событиях в блоке «События дня»
+                                            }
+                                            else{
+                                                console.log(data);
+                                            }
+                                        },
+                                        'text'
+                                    );
+                                }
+                            });
                         });
                 }
             },

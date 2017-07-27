@@ -64,7 +64,7 @@ class Calendar_model extends MY_Model {
 
     private function initCalendarQuery($idEmployee, $dtBegin = false, $dtEnd = false) {
         $this->db()
-            ->select('id, title, start, end, description, completed, remind')
+            ->select('id, title, start, end, description, completed, remind, forall')
             ->from(self::TABLE_CALENDAR_EVENT_NAME)
             ->where('EmployeeID', $idEmployee);
 
@@ -122,17 +122,19 @@ class Calendar_model extends MY_Model {
      * @param string    $start          Дата и время начала события
      * @param string    $end            Дата и время завершения события
      * @param int       $remind         Количество минут за которое необходимо напомнить о событии
+     * @param int       $forall         Флаг отображения события «Для всех» - видят все сотрудники
      *
      * @return int ID новой записи
      */
-    public function eventInsert($userID, $title, $description, $start, $end, $remind) {
+    public function eventInsert($userID, $title, $description, $start, $end, $remind, $forall) {
         $data = array(
             'EmployeeID' => $userID,
             'title' => $title,
             'description' => $description,
             'start' => $start,
             'end' => $end,
-            'remind' => $remind
+            'remind' => $remind,
+            'forall' => $forall,
         );
 
         $this->db()->insert(self::TABLE_CALENDAR_EVENT_NAME, $data);
@@ -149,14 +151,16 @@ class Calendar_model extends MY_Model {
      * @param string    $start          Дата и время начала события
      * @param string    $end            Дата и время завершения события
      * @param int       $remind         Количество минут за которое необходимо напомнить о событии
+     * @param int       $forall         Флаг отображения события «Для всех» - видят все сотрудники
      */
-    public function eventUpdate($id, $title, $description, $start, $end, $remind) {
+    public function eventUpdate($id, $title, $description, $start, $end, $remind, $forall) {
         $data = array(
             'title' => $title,
             'description' => $description,
             'start' => $start,
             'end' => $end,
-            'remind' => $remind
+            'remind' => $remind,
+            'forall' => $forall,
         );
 
         $this->db()->update(self::TABLE_CALENDAR_EVENT_NAME, $data, array('id' => $id));
@@ -208,6 +212,16 @@ class Calendar_model extends MY_Model {
     {
         return $this->db()
             ->get_where(self::TABLE_CALENDAR_EVENT_NAME, array('id' => $id))->row_array();
+    }
+
+    public function getAllEvents()
+    {
+        $result = $this->db()
+            ->where('forall', 1)
+            ->where("'" . date('Y-m-d') . "' BETWEEN DATE(`start`) AND DATE(`end`)", null, false)
+            ->order_by('id', 'desc')
+            ->get(self::TABLE_CALENDAR_EVENT_NAME)->result_array();
+        return $result;
     }
 
 }
