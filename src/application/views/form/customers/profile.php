@@ -13,8 +13,7 @@
     // Настройка возможности редактирование вкладок
     $isEditPersonalData             = ($isDirector || $isSecretary);
     $isEditSelfDescription          = ($isDirector || $isSecretary);
-//    $isEditPhotoAndVideo            = ($isDirector || $isSecretary);
-    $isEditPhotoAndVideo            = ($isDirector);
+    $isEditPhotoAndVideo            = ($isDirector || $isSecretary || $photoVideoEdit);
     $isEditSites                    = ($isDirector || $isSecretary);
 
     if (IS_LOVE_STORY) { /* На сайте Love story редактировать карточку клиенток могут только секретарь и директор */

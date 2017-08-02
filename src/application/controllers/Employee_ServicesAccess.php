@@ -17,7 +17,7 @@ class Employee_ServicesAccess extends MY_Controller {
             $this->assertUserRight();
 
             // 2. Получение данных
-            $res = $this->getEmployeeModel()->getListByRoles(array(10001, 10002, 10003));
+            $res = $this->getEmployeeModel()->getListByRoles(array(10004)); // 10001, 10002, 10003
             $access = $this->getEmployeeModel()->getServicesAccessList();
             $users = array();
             if(!empty($res)){

@@ -4,12 +4,12 @@ import { Tab, Row, Col, Nav, NavItem } from 'react-bootstrap'
 
 import { fetchQuestionTemplate } from './../../actions/setting-actions'
 import { fetchUsersTemplate } from './../../actions/setting-actions'
-// import { fetchServicesTemplate } from './../../actions/setting-actions'
+import { fetchServicesTemplate } from './../../actions/setting-actions'
 
 import LoadingPanel from '../LoadingPanel';
 import ReportTab from './ReportTab';
 import CommentsAccessTab from './CommentsAccessTab';
-// import ServicesAccessTab from './ServicesAccessTab';
+import ServicesAccessTab from './ServicesAccessTab';
 import CustomerProfileTabPane from './CustomerProfileTab';
 
 /** Панель сообщений */
@@ -45,9 +45,9 @@ export default class SettingPage extends React.Component {
         navs.push(<NavItem key="SettingCommentsAccessTab" eventKey="SettingCommentsAccessTab">Доступ к комментариям</NavItem>);
         panes.push(<Tab.Pane key="SettingCommentsAccessTab" eventKey="SettingCommentsAccessTab" onEnter={() => dispatch(fetchUsersTemplate())} ><CommentsAccessTab /></Tab.Pane>);
 
-        // Вкладка "Доступ к Услугам"
-        // navs.push(<NavItem key="SettingServicesAccessTab" eventKey="SettingServicesAccessTab">Доступ к Услугам</NavItem>);
-        // panes.push(<Tab.Pane key="SettingServicesAccessTab" eventKey="SettingServicesAccessTab" onEnter={() => dispatch(fetchServicesTemplate())} ><ServicesAccessTab /></Tab.Pane>);
+        // Вкладка "Доступ к Фото/Видео"
+        navs.push(<NavItem key="SettingServicesAccessTab" eventKey="SettingServicesAccessTab">Доступ к Фото/Видео</NavItem>);
+        panes.push(<Tab.Pane key="SettingServicesAccessTab" eventKey="SettingServicesAccessTab" onEnter={() => dispatch(fetchServicesTemplate())} ><ServicesAccessTab /></Tab.Pane>);
 
         return (
             <Tab.Container id="setting-category" defaultActiveKey="SettingReportTab">

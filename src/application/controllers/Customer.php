@@ -228,6 +228,15 @@ class Customer extends MY_Controller {
                 $data['employees'] = [];
                 $data['rights'] = [];
             }
+
+            // для Сотрудников – право доступа к редактированию вкладки Фото/Видео
+            if($this->isEmployee()){
+                $data['photoVideoEdit'] = $this->getEmployeeModel()->checkServicesAccess($this->getUserID());
+            }
+            else{
+                $data['photoVideoEdit'] = false;
+            }
+
         } else {
             $data['isEditDocumentAccess'] = false; // Скрываем форму настройки прав доступа для LoveStory
             $data['isDocAccess'] = true; // Открываем полный доступ к документам для LoveStory
