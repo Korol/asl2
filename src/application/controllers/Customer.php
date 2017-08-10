@@ -122,7 +122,7 @@ class Customer extends MY_Controller {
 
     public function avatar($CustomerID) {
         // 1. Проверка прав доступа
-        $this->assertUserRight();
+        // $this->assertUserRight();
 
         try {
             $data = $this->input->post('data');
@@ -147,7 +147,7 @@ class Customer extends MY_Controller {
 
     public function update($id) {
         // 1. Проверка прав доступа
-        $this->assertUserRight();
+        // $this->assertUserRight();
 
         try {
             $data = $this->input->post('data');

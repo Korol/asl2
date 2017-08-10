@@ -43,3 +43,31 @@ $("#ReportIndividualDaily_data").tablesorter({
 });
 
 --------------
+
+Открыть всю базу Клиентов для Сотрудника (редактирование вкладки Фото-Видео)
+
+if(($this->isDirector || $this->isSecretary) && ()){
+    // показываем кнопку «Открыть базу Клиентов»
+    // пишем для неё обработчик клика через $.post на контроллер Employee_Site_Clients/openbase
+    // в openbase проверяем, что это Сотрудник
+}
+
+Жмём кнопку «Открыть базу Клиентов»:
+1. Выбрать все ID связей EmploeeID - SiteID из таблицы assol_employee_site.
+2. Если такие связи есть – удалить их, а также удалить все записи из таблицы assol_employee_site_customer,
+    в которых в поле EmployeeSiteID указаны полученные из таблицы assol_employee_site ID связей из п.1.
+3. Получить ID активных сайтов в системе (assol_sites).
+4. Создать в assol_employee_site новые связи EmployeeID - Site ID для ID Сотрудника и всех активных сайтов.
+5. Получить ID этих новых связей.
+6. Выполнить действия, аналогичные controllers/Employee_Site_Clients/save.
+7. Перезагрузить страницу с использованием #Work:
+    в js/src/assol.employee.card.js добавить работу с hash в URL:
+    if(window.location.hash) {
+        var mhash = window.location.hash;
+        $('a[href="'+mhash+'"]').tab('show');
+    }
+    скомпилировать новый js/assol.employee.card.js.
+
+8. Если в дальнейшем потребуются какие-то отчеты для Сотрудников по Клиентам –
+    то нужно будет исключить удаление старых связей, т.к. это поломает отчеты.
+    Нужно будет добавлять новых Клиентов и новые сайты, избегая дублирования.
