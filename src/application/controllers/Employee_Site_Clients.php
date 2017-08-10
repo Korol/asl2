@@ -96,4 +96,53 @@ class Employee_Site_Clients extends MY_Controller {
         }
     }
 
+    /**
+     * открыть доступ сотруднику к базе Клиентов
+     * @param $EmployeeID
+     */
+    public function openbase($EmployeeID)
+    {
+        // TODO: Если в дальнейшем потребуются какие-то отчеты для Сотрудников по Клиентам – то нужно будет исключить удаление старых связей, т.к. это поломает отчеты. Нужно будет добавлять новых Клиентов и новые сайты, избегая дублирования.
+        $return = 0;
+        $employee = $this->getEmployeeModel()->employeeGet($EmployeeID);
+        if(!empty($EmployeeID) && ($employee['UserRole'] == '10004')){
+            // 1. Выбрать все ID связей EmployeeID - SiteID из таблицы assol_employee_site.
+            $employeeSites = $this->getEmployeeModel()->getEmployeeSitesConnections($EmployeeID);
+            if(!empty($employeeSites)){
+                // 2. Если такие связи есть – удалить их, а также удалить все записи из таблицы assol_employee_site_customer,
+                // в которых в поле EmployeeSiteID указаны полученные из таблицы assol_employee_site ID связей из п.1.
+                $es_ids = array_keys(toolIndexArrayBy($employeeSites, 'ID'));
+                $this->getEmployeeModel()->removeEmployeeSiteConnections($es_ids); // Сотрудник - Сайты
+                $this->getEmployeeModel()->removeEmployeeSiteCustomerConnections($es_ids); // Сотрудник - Сайты - Клиенты
+            }
+
+            // 3. Получить ID активных сайтов в системе (assol_sites).
+            $sites = $this->getEmployeeModel()->getSites();
+            $sites_ids = array_keys(toolIndexArrayBy($sites, 'ID'));
+
+            // 4. Создать в assol_employee_site новые связи EmployeeID - Site ID для ID Сотрудника и всех активных сайтов.
+            $this->getEmployeeModel()->setEmployeeSitesConnections($EmployeeID, $sites_ids);
+
+            // 5. Получить ID этих новых связей.
+            $employeeSites = $this->getEmployeeModel()->getEmployeeSitesConnections($EmployeeID);
+
+            // 6. Выполнить действия, аналогичные controllers/Employee_Site_Clients/save.
+            if(!empty($employeeSites)){
+                $employeeSitesIndexed = toolIndexArrayBy($employeeSites, 'ID'); // индексируем связи по ID
+                $es_ids = array_keys($employeeSitesIndexed); // список ID связей Сотрудник - Сайт
+                foreach ($es_ids as $es_id) {
+                    // список Клиентов, привязанных к сайту
+                    $customers = $this->getCustomerModel()->findCustomerBySiteID($employeeSitesIndexed[$es_id]['SiteID']);
+                    foreach ($customers as $customer) {
+                        // добавляем связь Сотрудник - Сайт - Клиент
+                        $this->getEmployeeModel()->siteCustomerInsert($es_id, $customer['ID']);
+                        $return++;
+                    }
+                }
+            }
+
+        }
+        echo $return;
+    }
+
 }

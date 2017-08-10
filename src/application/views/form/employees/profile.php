@@ -880,6 +880,52 @@
                                 </script>
                             </div>
                         </div>
+                        <?php
+                        // есть возможность редактирования вкладки Работа + это профиль Сотрудника
+                        if($isEditWork && $isEmployeeProfile):
+                        ?>
+                        <style>
+                            .openbaseloader {
+                                border: 5px solid #f3f3f3;
+                                -webkit-animation: spin 1s linear infinite;
+                                animation: spin 1s linear infinite;
+                                border-top: 5px solid #555;
+                                border-radius: 50%;
+                                width: 25px;
+                                height: 25px;
+                                margin-top: 23px;
+                            }
+                            @-webkit-keyframes spin {
+                                0% { -webkit-transform: rotate(0deg); }
+                                100% { -webkit-transform: rotate(360deg); }
+                            }
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        </style>
+                        <div class="form-group">
+                            <button class="btn btn-danger" style="margin-top: 18px;" onclick="if(confirm('Вы действительно хотите открыть полный доступ Сотруднику ко всем Клиентам во всех сайтах?\nВсе связи Сотрудник - Сайт - Клиент при этом будут полностью обновлены!')){ openBase(<?= $employee['ID']; ?>); }">
+                                Открыть полную базу Клиентов по всем сайтам
+                            </button>
+                            <div id="openbaseLoader" class="openbaseloader pull-right" style="display: none;"></div>
+                        </div>
+                        <script>
+                            function openBase(EmployeeID) {
+                                $('#openbaseLoader').show();
+                                $.get(
+                                    '/employee/'+EmployeeID+'/openbase',
+                                    function(data){
+                                        if(data*1 > 0){
+                                            $.EmployeeCard.ReloadSiteList();
+                                            $('#openbaseLoader').hide();
+                                        }
+                                    },
+                                    'text'
+                                );
+                            }
+                        </script>
+                        <?php endif; ?>
                     </div>
                 </div>
 

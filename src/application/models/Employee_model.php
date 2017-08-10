@@ -1860,4 +1860,67 @@ class Employee_model extends MY_Model {
         return (!empty($res)) ? true : false;
     }
 
+    /* доступ Сотрудников к базе Клиентов */
+    /**
+     * получаем связи Сотрудник - Сайт
+     * @param $EmployeeID
+     * @return mixed
+     */
+    public function getEmployeeSitesConnections($EmployeeID)
+    {
+        return $this->db()
+            ->where('EmployeeID', $EmployeeID)
+            ->get(self::TABLE_EMPLOYEE_SITE_NAME)->result_array();
+    }
+
+    /**
+     * удаляем связи Сотрудник - Сайт
+     * @param $EmployeeSiteIDs
+     * @return mixed
+     */
+    public function removeEmployeeSiteConnections($EmployeeSiteIDs)
+    {
+        return $this->db()
+            ->where_in('ID', $EmployeeSiteIDs)
+            ->delete(self::TABLE_EMPLOYEE_SITE_NAME);
+    }
+
+    /**
+     * Удаляем связи Сотрудник - Сайт - Клиент
+     * @param $EmployeeSiteIDs
+     * @return mixed
+     */
+    public function removeEmployeeSiteCustomerConnections($EmployeeSiteIDs)
+    {
+        return $this->db()
+            ->where_in('EmployeeSiteID', $EmployeeSiteIDs)
+            ->delete(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME);
+    }
+
+    /**
+     * список ID сайтов, кроме 'В очереди', 'Зарплата грн.'
+     * @return mixed
+     */
+    public function getSites()
+    {
+        return $this->db()
+            ->select('ID')
+            ->where_not_in('Name', array('В очереди', 'Зарплата грн.'))
+            ->get(self::TABLE_SITE_NAME)->result_array();
+    }
+
+    public function setEmployeeSitesConnections($EmployeeID, $SitesIDs)
+    {
+        if(!empty($EmployeeID) && !empty($SitesIDs)){
+            foreach ($SitesIDs as $siteID) {
+                $insert = array(
+                    'EmployeeID' => $EmployeeID,
+                    'SiteID' => $siteID,
+                    'IsDeleted' => 0,
+                );
+                $this->db()->insert(self::TABLE_EMPLOYEE_SITE_NAME, $insert);
+            }
+        }
+    }
+
 }
