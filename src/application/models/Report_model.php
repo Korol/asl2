@@ -890,6 +890,14 @@ class Report_model extends MY_Model {
             ->row_array();
     }
 
+    public function reportOverlaySalaryFindWithoutSite($employee, $year, $month) {
+        return $this->db()
+            ->get_where(self::TABLE_REPORT_OVERLAY_SALARY_NAME,
+                ['year' => $year, 'month' => $month, 'EmployeeID' => $employee]
+            )
+            ->row_array();
+    }
+
     public function reportOverlaySalaryInsert($idSite, $employee, $year, $month, $type, $value) {
         $data = [
             'SiteID' => $idSite,

@@ -1577,14 +1577,41 @@
                             showTodayButton: true
                         }).on('dp.change', function () {
                             $.ReportTranslate.ReloadReportSalary();
+                            checkOverlayReport();
                         });
 
                         months.change(function () {
                             $.ReportTranslate.ReloadReportSalary();
+                            checkOverlayReport();
                         });
 
                         months.find("[value='" + moment().month() + "']").attr("selected", "selected");
+                        checkOverlayReport();
                     });
+
+                    // проверка отправки отчета по зарплате
+                    // если отчет за выбранный год и месяц уже отправлен – то кнопка отправки становится disabled
+                    // если отчет за выбранный год и месяц ещё не отправлен – то кнопка отправки становится активной
+                    function checkOverlayReport(){
+                        var year = $('#salary-year').find('input').val();
+                        var month = $('#salary-month').val();
+                        $.post(
+                            '/Reports_Salary/checkoverlay/',
+                            {
+                                year: year,
+                                month: month
+                            },
+                            function(data){
+                                if(data*1 > 0){
+                                    $('#submit-report-salary').removeClass('add').addClass('disabled');
+                                }
+                                else{
+                                    $('#submit-report-salary').removeClass('disabled').addClass('add');
+                                }
+                            },
+                            'text'
+                        );
+                    }
                 </script>
 
 			</div>
@@ -1674,6 +1701,7 @@
 		</div>
 		<div class="form-group clear save-edit-wrap">
 <!--			<div class="right">* отправка отчета доступна с 01 по 07 число каждого месяца</div>-->
+			<div class="text-right"><strong>Внимание!</strong> Отправка отчета выполняется только один раз в месяц!</div>
 
 			<?php if ($role['isTranslate']): ?>
 
