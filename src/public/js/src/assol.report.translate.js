@@ -243,6 +243,7 @@ $(document).ready(function(){
                 function callback(data) {
                     if (data.status) {
                         alert('Данные успешно отправлены в сводную таблицу');
+                        $('#submit-report-salary').removeClass('add').addClass('disabled');
                     } else {
                         alert('Ошибка: ' + data.message);
                     }
