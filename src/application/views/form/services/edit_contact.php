@@ -149,7 +149,7 @@
 
     function removeContact(id){
         $.post(
-            'services/contact/remove',
+            '/services/contact/remove',
             { id: id },
             callback,
             'json'
