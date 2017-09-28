@@ -2021,15 +2021,25 @@
                 <? endif ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="ReservationContactPane">
+                <?php
+                /* таблица заказов контактов */
+                $this->load->view('form/customers/contacts', array(
+                        'CustomerID' => $customer['ID'],
+                        'isEditReservationContactPane' => $isEditReservationContactPane,
+                    )
+                );
+                ?>
+                <?php /* /таблица заказов контактов */ ?>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
+                            <label for="ReservationContacts">Старый вариант</label>
                             <textarea class="assol-input-style" id="ReservationContacts" rows="6" placeholder="Заказ контактов"><?=$customer['ReservationContacts']?></textarea>
                         </div>
                     </div>
                 </div>
 
-                <? if ($isEditReservationContactPane): ?>
+                <? if (!empty($isEditReservationContactPane42)): ?>
                     <button id="SaveReservationContact" class="btn assol-btn save" title="Сохранить изменения">
                         <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
                         Сохранить

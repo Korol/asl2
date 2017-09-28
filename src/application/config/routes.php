@@ -249,6 +249,10 @@ $route['services/delivery/(:num)/edit']  = 'Services_Delivery/edit/$1';
 $route['services/western/remove']        = 'Services_Western/remove';
 $route['services/meeting/remove']        = 'Services_Meeting/remove';
 $route['services/delivery/remove']       = 'Services_Delivery/remove';
+$route['services/contact/(:any)']        = 'Services_Contact/$1';
+$route['services/contact/(:any)/(:num)'] = 'Services_Contact/$1/$2';
+$route['services/contact/(:num)/edit']   = 'Services_Contact/edit/$1';
+$route['services/contact/remove']        = 'Services_Contact/remove';
 
 // Контроль доступа к комментариям сотрудников
 $route['users/template']         = 'Employee_CommentsAccess/template/$1';

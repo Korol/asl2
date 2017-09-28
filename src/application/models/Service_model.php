@@ -62,6 +62,25 @@ class Service_model extends MY_Model {
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Услуги - доставки';";
 
+    private $table_service_contact =
+        "CREATE TABLE `assol_service_contact` (
+          `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+          `Date` date DEFAULT NULL,
+          `SiteID` int(11) DEFAULT NULL,
+          `EmployeeID` int(11) DEFAULT NULL,
+          `Men` varchar(255) DEFAULT NULL,
+          `CustomerID` int(11) DEFAULT NULL,
+          `Description` text,
+          `Added` datetime DEFAULT NULL,
+          `AuthorID` int(11) DEFAULT NULL,
+          PRIMARY KEY (`ID`),
+          KEY `SiteID` (`SiteID`),
+          KEY `EmployeeID` (`EmployeeID`),
+          KEY `CustomerID` (`CustomerID`),
+          KEY `AuthorID` (`AuthorID`),
+          KEY `Date` (`Date`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
     /**
      * Инициализация таблицы
      */
@@ -69,6 +88,7 @@ class Service_model extends MY_Model {
         $this->db()->query($this->table_service_western);
         $this->db()->query($this->table_service_meeting);
         $this->db()->query($this->table_service_delivery);
+        $this->db()->query($this->table_service_contact);
     }
 
     public function dropTables() {
@@ -77,6 +97,7 @@ class Service_model extends MY_Model {
         $this->dbforge->drop_table(self::TABLE_SERVICE_WESTERN_NAME, TRUE);
         $this->dbforge->drop_table(self::TABLE_SERVICE_MEETING_NAME, TRUE);
         $this->dbforge->drop_table(self::TABLE_SERVICE_DELIVERY_NAME, TRUE);
+        $this->dbforge->drop_table(self::TABLE_SERVICE_CONTACT_NAME, TRUE);
     }
 
     /**
@@ -647,4 +668,142 @@ class Service_model extends MY_Model {
         return (!empty($return)) ? $return : array();
     }
 
+    /*  КОНТАКТЫ */
+
+    /**
+     * Добавление нового контакта
+     *
+     * @param int       $authorID       ID добавляющего контакт
+     * @param string    $date           дата
+     * @param int       $site           ID сайта
+     * @param int       $employeeID     ID переводчика
+     * @param string    $men            имя мужчины
+     * @param string    $customerID     ID девушки
+     * @param string    $description    описание
+     *
+     * @return int ID записи
+     */
+    public function contactInsert($authorID, $date, $site, $employeeID, $men, $customerID, $description) {
+        $data = array(
+            'Date' => $date,
+            'SiteID' => $site,
+            'EmployeeID' => $employeeID,
+            'Men' => $men,
+            'CustomerID' => $customerID,
+            'Description' => $description,
+            'Added' => date('Y-m-d H:i:s'),
+            'AuthorID' => $authorID
+        );
+        $this->db()->insert(self::TABLE_SERVICE_CONTACT_NAME, $data);
+
+        return $this->db()->insert_id();
+    }
+
+    /**
+     * Обновление контакта
+     *
+     * @param int       $id             ID редактируемого контакта
+     * @param string    $date           дата
+     * @param int       $site           ID сайта
+     * @param int       $employeeID     ID переводчика
+     * @param string    $men            имя мужчины
+     * @param string    $customerID     ID девушки
+     * @param string    $description    описание
+     */
+    public function contactUpdate($id, $date, $site, $employeeID, $men, $customerID, $description) {
+        $data = array(
+            'Date' => $date,
+            'SiteID' => $site,
+            'EmployeeID' => $employeeID,
+            'Men' => $men,
+            'CustomerID' => $customerID,
+            'Description' => $description,
+        );
+
+        $this->db()->where('ID', $id);
+        $this->db()->update(self::TABLE_SERVICE_CONTACT_NAME, $data);
+    }
+
+    /**
+     * Полный список запросов контактов
+     *
+     * @return mixed
+     */
+    public function getFullContactsList()
+    {
+        return $this->db()
+            ->select("sc.*, s.Name as 'SiteName', 
+                    e.SName as 'TSName', e.FName  as 'TFName', 
+                    c.SName as 'CSName', c.FName as 'CFName'")
+            ->from(self::TABLE_SERVICE_CONTACT_NAME . ' as sc')
+            ->join(self::TABLE_SITE_NAME . ' as s', 's.ID = sc.SiteID')
+            ->join(self::TABLE_EMPLOYEE_NAME . ' as e', 'e.ID = sc.EmployeeID')
+            ->join(self::TABLE_CUSTOMER_NAME . ' as c', 'c.ID = sc.CustomerID')
+            ->order_by('CSName ASC')
+            ->get()->result_array();
+    }
+
+    /**
+     * Список контактов Клиентки
+     *
+     * @param int $CustomerID
+     * @return mixed
+     */
+    public function getCustomerContactsList($CustomerID)
+    {
+        return $this->db()
+            ->select("sc.*, s.Name as 'SiteName', 
+                    e.SName as 'TSName', e.FName  as 'TFName'")
+            ->from(self::TABLE_SERVICE_CONTACT_NAME . ' as sc')
+            ->join(self::TABLE_SITE_NAME . ' as s', 's.ID = sc.SiteID')
+            ->join(self::TABLE_EMPLOYEE_NAME . ' as e', 'e.ID = sc.EmployeeID')
+            ->where('sc.CustomerID', $CustomerID)
+            ->order_by('sc.ID DESC')
+            ->get()->result_array();
+    }
+
+    /**
+     * Поиск Клиентки по фамилии
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function findCustomerByName($name)
+    {
+        return $this->db()
+            ->like('SName', $name)
+            ->limit(1)
+            ->get(self::TABLE_CUSTOMER_NAME)->row_array();
+    }
+
+    /**
+     * Получаем определённый контакт для редактирования
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function contactGet($id)
+    {
+        return $this->db()
+            ->select("sc.*, s.Name as 'SiteName', 
+                    e.SName as 'TSName', e.FName  as 'TFName', 
+                    c.SName as 'CSName', c.FName as 'CFName'")
+            ->from(self::TABLE_SERVICE_CONTACT_NAME . ' as sc')
+            ->join(self::TABLE_SITE_NAME . ' as s', 's.ID = sc.SiteID')
+            ->join(self::TABLE_EMPLOYEE_NAME . ' as e', 'e.ID = sc.EmployeeID')
+            ->join(self::TABLE_CUSTOMER_NAME . ' as c', 'c.ID = sc.CustomerID')
+            ->where('sc.ID', $id)
+            ->get()->row_array();
+    }
+
+    /**
+     * Удаление контакта
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function contactDelete($id)
+    {
+        return $this->db()->delete(self::TABLE_SERVICE_CONTACT_NAME, array('ID' => $id));
+    }
 }

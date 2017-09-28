@@ -357,6 +357,122 @@
         <? endif ?>
     </div>
 
+    <?php /* Заказ контактов */ ?>
+    <?php if($isSecretary || $isAdmin): ?>
+        <script src="/public/tablesorter/jquery.tablesorter.min.js"></script>
+        <link rel="stylesheet" href="/public/tablesorter/blue/style.css">
+    <?php /* шаблон таблицы */ ?>
+        <script id="contactsTableTmpl" type="text/x-jquery-tmpl">
+            {{if records.length > 0}}
+            <table class="tablesorter" id="contactsTable">
+                <thead>
+                    <tr>
+                        <th class="sortable">Дата</th>
+                        <th class="sortable">Сайт</th>
+                        <th class="sortable">Переводчик</th>
+                        <th class="sortable">Мужчина</th>
+                        <th class="sortable">Девушка</th>
+                        <th>Описание</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{tmpl(records) '#contactsRowTmpl'}}
+                </tbody>
+            </table>
+            {{else}}
+                <h5 class="text-center">Нет данных для отображения</h5>
+            {{/if}}
+        </script>
+    <?php /* шаблон строки в таблице */ ?>
+        <script id="contactsRowTmpl" type="text/x-jquery-tmpl">
+            <tr id="contactsTableRow_${ID}">
+                <td>${toClientDate(Date)}</td>
+                <td><span class="site-name">${SiteName}</span></td>
+                <td>${TSName}<br>${TFName}</td>
+                <td>${Men}</td>
+                <td>${CSName}<br>${CFName}</td>
+                <td style="width: 250px;">
+                    ${Description}
+                </td>
+                <td style="padding: 10px">
+                    <a href="<?= base_url('services/contact') ?>/${ID}/edit" data-toggle="modal" data-target="#remoteDialog" class="btn" role="button" title="Редактировать">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a>
+                </td>
+            </tr>
+        </script>
+
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-12">
+            <div class="service-block-settings-btns" style="text-align: left;">
+                <button id="showContacts" class="btn assol-btn save" title="Показать список контактов">
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    Показать контакты
+                </button>
+                <button id="hideContacts" class="btn assol-btn save hide" title="Скрыть список контактов">
+                    <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    Скрыть контакты
+                </button>
+            </div>
+            <div id="service_contacts_block" class="hide">
+                <div class="service-block">
+                    <div class="service-block-title">КОНТАКТЫ</div>
+                    <div class="service-block-info-table" id="contactsTabInfo"></div>
+                </div>
+                <div class="service-block-settings-btns">
+                    <a href="<?=base_url('services/contact/add')?>" data-toggle="modal" data-target="#remoteDialog"
+                       class="" role="button" title="Добавить поле">
+                        <button class="btn assol-btn add right">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            ДОБАВИТЬ ПОЛЕ
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script>
+            function getServiceContactsList() {
+                $.post(
+                    '/Services_Contact/data',
+                    function (data) {
+                        if(data.status){
+                            $('#contactsTabInfo').html('');
+                            $(function () {
+                                $('#contactsTableTmpl').tmpl(data).appendTo('#contactsTabInfo');
+                            });
+                            $("#contactsTable").tablesorter({
+                                selectorHeaders: 'thead th.sortable' // <-- здесь указываем класс, который определяет те столбцы, по которым будет работать сортировка
+                            });
+                        }
+                        else{
+                            $('#contactsTabInfo').html('<h5>Нет данных для отображения. Status 0</h5>');
+                        }
+                    },
+                    'json'
+                );
+            }
+
+            jQuery(document).ready(function ($) {
+                // показ контактов по клику на кнопку Показать
+                $('#showContacts').click(function(){
+                    $('#showContacts').removeClass('show').addClass('hide');
+                    $('#hideContacts').removeClass('hide').addClass('show');
+                    getServiceContactsList();
+                    $('#service_contacts_block').removeClass('hide').addClass('show');
+                });
+                // сокрытие контактов по клику на кнопку Скрыть
+                $('#hideContacts').click(function(){
+                    $('#hideContacts').removeClass('show').addClass('hide');
+                    $('#showContacts').removeClass('hide').addClass('show');
+                    $('#service_contacts_block').removeClass('show').addClass('hide');
+                });
+            });
+
+        </script>
+    <?php endif; ?>
+
 </div>
 
 <script>
