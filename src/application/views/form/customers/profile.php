@@ -1823,6 +1823,11 @@
                             </div>
                         </div>
 
+                        <?php
+                        /* загрузка и отображение доп. фото клиентки */
+                        $this->load->view('form/customers/photos', array('CustomerID' => $customer['ID']));
+                        ?>
+
                         <? if ($isEditPhotoAndVideo): ?>
                         <div class="form-group">
                             <label for="VerificationLink">Видео подтверждение (поле для вставки кода с youtube)</label>

@@ -262,5 +262,8 @@ $route['users/template/update']     = 'Employee_CommentsAccess/template_update/$
 $route['services/template']         = 'Employee_ServicesAccess/template/$1';
 $route['services/template/update']     = 'Employee_ServicesAccess/template_update/$1';
 
+// Модерация фото
+$route['moderation/photos']     = 'Moderation/photos';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

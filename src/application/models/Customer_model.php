@@ -270,6 +270,15 @@ class Customer_model extends MY_Model {
             PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Изображения вопросов клиента';";
 
+    private $table_customer_photo =
+        "CREATE TABLE `assol_customer_photo` (
+          `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+          `CustomerID` int(11) DEFAULT NULL,
+          `ext` varchar(10) DEFAULT NULL,
+          `Approved` tinyint(1) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`ID`),
+          KEY `CustomerID` (`CustomerID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 
     /**
@@ -295,6 +304,7 @@ class Customer_model extends MY_Model {
         $this->db()->query($this->table_customer_question_template);
         $this->db()->query($this->table_customer_question_answer);
         $this->db()->query($this->table_customer_question_photo);
+        $this->db()->query($this->table_customer_photo);
     }
 
     /** Удаление таблиц */
@@ -319,6 +329,7 @@ class Customer_model extends MY_Model {
         $this->dbforge->drop_table(self::TABLE_CUSTOMER_STORY_NAME, TRUE);
         $this->dbforge->drop_table(self::TABLE_CUSTOMER_HISTORY_NAME, TRUE);
         $this->dbforge->drop_table(self::TABLE_CUSTOMER_NAME, TRUE);
+        $this->dbforge->drop_table(self::TABLE_CUSTOMER_PHOTO_NAME, TRUE);
     }
 
     /**
@@ -1583,6 +1594,8 @@ class Customer_model extends MY_Model {
         'ssdResponsibleStaff' => 'Ответственный сотрудник',
         'ssdStatus' => 'Статус анкеты',
         'ssdRSComment' => 'Комментарий для сотрудника',
+        'CustomerPhoto' => 'Фото',
+        'CustomerPhotoRemove' => 'Фото удалено',
     ];
 
     public function passportList($limit, $offset) {
@@ -1871,6 +1884,134 @@ class Customer_model extends MY_Model {
             }
         }
 
+    }
+
+    /* PHOTOS */
+
+    /**
+     * список всех заапрувленных фото Клиентки
+     * @param int $CustomerID
+     * @return mixed
+     */
+    public function photosCustomerGetList($CustomerID)
+    {
+        return $this->db()
+            ->where('Approved', 1)
+            ->order_by('ID DESC')
+            ->get(self::TABLE_CUSTOMER_PHOTO_NAME)->result_array();
+    }
+
+    /**
+     * полная инфа об одном фото Клиентки
+     * @param int $id
+     * @return mixed
+     */
+    public function photosGetItem($id)
+    {
+        return $this->db()
+            ->where('ID', $id)
+            ->get(self::TABLE_CUSTOMER_PHOTO_NAME)->row_array();
+    }
+
+    /**
+     * удаление фото Клиентки
+     * @param int $idCustomerPhoto
+     * @return bool
+     */
+    public function photoCustomerDelete($idCustomerPhoto)
+    {
+        $this->db()->delete(self::TABLE_CUSTOMER_PHOTO_NAME, array('ID' => $idCustomerPhoto));
+        return true;
+    }
+
+    /**
+     * одобрение фото Клиентки Директором
+     * @param int $idCustomerPhoto
+     * @return bool
+     */
+    public function photoCustomerApprove($idCustomerPhoto)
+    {
+        $this->db()->update(
+            self::TABLE_CUSTOMER_PHOTO_NAME,
+            array('Approved' => 1),
+            array('ID' => $idCustomerPhoto)
+        );
+        return $this->db()->affected_rows();
+    }
+
+    /**
+     * Добавление изображения клиенту
+     *
+     * @param int $idCustomer ID клиента
+     * @param string $content Содержимое изображения
+     * @param string $ext Расширение файла
+     * @param int $approved одобрено ли фото Директором
+     *
+     * @return int ID записи
+     */
+    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved = 0) {
+        // Открываем транзакция
+        $this->db()->trans_start();
+
+        // Вставляем информацию о файле
+        $this->db()->insert(self::TABLE_CUSTOMER_PHOTO_NAME, ['CustomerID' => $idCustomer, 'ext' => $ext, 'approved' => $approved]);
+        $id = $this->db()->insert_id();
+
+        // Пытаемся сохранить в файл
+        if (file_put_contents("./files/customer/photos/$id.$ext", $content) === FALSE) {
+            $this->db()->trans_rollback(); // Отменяем транзакцию если ошибка
+        } else {
+            $this->db()->trans_complete(); // Завершаем транзакцию если успешно
+        }
+
+        return $id;
+    }
+
+    /**
+     * список неодобренных Директором фото Клиенток
+     * сгруппированный по CustomerID
+     * @return array
+     */
+    public function photosUnapprovedGetList()
+    {
+        $return = array();
+        $result = $this->db()
+            ->select('cp.*, c.FName, c.SName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_CUSTOMER_NAME . ' AS c', 'c.ID = cp.CustomerID')
+            ->where('cp.Approved', 0)
+            ->order_by('c.SName ASC')
+            ->get()->result_array();
+        if(!empty($result)){
+            $return = get_grouped_array($result, 'CustomerID');
+        }
+        return $return;
+    }
+
+    /**
+     * массовое одобрение фото Клиенток
+     * @param array $ids
+     * @return mixed
+     */
+    public function photosBatchApprove($ids)
+    {
+        $this->db()
+            ->where_in('ID', $ids)
+            ->update(self::TABLE_CUSTOMER_PHOTO_NAME, array('Approved' => 1));
+        return $this->db()->affected_rows();
+    }
+
+    /**
+     * массовое удаление фото Клиенток
+     * @param array $ids
+     * @return mixed
+     */
+    public function photosBatchRemove($ids)
+    {
+        $this->db()
+            ->where_in('ID', $ids)
+            ->delete(self::TABLE_CUSTOMER_PHOTO_NAME);
+        return $this->db()->affected_rows();
     }
 
 }
