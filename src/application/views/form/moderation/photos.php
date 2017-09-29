@@ -32,10 +32,13 @@
     .moder-btns-block{
         margin-bottom: 40px;
     }
+    .moder-content h5{
+        margin-top: 30px;
+    }
 </style>
 <div class="row" id="customersPhotosGrid">
-    <div class="col-md-12">
-        <h2>Фото Клиенток на модерацию</h2>
+    <div class="col-md-12 moder-content">
+        <h3>Фото Клиенток на модерацию</h3>
 <?php if(!empty($photos)): ?>
         <?php
         $i = 0;
@@ -46,7 +49,7 @@
                 if($i != $pk):
                     $i = $pk;
                 ?>
-                <h3><?= $customerPhotos[0]['SName'] . ' ' . $customerPhotos[0]['FName']; ?></h3>
+                <h4><?= $customerPhotos[0]['SName'] . ' ' . $customerPhotos[0]['FName']; ?></h4>
                 <div class="row">
                     <div class="col-md-12 clearfix">
                 <?php endif; ?>
@@ -104,6 +107,7 @@
                     },
                     'json'
                 );
+                checkCountPhotos();
             }
         }
 
@@ -118,11 +122,25 @@
                     },
                     'json'
                 );
+                checkCountPhotos();
             }
+        }
+
+        function checkCountPhotos(){
+            $.post(
+                '/Moderation/countphotos',
+                function (data) {
+                    if(data*1 === 0){
+                        $('.customer-photos-block, .moder-btns-block').remove();
+                        $('.moder-content').append('<h5 class="text-center">Все фото Клиенток обработаны</h5>');
+                    }
+                },
+                'text'
+            );
         }
     </script>
 <?php else: ?>
-        <h3 class="text-center">Все фото Клиенток одобрены</h3>
+        <h5 class="text-center">Все фото Клиенток обработаны</h5>
 <?php endif; ?>
     </div>
 </div>

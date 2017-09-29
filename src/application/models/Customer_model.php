@@ -276,8 +276,10 @@ class Customer_model extends MY_Model {
           `CustomerID` int(11) DEFAULT NULL,
           `ext` varchar(10) DEFAULT NULL,
           `Approved` tinyint(1) NOT NULL DEFAULT '0',
+          `AuthorID` int(11) DEFAULT NULL,
           PRIMARY KEY (`ID`),
-          KEY `CustomerID` (`CustomerID`)
+          KEY `CustomerID` (`CustomerID`),
+          KEY `AuthorID` (`AuthorID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 
@@ -1594,7 +1596,7 @@ class Customer_model extends MY_Model {
         'ssdResponsibleStaff' => 'Ответственный сотрудник',
         'ssdStatus' => 'Статус анкеты',
         'ssdRSComment' => 'Комментарий для сотрудника',
-        'CustomerPhoto' => 'Фото',
+        'CustomerPhoto' => 'Фото добавлено',
         'CustomerPhotoRemove' => 'Фото удалено',
     ];
 
@@ -1896,13 +1898,16 @@ class Customer_model extends MY_Model {
     public function photosCustomerGetList($CustomerID)
     {
         return $this->db()
-            ->where('Approved', 1)
+            ->where(array(
+                'Approved' => 1,
+                'CustomerID' => $CustomerID,
+            ))
             ->order_by('ID DESC')
             ->get(self::TABLE_CUSTOMER_PHOTO_NAME)->result_array();
     }
 
     /**
-     * полная инфа об одном фото Клиентки
+     * инфа об одном фото Клиентки
      * @param int $id
      * @return mixed
      */
@@ -1920,6 +1925,10 @@ class Customer_model extends MY_Model {
      */
     public function photoCustomerDelete($idCustomerPhoto)
     {
+        $photo = $this->photosGetItem($idCustomerPhoto);
+        $file = './files/customer/photos/'.$photo['ID'].'.'.$photo['ext'];
+        if (file_exists($file)) unlink($file); // Удаление файла
+
         $this->db()->delete(self::TABLE_CUSTOMER_PHOTO_NAME, array('ID' => $idCustomerPhoto));
         return true;
     }
@@ -1946,15 +1955,17 @@ class Customer_model extends MY_Model {
      * @param string $content Содержимое изображения
      * @param string $ext Расширение файла
      * @param int $approved одобрено ли фото Директором
+     * @param int $authorID ID сотрудника, загрузившего фото
      *
      * @return int ID записи
      */
-    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved = 0) {
+    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved, $authorID) {
         // Открываем транзакция
         $this->db()->trans_start();
 
         // Вставляем информацию о файле
-        $this->db()->insert(self::TABLE_CUSTOMER_PHOTO_NAME, ['CustomerID' => $idCustomer, 'ext' => $ext, 'approved' => $approved]);
+        $this->db()->insert(self::TABLE_CUSTOMER_PHOTO_NAME,
+            ['CustomerID' => $idCustomer, 'ext' => $ext, 'approved' => $approved, 'AuthorID' => $authorID]);
         $id = $this->db()->insert_id();
 
         // Пытаемся сохранить в файл
@@ -2008,10 +2019,58 @@ class Customer_model extends MY_Model {
      */
     public function photosBatchRemove($ids)
     {
+        $photos = $this->db()
+            ->where_in('ID', $ids)
+            ->get(self::TABLE_CUSTOMER_PHOTO_NAME)->result_array();
+        if(!empty($photos)){
+            foreach ($photos as $photo) {
+                $file = './files/customer/photos/'.$photo['ID'].'.'.$photo['ext'];
+                if (file_exists($file)) unlink($file); // Удаление файла
+            }
+        }
+
         $this->db()
             ->where_in('ID', $ids)
             ->delete(self::TABLE_CUSTOMER_PHOTO_NAME);
         return $this->db()->affected_rows();
+    }
+
+    /**
+     * количество незаапрувленных фото всех Клиенток
+     * Директору в боковое меню
+     * @return int
+     */
+    public function photosUnapprovedGetCount()
+    {
+        return $this->db()
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME)
+            ->where('Approved', 0)
+            ->count_all_results();
+    }
+
+    /**
+     * информация о фото Клиентки для отправки сообщения в чат Автора фото
+     * @param int $id
+     * @return mixed
+     */
+    public function photosGetItemForChat($id)
+    {
+        return $this->db()
+            ->select('cp.*, c.FName, c.SName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_CUSTOMER_NAME . ' AS c', 'c.ID = cp.CustomerID')
+            ->where('cp.ID', $id)
+            ->get()->row_array();
+    }
+
+    public function photosGetListByIDs($ids)
+    {
+        return $this->db()
+            ->select('cp.*, c.FName, c.SName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_CUSTOMER_NAME . ' AS c', 'c.ID = cp.CustomerID')
+            ->where_in('cp.ID', $ids)
+            ->get()->result_array();
     }
 
 }

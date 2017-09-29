@@ -1,6 +1,7 @@
 <?php
 /**
  * @var $CustomerID
+ * @var $canRemove
  */
 ?>
 <style>
@@ -66,9 +67,7 @@
 
 <script id="photosWrapTmpl" type="text/x-jquery-tmpl">
     {{if records.length > 0}}
-<!--    <div class="row">-->
         {{tmpl(records) '#photoItemTmpl'}}
-<!--    </div>-->
     {{/if}}
 </script>
 <script id="photoItemTmpl" type="text/x-jquery-tmpl">
@@ -76,9 +75,11 @@
         <a href="${pathFull}" class="btn btn-default btn-xs dl-btn" title="Скачать" target="_blank">
             <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
         </a>
+        <?php if($canRemove): ?>
         <button class="btn btn-default btn-xs rm-btn" title="Удалить" onclick="removePhoto(${ID});">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
+        <?php endif; ?>
         <a href="${pathFull}" data-lightbox="Customer_images">
           <img src="${pathThumb}" alt="Customer ${CustomerID} image ${ID}">
         </a>

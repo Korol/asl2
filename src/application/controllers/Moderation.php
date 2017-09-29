@@ -40,10 +40,13 @@ class Moderation extends MY_Controller
             $items = ltrim($items, '_');
             $items_ex = explode('_', $items);
 
-            if($mode === 'approve')
+            if($mode === 'approve'){
                 $result = $this->getCustomerModel()->photosBatchApprove($items_ex);
-            elseif($mode === 'remove')
+            }
+            elseif($mode === 'remove'){
+                $this->sendMessagesToAuthors($items_ex);
                 $result = $this->getCustomerModel()->photosBatchRemove($items_ex);
+            }
             else
                 $result = 0;
 
@@ -55,5 +58,46 @@ class Moderation extends MY_Controller
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }
+    }
+
+    public function sendMessagesToAuthors($ids)
+    {
+        $photos = $this->getCustomerModel()->photosGetListByIDs($ids);
+        if(!empty($photos)){
+            $author_ids = array();
+            foreach ($photos as $photo) {
+                $cnt = (!empty($author_ids[$photo['AuthorID']]['count']))
+                    ? ($author_ids[$photo['AuthorID']]['count'] + 1)
+                    : 1;
+                $author_ids[$photo['AuthorID']]['count'] = $cnt;
+                if(empty($author_ids[$photo['AuthorID']]['customers'][$photo['CustomerID']])){
+                    $author_ids[$photo['AuthorID']]['customers'][$photo['CustomerID']] = trim($photo['SName'])
+                        . ' ' . mb_substr(trim($photo['FName']), 0, 1, 'UTF-8') . '.';
+                }
+
+            }
+            if(!empty($author_ids)){
+                foreach ($author_ids as $ak => $author_id) {
+                    $messageCustomers = (count($author_id['customers']) > 1)
+                        ? ' ваших клиенток '
+                        : ' вашей клиентки ';
+                    $message = ($author_id['count'] > 1)
+                        ? $author_id['count'] . ' фото' . $messageCustomers
+                            . implode(', ', array_values($author_id['customers'])) . ' отклонены'
+                        : 'Фото' . $messageCustomers
+                            . implode(', ', array_values($author_id['customers'])) . ' отклонено';
+                    $this->getMessageModel()->chatMessageSend(
+                        false,
+                        $this->getUserID(),
+                        $ak,
+                        $message);
+                }
+            }
+        }
+    }
+
+    public function countphotos()
+    {
+        echo $this->getCustomerModel()->photosUnapprovedGetCount();
     }
 }

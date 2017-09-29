@@ -54,7 +54,11 @@ class Events extends MY_Controller {
             'documents' => ['replay' => 0, 'once' => 0],
             'training'  => ['replay' => 0, 'once' => 0],
             'sites'     => ['replay' => 0, 'once' => 0],
-            'schedule'  => ['replay' => 0, 'once' => 0]
+            'schedule'  => ['replay' => 0, 'once' => 0],
+            'moderation__photos' => [
+                'replay' => 0,
+                'once' => $this->getMax($this->getCustomerModel()->photosUnapprovedGetCount()),
+            ],
         ));
     }
 

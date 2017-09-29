@@ -1825,7 +1825,12 @@
 
                         <?php
                         /* загрузка и отображение доп. фото клиентки */
-                        $this->load->view('form/customers/photos', array('CustomerID' => $customer['ID']));
+                        $this->load->view('form/customers/photos',
+                                array(
+                                    'CustomerID' => $customer['ID'],
+                                    'canRemove' => ($isDirector || $isSecretary),
+                                )
+                        );
                         ?>
 
                         <? if ($isEditPhotoAndVideo): ?>

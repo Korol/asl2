@@ -415,6 +415,7 @@ class MY_Controller extends CI_Controller {
         if ($this->isDirector()){
             $menu[] = ['controller'=>'setting', 'description'=>'Настройки'];
             $menu[] = ['controller'=>'sms_access', 'description'=>'Доступ по СМС'];
+            $menu[] = ['controller'=>'moderation/photos', 'description'=>'Модерация фото'];
         }
 
         return $menu;

@@ -138,21 +138,25 @@
                                     $isNews = empty($uri) && $item['controller']=='news';
                                     $isStartUri = uriStartsWith($uri, $item['controller']);
                                     $active = ($isStartUri || $isNews) ? 'active':'';
+                                    // возможность задать controller/action
+                                    $markID = (strpos($item['controller'], '/') !== false)
+                                                ? str_replace('/', '__', $item['controller'])
+                                                : $item['controller'];
                                     ?>
 
                                     <? if ($item['controller']=='messages'): ?>
                                         <a href="#" id="reactMessageDialog" class="list-group-item"><?=$item['description']?>
-                                            <mark id="mark_<?=$item['controller']?>" class="nums">0</mark>
+                                            <mark id="mark_<?=$markID?>" class="nums">0</mark>
                                         </a>
                                     <? else: ?>
                                         <a href="<?=base_url($item['controller'])?>" class="list-group-item <?=$active?>"><?=$item['description']?>
                                             <? if ($item['controller']=='tasks'): ?>
-                                                <mark id="mark_<?=$item['controller']?>" title="Задачи на подтверждение" class="nums">0</mark>
-                                                <mark id="mark_task_<?=$item['controller']?>" title="Новые задачи" class="nums task">0</mark>
-                                                <mark id="mark_undone_<?=$item['controller']?>" title="Невыполненные задачи" class="nums undone">0</mark>
-                                                <mark id="mark_comment_<?=$item['controller']?>" title="Новые комментарии к задачам" class="nums comment">0</mark>
+                                                <mark id="mark_<?=$markID?>" title="Задачи на подтверждение" class="nums">0</mark>
+                                                <mark id="mark_task_<?=$markID?>" title="Новые задачи" class="nums task">0</mark>
+                                                <mark id="mark_undone_<?=$markID?>" title="Невыполненные задачи" class="nums undone">0</mark>
+                                                <mark id="mark_comment_<?=$markID?>" title="Новые комментарии к задачам" class="nums comment">0</mark>
                                             <? else: ?>
-                                                <mark id="mark_<?=$item['controller']?>" class="nums">0</mark><mark id="mark_<?=$item['controller']?>" class="nums">0</mark>
+                                                <mark id="mark_<?=$markID?>" class="nums">0</mark><mark id="mark_<?=$item['controller']?>" class="nums">0</mark>
                                             <? endif ?>
                                         </a>
                                     <? endif ?>

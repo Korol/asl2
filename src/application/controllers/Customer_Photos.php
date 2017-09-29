@@ -73,7 +73,8 @@ class Customer_Photos extends MY_Controller
                             $CustomerID,
                             $this->getFileContent($file['tmp_name'][0]),
                             $ext,
-                            $approved
+                            $approved,
+                            $this->getUserID()
                         );
                         $this->getCustomerModel()->customerUpdateNote($CustomerID, $this->getUserID(), ['CustomerPhoto']);
 
@@ -102,6 +103,18 @@ class Customer_Photos extends MY_Controller
         try {
             if (!isset($CustomerID, $idCustomerPhoto))
                 throw new RuntimeException("Не указан обязательный параметр");
+
+            $photo = $this->getCustomerModel()->photosGetItemForChat($idCustomerPhoto);
+            if(
+                !empty($photo['AuthorID']) &&
+                ($this->getUserID() != $photo['AuthorID'])
+            ){
+                $this->getMessageModel()->chatMessageSend(
+                    false,
+                    $this->getUserID(),
+                    $photo['AuthorID'],
+                    'Фото вашей клиентки ' . $photo['SName'] . ' ' . mb_substr($photo['FName'], 0, 1, 'UTF-8') . '. отклонено');
+            }
 
             $this->getCustomerModel()->photoCustomerDelete($idCustomerPhoto);
             $this->getCustomerModel()->customerUpdateNote($CustomerID, $this->getUserID(), ['CustomerPhotoRemove']);
