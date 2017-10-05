@@ -758,6 +758,7 @@ class Service_model extends MY_Model {
             ->join(self::TABLE_SITE_NAME . ' as s', 's.ID = sc.SiteID')
             ->join(self::TABLE_EMPLOYEE_NAME . ' as e', 'e.ID = sc.EmployeeID')
             ->where('sc.CustomerID', $CustomerID)
+            ->where('sc.IsDone', 1)
             ->order_by('sc.ID DESC')
             ->get()->result_array();
     }
@@ -805,5 +806,20 @@ class Service_model extends MY_Model {
     public function contactDelete($id)
     {
         return $this->db()->delete(self::TABLE_SERVICE_CONTACT_NAME, array('ID' => $id));
+    }
+
+    /**
+     * отметка о выполнении контакта
+     * @param $id
+     * @return int
+     */
+    public function contactDone($id)
+    {
+        $this->db()->update(
+            self::TABLE_SERVICE_CONTACT_NAME,
+            array('IsDone' => 1),
+            array('ID' => $id)
+        );
+        return $this->db()->affected_rows();
     }
 }

@@ -74,7 +74,8 @@ class Customer_Photos extends MY_Controller
                             $this->getFileContent($file['tmp_name'][0]),
                             $ext,
                             $approved,
-                            $this->getUserID()
+                            $this->getUserID(),
+                            date('Y-m-d')
                         );
                         $this->getCustomerModel()->customerUpdateNote($CustomerID, $this->getUserID(), ['CustomerPhoto']);
 
@@ -150,5 +151,17 @@ class Customer_Photos extends MY_Controller
         } catch (Exception $e) {
             $this->json_response(array("status" => 0, "err" => $e->getMessage()));
         }
+    }
+
+    public function checkup()
+    {
+        $return = 0;
+        $CustomerID = $this->input->post('id', true);
+
+        if(!empty($CustomerID)){
+            $return = $this->getCustomerModel()
+                ->photosUnapprovedGetCountByCustomerEmployee($CustomerID, $this->getUserID(), date('Y-m-d'));
+        }
+        echo $return;
     }
 }

@@ -85,6 +85,9 @@
         </a>
     </div>
 </script>
+<div class="alert alert-success text-center" role="alert" id="uploadInfo" style="display: none;">
+    Информация успешно загружена!<br>Она будет доступна на странице Клиентки после одобрения Директором.
+</div>
 <div id="customerPhotosGrid" class="clearfix"></div>
 
 <script>
@@ -102,9 +105,26 @@
         });
         modal.on('hidden.bs.modal', function () {
             getCustomerPhotosList();
+            checkUpload();
         });
         modal.modal({show:true});
     });
+
+    function checkUpload() {
+        $.post(
+            '/Customer_Photos/checkup',
+            {
+                id: <?= $CustomerID; ?>
+            },
+            function (data) {
+                if(data*1 > 0){
+//                    $('#uploadInfo').removeClass('hide').addClass('show');
+                    $("#uploadInfo").show().delay(5000).fadeOut();
+                }
+            },
+            'text'
+        );
+    }
 
     function getCustomerPhotosList() {
         $.post(

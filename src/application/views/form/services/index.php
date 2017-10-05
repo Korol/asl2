@@ -373,6 +373,7 @@
                         <th class="sortable">Мужчина</th>
                         <th class="sortable">Девушка</th>
                         <th>Описание</th>
+                        <th class="centertext">Вып.</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -394,6 +395,9 @@
                 <td>${CSName}<br>${CFName}</td>
                 <td style="width: 250px;">
                     ${Description}
+                </td>
+                <td class="centertext done" id-delivery="${ID}">
+                    <div class="round-check {{if IsDone > 0}}on{{else}}off{{/if}}" <?= $isAdmin ? 'onclick="setContactDone(${ID});"':''; ?> style="cursor: pointer;" ></div>
                 </td>
                 <td style="padding: 10px">
                     <a href="<?= base_url('services/contact') ?>/${ID}/edit" data-toggle="modal" data-target="#remoteDialog" class="btn" role="button" title="Редактировать">
@@ -448,6 +452,22 @@
                         }
                         else{
                             $('#contactsTabInfo').html('<h5>Нет данных для отображения. Status 0</h5>');
+                        }
+                    },
+                    'json'
+                );
+            }
+
+            // отметка о выполнении
+            function setContactDone(id){
+                $.post(
+                    '/Services_Contact/done',
+                    {
+                        id: id
+                    },
+                    function(data){
+                        if(data.status){
+                            $('#contactsTableRow_'+data.id).remove();
                         }
                     },
                     'json'

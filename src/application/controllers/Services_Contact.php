@@ -162,9 +162,9 @@ class Services_Contact extends MY_Controller {
             if (empty($id))
                 throw new Exception('Нет данных для сохранения');
 
-            $this->getServiceModel()->deliveryDone($id);
+            $this->getServiceModel()->contactDone($id);
 
-            $this->json_response(array('status' => 1));
+            $this->json_response(array('status' => 1, 'id' => $id));
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }

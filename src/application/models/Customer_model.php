@@ -1956,16 +1956,19 @@ class Customer_model extends MY_Model {
      * @param string $ext Расширение файла
      * @param int $approved одобрено ли фото Директором
      * @param int $authorID ID сотрудника, загрузившего фото
+     * @param string $date дата загрузки
      *
      * @return int ID записи
      */
-    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved, $authorID) {
+    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved, $authorID, $date) {
         // Открываем транзакция
         $this->db()->trans_start();
 
         // Вставляем информацию о файле
         $this->db()->insert(self::TABLE_CUSTOMER_PHOTO_NAME,
-            ['CustomerID' => $idCustomer, 'ext' => $ext, 'approved' => $approved, 'AuthorID' => $authorID]);
+            ['CustomerID' => $idCustomer, 'ext' => $ext, 'approved' => $approved,
+                'AuthorID' => $authorID, 'AddedDate' => $date]
+        );
         $id = $this->db()->insert_id();
 
         // Пытаемся сохранить в файл
@@ -2071,6 +2074,29 @@ class Customer_model extends MY_Model {
             ->join(self::TABLE_CUSTOMER_NAME . ' AS c', 'c.ID = cp.CustomerID')
             ->where_in('cp.ID', $ids)
             ->get()->result_array();
+    }
+
+    /**
+     * количество неодобренных фото
+     * загруженных сотрудником
+     * в определённый день
+     * @param $CustomerID клиентка
+     * @param $EmployeeID сотрудник
+     * @param string $date дата загрузки
+     * @return int
+     */
+    public function photosUnapprovedGetCountByCustomerEmployee($CustomerID, $EmployeeID, $date = '')
+    {
+        $where = array(
+            'CustomerID' => $CustomerID,
+            'AuthorID' => $EmployeeID,
+            'Approved' => 0,
+        );
+        if(!empty($date)) $where['AddedDate'] = $date;
+        return $this->db()
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME)
+            ->where($where)
+            ->count_all_results();
     }
 
 }
