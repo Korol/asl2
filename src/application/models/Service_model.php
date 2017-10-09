@@ -739,6 +739,7 @@ class Service_model extends MY_Model {
             ->join(self::TABLE_SITE_NAME . ' as s', 's.ID = sc.SiteID')
             ->join(self::TABLE_EMPLOYEE_NAME . ' as e', 'e.ID = sc.EmployeeID')
             ->join(self::TABLE_CUSTOMER_NAME . ' as c', 'c.ID = sc.CustomerID')
+            ->where('sc.IsDone', 0)
             ->order_by('CSName ASC')
             ->get()->result_array();
     }
