@@ -1,3 +1,7 @@
+-- 2017-10-23:
+ALTER TABLE `assol_customer_photo` ADD `Comment` VARCHAR(255)  NULL  DEFAULT NULL  AFTER `AddedDate`;
+-- ====
+
 -- 2017-10-05:
 ALTER TABLE `assol_service_contact` ADD `IsDone` TINYINT(1)  NOT NULL  DEFAULT '0'  AFTER `AuthorID`;
 ALTER TABLE `assol_service_contact` ADD INDEX (`IsDone`);

@@ -277,6 +277,7 @@ class Customer_model extends MY_Model {
           `ext` varchar(10) DEFAULT NULL,
           `Approved` tinyint(1) NOT NULL DEFAULT '0',
           `AuthorID` int(11) DEFAULT NULL,
+          `Comment` varchar(255) DEFAULT NULL,
           PRIMARY KEY (`ID`),
           KEY `CustomerID` (`CustomerID`),
           KEY `AuthorID` (`AuthorID`)
@@ -1957,17 +1958,18 @@ class Customer_model extends MY_Model {
      * @param int $approved одобрено ли фото Директором
      * @param int $authorID ID сотрудника, загрузившего фото
      * @param string $date дата загрузки
+     * @param string $comment комментарий к фото
      *
      * @return int ID записи
      */
-    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved, $authorID, $date) {
+    public function photosCustomerItemInsert($idCustomer, $content, $ext, $approved, $authorID, $date, $comment = '') {
         // Открываем транзакция
         $this->db()->trans_start();
 
         // Вставляем информацию о файле
         $this->db()->insert(self::TABLE_CUSTOMER_PHOTO_NAME,
             ['CustomerID' => $idCustomer, 'ext' => $ext, 'approved' => $approved,
-                'AuthorID' => $authorID, 'AddedDate' => $date]
+                'AuthorID' => $authorID, 'AddedDate' => $date, 'Comment' => $comment]
         );
         $id = $this->db()->insert_id();
 

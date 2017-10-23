@@ -34,7 +34,7 @@
     }
     #customerPhotosGrid .thumbnail{
         width: 140px;
-        height: 140px;
+        height: 165px;
         float: left;
         margin: 2px;
         position: relative;
@@ -54,6 +54,15 @@
     }
     .dl-btn{
         left: 5px;
+    }
+    .photo-comment {
+        width: 100%;
+        height: 20px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+        margin-top: 5px;
     }
 </style>
 <div class="row customer-photos-block">
@@ -80,9 +89,10 @@
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
         <?php endif; ?>
-        <a href="${pathFull}" data-lightbox="Customer_images">
+        <a href="${pathFull}" data-lightbox="Customer_images" title="${Comment}">
           <img src="${pathThumb}" alt="Customer ${CustomerID} image ${ID}">
         </a>
+        <div class="photo-comment" data-toggle="tooltip" data-placement="bottom" title="${Comment}">${Comment}</div>
     </div>
 </script>
 <div class="alert alert-success text-center" role="alert" id="uploadInfo" style="display: none;">
@@ -118,7 +128,6 @@
             },
             function (data) {
                 if(data*1 > 0){
-//                    $('#uploadInfo').removeClass('hide').addClass('show');
                     $("#uploadInfo").show().delay(5000).fadeOut();
                 }
             },
@@ -160,6 +169,13 @@
             );
         }
     }
+
+    $(function () {
+//        $('[data-toggle="tooltip"]').tooltip();
+        $('body').tooltip({
+            selector: '[data-toggle="tooltip"]'
+        });
+    });
 </script>
 
 <div class="modal fade" id="CustomerPhotoUploadModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="CustomerPhotoUploadLabel">

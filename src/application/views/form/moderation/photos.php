@@ -6,7 +6,7 @@
 <style>
     #customersPhotosGrid .thumbnail{
         width: 140px;
-        height: 170px;
+        height: 190px;
         float: left;
         margin: 5px;
         position: relative;
@@ -35,6 +35,15 @@
     .moder-content h5{
         margin-top: 30px;
     }
+    .photo-comment {
+        width: 100%;
+        height: 20px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: pointer;
+        margin-top: 5px;
+    }
 </style>
 <div class="row" id="customersPhotosGrid">
     <div class="col-md-12 moder-content">
@@ -55,9 +64,17 @@
                 <?php endif; ?>
                     <?php foreach ($customerPhotos as $photo): ?>
                         <div class="thumbnail clearfix" id="gridItem<?= $photo['ID']; ?>">
-                            <a href="<?= $photo['pathFull']; ?>" data-lightbox="Customer_images_<?= $pk; ?>">
+                            <a href="<?= $photo['pathFull']; ?>" data-lightbox="Customer_images_<?= $pk; ?>" title="<?= $photo['Comment']; ?>">
                                 <img src="<?= $photo['pathThumb']; ?>" alt="Customer <?= $photo['SName']; ?> image <?= $photo['ID']; ?>">
                             </a>
+                            <?php
+                            $photo_comment_text = $photo_comment_attr = '';
+                            if(!empty($photo['Comment'])){
+                                $photo_comment_attr = 'data-toggle="tooltip" data-placement="bottom" title="' . $photo['Comment'] . '"';
+                                $photo_comment_text = $photo['Comment'];
+                            }
+                            ?>
+                            <div class="photo-comment" <?= $photo_comment_attr; ?>><?= $photo_comment_text; ?></div>
                             <a href="<?= $photo['pathFull']; ?>" class="btn btn-default btn-xs dl-btn pull-left" title="Скачать" target="_blank">
                                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                             </a>
@@ -138,6 +155,10 @@
                 'text'
             );
         }
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 <?php else: ?>
         <h5 class="text-center">Все фото Клиенток обработаны</h5>

@@ -25,7 +25,12 @@ class Customer_Photos extends MY_Controller
     }
 
     public function upload($idCustomer) {
-        $this->load->view('form/customers/photos/upload', ['parent' => $idCustomer]);
+        $this->load->view('form/customers/photos/upload',
+            [
+                'parent' => $idCustomer,
+                'canRemove' => ($this->isDirector() || $this->isSecretary())
+            ]
+        );
     }
 
     public function server($CustomerID) {
@@ -41,6 +46,7 @@ class Customer_Photos extends MY_Controller
                     $records[$key]['name'] = $fileName;
                     $records[$key]['img'] = base_url('thumb?src=/files/customer/photos/'.$fileName.'&w=80');
                     $records[$key]['size'] = '';
+                    $records[$key]['comment'] = $value['Comment'];
                 }
 
                 $this->json_response(array("status" => 1, 'files' => $records));
@@ -68,6 +74,9 @@ class Customer_Photos extends MY_Controller
 
                         $ext = $this->assertFileType($file['tmp_name'][0]);
                         $approved = ($this->isDirector()) ? 1 : 0;
+                        // комментарий
+                        $comment = $this->input->post('comment', true);
+                        $photo_comment = (!empty($comment[0])) ? trim($comment[0]) : '';
 
                         $id = $this->getCustomerModel()->photosCustomerItemInsert(
                             $CustomerID,
@@ -75,7 +84,8 @@ class Customer_Photos extends MY_Controller
                             $ext,
                             $approved,
                             $this->getUserID(),
-                            date('Y-m-d')
+                            date('Y-m-d'),
+                            $photo_comment
                         );
                         $this->getCustomerModel()->customerUpdateNote($CustomerID, $this->getUserID(), ['CustomerPhoto']);
 
@@ -86,6 +96,7 @@ class Customer_Photos extends MY_Controller
                             'name' => $file['name'][0],
                             'size' => $file['size'][0],
                             'img' => base_url('thumb?src=/files/customer/photos/' . $id . '.' . $ext . '&w=80'),
+                            'comment' => $photo_comment,
                         ];
 
                         $res = array('status' => 1, 'files' => $records);

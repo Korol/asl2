@@ -74,6 +74,9 @@
             <strong class="error text-danger"></strong>
         </td>
         <td>
+            <input type="text" class="form-control" style="width: 200px;" name="comment[]" placeholder="комментарий к фото">
+        </td>
+        <td>
             <p class="size">Processing...</p>
             <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
         </td>
@@ -112,16 +115,19 @@
                 <div><span class="label label-danger">Ошибка</span> {%=file.error%}</div>
             {% } %}
         </td>
+        <td style="width: 200px;">{%=file.comment%}</td>
         <td>
             <span class="size">{%=o.formatFileSize(file.size)%}</span>
         </td>
         <td>
             {% if (file.deleteUrl) { %}
+            <?php if(!empty($canRemove)): ?>
                 <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                     <i class="glyphicon glyphicon-trash"></i>
                     <span>Удалить</span>
                 </button>
                 <input type="checkbox" name="delete" value="1" class="toggle">
+            <?php endif; ?>
             {% } else { %}
                 <button class="btn btn-warning cancel">
                     <i class="glyphicon glyphicon-ban-circle"></i>
@@ -160,6 +166,11 @@
 
     $(function () {
         'use strict';
+
+        $('#fileupload').bind('fileuploadsubmit', function (e, data) {
+            var inputs = data.context.find(':input');
+            data.formData = inputs.serializeArray();
+        });
 
         // Initialize the jQuery File Upload widget:
         $('#fileupload').fileupload({
