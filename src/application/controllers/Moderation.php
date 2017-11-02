@@ -14,18 +14,33 @@ class Moderation extends MY_Controller
             redirect(base_url());
         }
 
-        $photos = $this->getCustomerModel()->photosUnapprovedGetList();
-        if(!empty($photos)){
-            foreach ($photos as $pk => $records) {
+        $data['customer_id'] = (!empty($_GET['customer_id'])) ? (int)$_GET['customer_id'] : 0;
+        $data['author_id'] = (!empty($_GET['author_id'])) ? (int)$_GET['author_id'] : 0;
+
+        if(!empty($data['customer_id'])){
+            $data['photos'] = $this->getCustomerModel()->photosGetCustomerUnapprovedList($data['customer_id']);
+        }
+        elseif(!empty($data['author_id'])){
+            $data['photos'] = $this->getCustomerModel()->photosGetAuthorUnapprovedList($data['author_id']);
+        }
+        else{
+            $data['photos'] = $this->getCustomerModel()->photosUnapprovedGetList();
+        }
+
+        $data['customers'] = $this->getCustomerModel()->photosGetUnapprovedCustomersList();
+        $data['authors'] = $this->getCustomerModel()->photosGetUnapprovedAuthorsList();
+
+        if(!empty($data['photos'])){
+            foreach ($data['photos'] as $pk => $records) {
                 foreach ($records as $rk => $record){
-                    $photos[$pk][$rk]['pathFull'] = base_url('thumb/?src=/files/customer/photos/' . $record['ID'] . '.' . $record['ext']);
-                    $photos[$pk][$rk]['pathThumb'] = base_url('thumb/?src=/files/customer/photos/' . $record['ID'] . '.' . $record['ext'] . '&w=130&h=130&zc=1');
+                    $data['photos'][$pk][$rk]['pathFull'] = base_url('thumb/?src=/files/customer/photos/' . $record['ID'] . '.' . $record['ext']);
+                    $data['photos'][$pk][$rk]['pathThumb'] = base_url('thumb/?src=/files/customer/photos/' . $record['ID'] . '.' . $record['ext'] . '&w=130&h=130&zc=1');
                 }
             }
         }
 
         $this->viewHeader();
-        $this->view('form/moderation/photos', array('photos' => $photos));
+        $this->view('form/moderation/photos', $data);
         $this->viewFooter();
     }
 

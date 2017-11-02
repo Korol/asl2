@@ -56,11 +56,40 @@
     .moder-content {
         position: relative;
     }
+    .panel {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        margin-left: 0;
+        margin-right: 0;
+    }
 </style>
 
+<div class="row panel assol-grey-panel">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="row">
+            <div class="col-md-6">
+                <?php if(!empty($customers)): ?>
+                <form action="">
+                    <div class="form-group">
+                        <select name="customer_id" id="" class="form-control"></select>
+                    </div>
+                </form>
+                <?php endif; ?>
+            </div>
+            <div class="col-md-6">rest</div>
+        </div>
+    </div>
+</div>
+<?php
+$h3 = (!empty($customer_id))
+    ? 'клиентки'
+    : (!empty($author_id))
+        ? 'сотрудника'
+        : 'клиенток';
+?>
 <div class="row" id="customersPhotosGrid">
     <div class="col-md-12 moder-content">
-        <h3>Фото Клиенток на модерацию</h3>
+        <h3>Фото <?= $h3; ?> на модерацию</h3>
         <div class="col-md-4 messages-area">
             <div class="alert alert-success" role="alert" id="successText"></div>
             <div class="alert alert-danger" role="alert" id="errorText"></div>

@@ -2121,4 +2121,90 @@ class Customer_model extends MY_Model {
         return $this->db()->affected_rows();
     }
 
+    /**
+     * список клиентов, у которых есть неодобренные фото
+     * @return array
+     */
+    public function photosGetUnapprovedCustomersList()
+    {
+        $res = $this->db()
+            ->distinct()
+            ->select('cp.CustomerID, c.SName, c.FName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_CUSTOMER_NAME . ' AS c', 'c.ID = cp.CustomerID')
+            ->where('cp.Approved', 0)
+            ->group_by('cp.CustomerID')
+            ->order_by('c.SName ASC, c.FName ASC')
+            ->get()->result_array();
+        return (!empty($res)) ? $res : array();
+    }
+
+    /**
+     * неодобренные фото указанного клиента
+     * @param $CustomerID
+     * @return array
+     */
+    public function photosGetCustomerUnapprovedList($CustomerID)
+    {
+        $res = $this->db()
+            ->select('cp.*, c.FName, c.SName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_CUSTOMER_NAME . ' AS c', 'c.ID = cp.CustomerID')
+            ->where(
+                array(
+                    'cp.CustomerID' => $CustomerID,
+                    'cp.Approved' => 0
+                )
+            )
+            ->order_by('cp.AddedDate DESC')
+            ->get()->result_array();
+        if(!empty($res)){
+            $res = get_grouped_array($res, 'CustomerID');
+        }
+        return (!empty($res)) ? $res : array();
+    }
+
+    /**
+     * список сотрудников, у которых есть неодобренные фото
+     * @return array
+     */
+    public function photosGetUnapprovedAuthorsList()
+    {
+        $res = $this->db()
+            ->distinct()
+            ->select('cp.CustomerID, e.SName, e.FName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_EMPLOYEE_NAME . ' AS e', 'e.ID = cp.AuthorID')
+            ->where('cp.Approved', 0)
+            ->group_by('cp.CustomerID')
+            ->order_by('e.SName ASC, e.FName ASC')
+            ->get()->result_array();
+        return (!empty($res)) ? $res : array();
+    }
+
+    /**
+     * неодобренные фото указанного сотрудника
+     * @param $AuthorID
+     * @return array
+     */
+    public function photosGetAuthorUnapprovedList($AuthorID)
+    {
+        $res = $this->db()
+            ->select('cp.*, e.FName, e.SName')
+            ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
+            ->join(self::TABLE_EMPLOYEE_NAME . ' AS e', 'e.ID = cp.AuthorID')
+            ->where(
+                array(
+                    'cp.AuthorID' => $AuthorID,
+                    'cp.Approved' => 0
+                )
+            )
+            ->order_by('cp.AddedDate DESC')
+            ->get()->result_array();
+        if(!empty($res)){
+            $res = get_grouped_array($res, 'AuthorID');
+        }
+        return (!empty($res)) ? $res : array();
+    }
+
 }
