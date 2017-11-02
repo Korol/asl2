@@ -44,10 +44,27 @@
         cursor: pointer;
         margin-top: 5px;
     }
+    #successText,
+    #errorText {
+        display: none;
+    }
+    .messages-area {
+        position: absolute;
+        right: 0;
+        top: 10px;
+    }
+    .moder-content {
+        position: relative;
+    }
 </style>
+
 <div class="row" id="customersPhotosGrid">
     <div class="col-md-12 moder-content">
         <h3>Фото Клиенток на модерацию</h3>
+        <div class="col-md-4 messages-area">
+            <div class="alert alert-success" role="alert" id="successText"></div>
+            <div class="alert alert-danger" role="alert" id="errorText"></div>
+        </div>
 <?php if(!empty($photos)): ?>
         <?php
         $i = 0;
@@ -69,12 +86,12 @@
                             </a>
                             <?php
                             $photo_comment_text = $photo_comment_attr = '';
-                            if(!empty($photo['Comment'])){
-                                $photo_comment_attr = 'data-toggle="tooltip" data-placement="bottom" title="' . $photo['Comment'] . '"';
-                                $photo_comment_text = $photo['Comment'];
-                            }
+                            $photo_comment_attr = 'data-toggle="tooltip" data-placement="bottom" title="' . $photo['Comment'] . '"';
+                            $photo_comment_text = $photo['Comment'];
                             ?>
-                            <div class="photo-comment" <?= $photo_comment_attr; ?>><?= $photo_comment_text; ?></div>
+                            <div id="photocomment_<?= $photo['ID']; ?>" class="photo-comment" <?= $photo_comment_attr; ?> onclick="editComment(<?= $photo['ID']; ?>);">
+                                <?= $photo_comment_text; ?>
+                            </div>
                             <a href="<?= $photo['pathFull']; ?>" class="btn btn-default btn-xs dl-btn pull-left" title="Скачать" target="_blank">
                                 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
                             </a>
@@ -120,6 +137,14 @@
                             rds.forEach(function (item, i, rds) {
                                 $('#gridItem'+item).remove();
                             });
+                            if(data.message.length > 0){
+                                $('#successText').html(data.message);
+                                $("#successText").show().delay(4000).fadeOut();
+                            }
+                        }
+                        else{
+                            $('#errorText').html(data.message);
+                            $("#errorText").show().delay(4000).fadeOut();
                         }
                     },
                     'json'
@@ -159,9 +184,80 @@
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        function editComment(id) {
+            $('#editCommentPhotoID').val(id);
+            $.post(
+                '/Moderation/getphototext/',
+                {
+                    ID: id
+                },
+                function (data) {
+                    if(data.status){
+                        $('#editCommentText').val(data.message);
+                        $('#editCommentModal').modal('show');
+                    }
+                    else {
+                        alert('Нет данных для редактирования');
+                    }
+                },
+                'json'
+            );
+        }
+
+        function saveCommentChanges() {
+            var id = $('#editCommentPhotoID').val();
+            var comment = $('#editCommentText').val();
+            $.post(
+                '/Moderation/savenewcomment/',
+                {
+                    ID: id,
+                    Comment: comment
+                },
+                function (data) {
+                    if(data.status){
+                        $('#photocomment_'+data.id).html(data.comment);
+                        $('#photocomment_'+data.id).attr('title', data.comment);
+                        $('#photocomment_'+data.id).attr('data-original-title', data.comment);
+                        $('#editCommentModal').modal('hide');
+                        $('#successText').html(data.message);
+                        $("#successText").show().delay(4000).fadeOut();
+                    }
+                    else{
+                        $('#editCommentModal').modal('hide');
+                        $('#errorText').html(data.message);
+                        $("#errorText").show().delay(4000).fadeOut();
+                    }
+                },
+                'json'
+            );
+        }
     </script>
 <?php else: ?>
         <h5 class="text-center">Все фото Клиенток обработаны</h5>
 <?php endif; ?>
     </div>
 </div>
+
+<?php /* edit comment modal */ ?>
+<div class="modal fade" id="editCommentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Редактирование комментария к фото</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" id="editCommentPhotoID" value="">
+                    <label for="editCommentText">Текст комментария:</label>
+                    <textarea class="form-control" id="editCommentText" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                <button type="button" onclick="saveCommentChanges();" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

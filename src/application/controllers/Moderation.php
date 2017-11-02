@@ -39,13 +39,20 @@ class Moderation extends MY_Controller
 
             $items = ltrim($items, '_');
             $items_ex = explode('_', $items);
+            $message = '';
 
             if($mode === 'approve'){
                 $result = $this->getCustomerModel()->photosBatchApprove($items_ex);
+                if($result > 0){
+                    $message = $result . ' фото успешно одобрено!';
+                }
             }
             elseif($mode === 'remove'){
-                $this->sendMessagesToAuthors($items_ex);
                 $result = $this->getCustomerModel()->photosBatchRemove($items_ex);
+                if($result > 0){
+                    $this->sendMessagesToAuthors($items_ex);
+                    $message = $result . ' фото успешно удалено!';
+                }
             }
             else
                 $result = 0;
@@ -54,7 +61,7 @@ class Moderation extends MY_Controller
                 $items_ex = array(0,0,0); // fish
             }
 
-            $this->json_response(array("status" => 1, 'records' => $items_ex));
+            $this->json_response(array("status" => 1, 'records' => $items_ex, 'message' => $message));
         } catch (Exception $e) {
             $this->json_response(array('status' => 0, 'message' => $e->getMessage()));
         }
@@ -99,5 +106,46 @@ class Moderation extends MY_Controller
     public function countphotos()
     {
         echo $this->getCustomerModel()->photosUnapprovedGetCount();
+    }
+
+    /**
+     * получаем комментарий к фото для редактирования
+     */
+    public function getphototext()
+    {
+        $response = array('status' => 0, 'message' => 'Нет данных для редактирования');
+        $ID = $this->input->post('ID', true);
+        if(empty($ID)){
+            $this->json_response($response);
+        }
+        $photo = $this->getCustomerModel()->photosGetItem($ID);
+        if(!empty($photo)){
+            $cm = (!empty($photo['Comment'])) ? $photo['Comment'] : '';
+            $response = array('status' => 1, 'message' => $cm);
+        }
+        $this->json_response($response);
+    }
+
+    /**
+     * сохраняем новый комментарий к фото
+     */
+    public function savenewcomment()
+    {
+        $response = array('status' => 0, 'message' => 'Комментарий НЕ сохранён!');
+        $ID = $this->input->post('ID', true);
+        $Comment = $this->input->post('Comment', true);
+        if(empty($ID)){
+            $this->json_response($response);
+        }
+        $res = $this->getCustomerModel()->photosUpdateComment($ID, $Comment);
+        if($res > 0) {
+            $response = array(
+                'status' => 1,
+                'message' => 'Комментарий успешно сохранён!',
+                'id' => $ID,
+                'comment' => $Comment,
+            );
+        }
+        $this->json_response($response);
     }
 }

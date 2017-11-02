@@ -2101,4 +2101,24 @@ class Customer_model extends MY_Model {
             ->count_all_results();
     }
 
+    /**
+     * обновление комментария у фото
+     * @param $ID
+     * @param $Comment
+     * @return int
+     */
+    public function photosUpdateComment($ID, $Comment)
+    {
+        $this->db()->update(
+            self::TABLE_CUSTOMER_PHOTO_NAME,
+            array(
+                'Comment' => $Comment,
+            ),
+            array(
+                'ID' => $ID,
+            )
+        );
+        return $this->db()->affected_rows();
+    }
+
 }
