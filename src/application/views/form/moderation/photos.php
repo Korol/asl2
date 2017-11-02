@@ -58,41 +58,70 @@
     }
     .panel {
         padding-top: 15px;
-        padding-bottom: 15px;
         margin-left: 0;
         margin-right: 0;
+    }
+    #author_id_filter option,
+    #customer_id_filter option {
+        padding: 3px 5px;
     }
 </style>
 
 <div class="row panel assol-grey-panel">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-12">
         <div class="row">
             <div class="col-md-6">
                 <?php if(!empty($customers)): ?>
-                <form action="">
+                <form action="" name="filterCustomer" class="form-horizontal">
                     <div class="form-group">
-                        <select name="customer_id" id="" class="form-control"></select>
+                        <label for="customer_id_filter" class="col-md-5 control-label">Выберите Клиентку</label>
+                        <div class="col-md-7">
+                            <select name="customer_id" id="customer_id_filter" class="form-control" onchange="document.filterCustomer.submit();">
+                                <option value="0">-- Все клиентки --</option>
+                            <?php foreach($customers as $customer): ?>
+                                <?php $selected = ($customer['CustomerID'] == $customer_id) ? 'selected="selected"' : ''; ?>
+                                <option <?= $selected; ?> value="<?= $customer['CustomerID']; ?>"><?= $customer['SName']; ?> <?= $customer['FName']; ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
                 </form>
                 <?php endif; ?>
             </div>
-            <div class="col-md-6">rest</div>
+            <div class="col-md-6">
+                <?php if(!empty($authors)): ?>
+                    <form action="" name="filterAuthor" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="author_id_filter" class="col-md-4 control-label" style="text-align: center !important;">или Сотрудника</label>
+                            <div class="col-md-7">
+                                <select name="author_id" id="author_id_filter" class="form-control" onchange="document.filterAuthor.submit();">
+                                    <option value="0">-- Все сотрудники --</option>
+                                    <?php foreach($authors as $author): ?>
+                                        <?php $selected = ($author['AuthorID'] == $author_id) ? 'selected="selected"' : ''; ?>
+                                        <option <?= $selected; ?> value="<?= $author['AuthorID']; ?>"><?= $author['SName']; ?> <?= $author['FName']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </div>
 <?php
 $h3 = (!empty($customer_id))
-    ? 'клиентки'
+    ? 'Клиентки'
     : (!empty($author_id))
-        ? 'сотрудника'
-        : 'клиенток';
+        ? 'Сотрудника'
+        : 'Клиенток';
 ?>
 <div class="row" id="customersPhotosGrid">
     <div class="col-md-12 moder-content">
         <h3>Фото <?= $h3; ?> на модерацию</h3>
         <div class="col-md-4 messages-area">
-            <div class="alert alert-success" role="alert" id="successText"></div>
-            <div class="alert alert-danger" role="alert" id="errorText"></div>
+<!--            <div class="alert alert-success" role="alert" id="successText"></div>-->
+<!--            <div class="alert alert-danger" role="alert" id="errorText"></div>-->
         </div>
 <?php if(!empty($photos)): ?>
         <?php
@@ -248,14 +277,16 @@ $h3 = (!empty($customer_id))
                         $('#photocomment_'+data.id).html(data.comment);
                         $('#photocomment_'+data.id).attr('title', data.comment);
                         $('#photocomment_'+data.id).attr('data-original-title', data.comment);
-                        $('#editCommentModal').modal('hide');
+//                        $('#editCommentModal').modal('hide');
                         $('#successText').html(data.message);
-                        $("#successText").show().delay(4000).fadeOut();
+                        $("#successText").show().delay(2000).fadeOut();
+                        setTimeout(function() { $('#editCommentModal').modal('hide'); }, 2000);
                     }
                     else{
-                        $('#editCommentModal').modal('hide');
+//                        $('#editCommentModal').modal('hide');
                         $('#errorText').html(data.message);
-                        $("#errorText").show().delay(4000).fadeOut();
+                        $("#errorText").show().delay(3000).fadeOut();
+//                        setTimeout(function() { $('#editCommentModal').modal('hide'); }, 3000);
                     }
                 },
                 'json'
@@ -282,6 +313,8 @@ $h3 = (!empty($customer_id))
                     <label for="editCommentText">Текст комментария:</label>
                     <textarea class="form-control" id="editCommentText" rows="2"></textarea>
                 </div>
+                <div class="alert alert-success" role="alert" id="successText"></div>
+                <div class="alert alert-danger" role="alert" id="errorText"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>

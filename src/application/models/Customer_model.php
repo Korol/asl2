@@ -2172,11 +2172,11 @@ class Customer_model extends MY_Model {
     {
         $res = $this->db()
             ->distinct()
-            ->select('cp.CustomerID, e.SName, e.FName')
+            ->select('cp.AuthorID, e.SName, e.FName')
             ->from(self::TABLE_CUSTOMER_PHOTO_NAME . ' AS cp')
             ->join(self::TABLE_EMPLOYEE_NAME . ' AS e', 'e.ID = cp.AuthorID')
             ->where('cp.Approved', 0)
-            ->group_by('cp.CustomerID')
+            ->group_by('cp.AuthorID')
             ->order_by('e.SName ASC, e.FName ASC')
             ->get()->result_array();
         return (!empty($res)) ? $res : array();
