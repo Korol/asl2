@@ -414,7 +414,9 @@ class MY_Controller extends CI_Controller {
         // 9. Пункт меню для роли "Директор"
         if ($this->isDirector()){
             $menu[] = ['controller'=>'setting', 'description'=>'Настройки'];
-            $menu[] = ['controller'=>'sms_access', 'description'=>'Доступ по СМС'];
+            if($this->getUserID() == 1){
+                $menu[] = ['controller'=>'sms_access', 'description'=>'Доступ по СМС'];
+            }
             $menu[] = ['controller'=>'moderation/photos', 'description'=>'Модерация фото'];
         }
 

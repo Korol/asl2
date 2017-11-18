@@ -74,7 +74,7 @@
                 <?php if(!empty($customers)): ?>
                 <form action="" name="filterCustomer" class="form-horizontal">
                     <div class="form-group">
-                        <label for="customer_id_filter" class="col-md-5 control-label">Выберите Клиентку</label>
+                        <label for="customer_id_filter" class="col-md-5 control-label" style="margin-top: 5px;">Выберите Клиентку</label>
                         <div class="col-md-7">
                             <select name="customer_id" id="customer_id_filter" class="form-control" onchange="document.filterCustomer.submit();">
                                 <option value="0">-- Все клиентки --</option>
@@ -92,7 +92,7 @@
                 <?php if(!empty($authors)): ?>
                     <form action="" name="filterAuthor" class="form-horizontal">
                         <div class="form-group">
-                            <label for="author_id_filter" class="col-md-4 control-label" style="text-align: center !important;">или Сотрудника</label>
+                            <label for="author_id_filter" class="col-md-4 control-label" style="text-align: center !important; margin-top: 5px;">или Сотрудника</label>
                             <div class="col-md-7">
                                 <select name="author_id" id="author_id_filter" class="form-control" onchange="document.filterAuthor.submit();">
                                     <option value="0">-- Все сотрудники --</option>
