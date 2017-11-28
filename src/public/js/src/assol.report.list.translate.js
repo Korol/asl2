@@ -13,6 +13,8 @@ $(document).ready(function(){
     const REPORT_INDIVIDUAL_SALARY = {Level: 4, Name: 'Отчет по зарплате'};
     /** Индивидуальные отчеты -> Подтвержденная зарплата */
     const REPORT_INDIVIDUAL_APPROVED_SALARY = {Level: 5, Name: 'Подтвержденная зарплата'};
+    /** Индивидуальные отчеты -> Звонки */
+    const REPORT_CALLS = {Level: 6, Name: 'Звонки'};
 
     var pathLevel = REPORT_INDIVIDUAL_LIST.Level;
 
@@ -28,6 +30,8 @@ $(document).ready(function(){
                 return {Name: REPORT_INDIVIDUAL_SALARY.Name, IsLast: true};
             case REPORT_INDIVIDUAL_APPROVED_SALARY.Level:
                 return {Name: REPORT_INDIVIDUAL_APPROVED_SALARY.Name, IsLast: true};
+            case REPORT_CALLS.Level:
+                return {Name: REPORT_CALLS.Name, IsLast: true};
             default:
                 return [];
         }
@@ -40,7 +44,8 @@ $(document).ready(function(){
                 {Level: REPORT_INDIVIDUAL_CORRESPONDENCE.Level, Name: REPORT_INDIVIDUAL_CORRESPONDENCE.Name, IsDoc: true},
                 {Level: REPORT_INDIVIDUAL_MAILING.Level, Name: REPORT_INDIVIDUAL_MAILING.Name, IsDoc: true},
                 {Level: REPORT_INDIVIDUAL_SALARY.Level, Name: REPORT_INDIVIDUAL_SALARY.Name, IsDoc: true},
-                {Level: REPORT_INDIVIDUAL_APPROVED_SALARY.Level, Name: REPORT_INDIVIDUAL_APPROVED_SALARY.Name, IsDoc: true}
+                {Level: REPORT_INDIVIDUAL_APPROVED_SALARY.Level, Name: REPORT_INDIVIDUAL_APPROVED_SALARY.Name, IsDoc: true},
+                {Level: REPORT_CALLS.Level, Name: REPORT_CALLS.Name, IsDoc: true}
             ]
         }
     };
@@ -88,6 +93,7 @@ $(document).ready(function(){
                 case REPORT_INDIVIDUAL_CORRESPONDENCE.Level:
                 case REPORT_INDIVIDUAL_SALARY.Level:
                 case REPORT_INDIVIDUAL_APPROVED_SALARY.Level:
+                case REPORT_CALLS.Level:
                     render({bread: getIindividualBread()});
                     break;
                 default:
@@ -102,6 +108,7 @@ $(document).ready(function(){
             $('#ReportIndividualCorrespondence').toggle(level == REPORT_INDIVIDUAL_CORRESPONDENCE.Level);
             $('#ReportIndividualSalary').toggle(level == REPORT_INDIVIDUAL_SALARY.Level);
             $('#ReportApprovedSalary').toggle(level == REPORT_INDIVIDUAL_APPROVED_SALARY.Level);
+            $('#ReportCalls').toggle(level == REPORT_CALLS.Level);
 
             switch (level) {
                 case REPORT_INDIVIDUAL_DAILY.Level:
@@ -118,6 +125,9 @@ $(document).ready(function(){
                     break;
                 case REPORT_INDIVIDUAL_APPROVED_SALARY.Level:
                     $.ReportTranslate.ReloadReportApprovedSalary();
+                    break;
+                case REPORT_CALLS.Level:
+                    loadCalls();
                     break;
             }
         }

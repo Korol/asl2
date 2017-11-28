@@ -71,3 +71,26 @@ if(($this->isDirector || $this->isSecretary) && ()){
 8. Если в дальнейшем потребуются какие-то отчеты для Сотрудников по Клиентам –
     то нужно будет исключить удаление старых связей, т.к. это поломает отчеты.
     Нужно будет добавлять новых Клиентов и новые сайты, избегая дублирования.
+
+============
+Добавление нового пункта в разделе Отчеты для Директора:
+1. /Users/korol/Sites/asl2.loc/src/public/js/src/assol.report.list.director.js
+добавляем константу в нужный level (копипастим предыдущую константу и её настройки, адаптируем)
+копипастим в этом файле все вхождения предыдущей константы, адаптируем под новую константу
+2. в терминале выполняем сжатие отредактированного в п.1 файла (описано в edited_by_task.txt)
+3. /Users/korol/Sites/asl2.loc/src/application/views/form/reports.php
+добавляем блок с указанным ранее id и в него подключаем загрузку нужного нам контента
+
+Для Секретаря:
+1. /Users/korol/Sites/asl2.loc/src/public/js/rsrc/eport.list.secretary.js
+всё аналогично п.1 выше
+2. в терминале выполняем сжатие отредактированного в п.1 файла (описано в edited_by_task.txt)
+3. /Users/korol/Sites/asl2.loc/src/application/views/form/reports/calls.php
+выводим инфу и разрешение согласно доступам
+
+Для Переводчика:
+1. /Users/korol/Sites/asl2.loc/src/public/js/src/assol.report.list.translate.js
+аналогично
+2. в терминале выполняем сжатие отредактированного в п.1 файла (описано в edited_by_task.txt)
+3. /Users/korol/Sites/asl2.loc/src/application/views/form/reports/calls.php
+выводим инфу и разрешение согласно доступам

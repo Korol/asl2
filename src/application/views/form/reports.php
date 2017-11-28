@@ -2696,3 +2696,9 @@
     </div>
 
 <? endif ?>
+
+<div id="ReportCalls" class="report-table overall-customer-sites">
+    <?php $this->load->view('form/reports/calls', array(
+        'employee' => $employee,
+    )); ?>
+</div>

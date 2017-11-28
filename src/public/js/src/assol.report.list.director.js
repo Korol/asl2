@@ -31,6 +31,8 @@ $(document).ready(function(){
     const REPORT_OVERALL_CUSTOMERS_SITES = {Level: 35, Name: 'Клиенты &harr; Сайты'};
     /** Общие отчеты -> Ежедневный отчет по сотрудникам */
     const REPORT_DAILY_EMPLOYEES = {Level: 36, Name: 'Ежедневный отчет по сотрудникам'};
+    /** Общие отчеты -> Звонки */
+    const REPORT_CALLS = {Level: 37, Name: 'Звонки'};
 
     var pathLevel = REPORT_TYPE_LIST.Level;
     var selectEmployeeName = '';
@@ -90,6 +92,9 @@ $(document).ready(function(){
             case REPORT_DAILY_EMPLOYEES.Level:
                 bread.push({Name: REPORT_DAILY_EMPLOYEES.Name, IsLast: true});
                 break;
+            case REPORT_CALLS.Level:
+                bread.push({Name: REPORT_CALLS.Name, IsLast: true});
+                break;
         }
 
         return bread;
@@ -110,7 +115,8 @@ $(document).ready(function(){
                 {Level: REPORT_GENERAL_OF_CUSTOMERS.Level, Name: REPORT_GENERAL_OF_CUSTOMERS.Name,IsDoc: true},
                 {Level: REPORT_OVERALL_ALLOCATION.Level, Name: REPORT_OVERALL_ALLOCATION.Name, IsDoc: true},
                 {Level: REPORT_OVERALL_CUSTOMERS_SITES.Level, Name: REPORT_OVERALL_CUSTOMERS_SITES.Name, IsDoc: true},
-                {Level: REPORT_DAILY_EMPLOYEES.Level, Name: REPORT_DAILY_EMPLOYEES.Name, IsDoc: true}
+                {Level: REPORT_DAILY_EMPLOYEES.Level, Name: REPORT_DAILY_EMPLOYEES.Name, IsDoc: true},
+                {Level: REPORT_CALLS.Level, Name: REPORT_CALLS.Name, IsDoc: true}
             ]
         },
         individual: {
@@ -208,6 +214,7 @@ $(document).ready(function(){
                 case REPORT_GENERAL_SALARY.Level:
                 case REPORT_OVERALL_CUSTOMERS_SITES.Level:
                 case REPORT_DAILY_EMPLOYEES.Level:
+                case REPORT_CALLS.Level:
                     render({bread: getGeneralBread()});
                     break;
                 default:
@@ -227,6 +234,7 @@ $(document).ready(function(){
             $('#ReportGeneralSalary').toggle(level == REPORT_GENERAL_SALARY.Level);
             $('#ReportOverallCustomersSites').toggle(level == REPORT_OVERALL_CUSTOMERS_SITES.Level);
             $('#ReportDailyEmployees').toggle(level == REPORT_DAILY_EMPLOYEES.Level);
+            $('#ReportCalls').toggle(level == REPORT_CALLS.Level);
 
             switch (level) {
                 case REPORT_INDIVIDUAL_DAILY.Level:
@@ -262,6 +270,10 @@ $(document).ready(function(){
                     break;
                 case REPORT_DAILY_EMPLOYEES.Level:
                     $('#overallAllocationSite').find('input:first').click();
+                    break;
+                case REPORT_CALLS.Level:
+                    $('#overallAllocationSite').find('input:first').click();
+                    loadCalls(); // здесь вызов функции заполнения таблицы
                     break;
             }
         }
