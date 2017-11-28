@@ -348,6 +348,16 @@ class MY_Controller extends CI_Controller {
     }
 
     /**
+     * @return Calls_model
+     */
+    protected function getCallsModel() {
+        if (!isset($this->calls_model))
+            $this->load->model('calls_model');
+
+        return $this->calls_model;
+    }
+
+    /**
      * Статус блокировки для сайта LoveStory
      *
      *@return true если отчет не заполнялся несколько дней и текущий пользователь переводчик
