@@ -352,8 +352,8 @@ class Customer_model extends MY_Model {
             ->join(self::TABLE_EMPLOYEE_NAME . ' AS e', 'c.WhoUpdate = e.ID', 'left')
             ->group_by('c.ID');
 
-        // Для переводчика фильтруем список клиенток
-        if ($idEmployee) {
+        // Для переводчика фильтруем список клиенток – если только не указан статус анкеты самоописания
+        if ($idEmployee && empty($data['ssdStatus'])) {
             $this->db()
                 ->join(self::TABLE_EMPLOYEE_SITE_CUSTOMER_NAME.' AS es2c', 'es2c.CustomerID = c.ID AND es2c.IsDeleted=0', 'inner')
                 ->join(self::TABLE_EMPLOYEE_SITE_NAME.' AS e2s', 'es2c.EmployeeSiteID = e2s.ID AND e2s.IsDeleted = 0 AND e2s.EmployeeID = '.$idEmployee, 'inner');

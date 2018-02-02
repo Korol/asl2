@@ -171,7 +171,12 @@ class Customer extends MY_Controller {
             // Привязка клиентов к сайту «В очереди» (ID=15) при назначении Ответственного
             // по заполнению Анкеты клиента
             if(!empty($data['ssdStatus']) && ($data['ssdStatus'] == 1) && !empty($data['ssdResponsibleStaff'])){
-                $this->getCustomerModel()->toQueue($id, $data['ssdResponsibleStaff']);
+                //$this->getCustomerModel()->toQueue($id, $data['ssdResponsibleStaff']);
+            }
+
+            // проверяем, выбран ли сотрудник при изменении ssdStatus на 1 и 3
+            if(!empty($data['ssdStatus']) && in_array($data['ssdStatus'], array(1, 3)) && empty($data['ssdResponsibleStaff'])){
+                throw new Exception('Не выбран ответственный сотрудник!');
             }
 
             // Обновление профиля

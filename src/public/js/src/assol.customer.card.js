@@ -769,7 +769,8 @@ $(document).ready(function(){
 
             function callback(data) {
                 if (data.status) {
-                    showSuccessAlert('Анкета закреплена за выбранным сотрудником')
+                    showSuccessAlert('Анкета закреплена за выбранным сотрудником');
+                    $('#SaveSiteSelfDescription').remove(); // скрываем кнопку
                 } else {
                     showErrorAlert(data.message)
                 }
@@ -779,7 +780,6 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
 
             data['ssdStatus'] = 1; // новый статус
-            $('#SaveSiteSelfDescription').remove(); // скрываем кнопку
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
@@ -793,7 +793,8 @@ $(document).ready(function(){
 
             function callback(data) {
                 if (data.status) {
-                    showSuccessAlert('Анкета отправлена на утверждение Директору')
+                    showSuccessAlert('Анкета отправлена на утверждение Директору');
+                    $('#SaveSiteSelfDescription1').remove(); // скрываем кнопку
                 } else {
                     showErrorAlert(data.message)
                 }
@@ -803,7 +804,6 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
 
             data['ssdStatus'] = 2; // новый статус
-            $('#SaveSiteSelfDescription1').remove(); // скрываем кнопку
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
@@ -816,7 +816,8 @@ $(document).ready(function(){
 
             function callback(data) {
                 if (data.status) {
-                    showSuccessAlert('Анкета подтверждена')
+                    showSuccessAlert('Анкета подтверждена');
+                    $('#SaveSiteSelfDescription2').remove(); // скрываем кнопку
                 } else {
                     showErrorAlert(data.message)
                 }
@@ -826,7 +827,6 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
 
             data['ssdStatus'] = 3; // новый статус
-            $('#SaveSiteSelfDescription2').remove(); // скрываем кнопку
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
@@ -849,7 +849,9 @@ $(document).ready(function(){
 
             function callback(data) {
                 if (data.status) {
-                    showSuccessAlert('Анкета отправлена на доработку ответственному сотруднику')
+                    showSuccessAlert('Анкета отправлена на доработку ответственному сотруднику');
+                    $('#SaveSiteSelfDescription3').remove(); // скрываем кнопку
+                    $('#SaveSiteSelfDescription2').remove(); // скрываем кнопку
                 } else {
                     showErrorAlert(data.message)
                 }
@@ -859,8 +861,6 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff', 'ssdRSComment']);
 
             data['ssdStatus'] = 1; // новый статус
-            $('#SaveSiteSelfDescription3').remove(); // скрываем кнопку
-            $('#SaveSiteSelfDescription2').remove(); // скрываем кнопку
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
