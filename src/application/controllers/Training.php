@@ -3,6 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Training extends MY_Controller {
 
+    public $employeeGroups = array(
+        '10001' => array('role' => 'директор', 'label' => 'ВСЕ ДИРЕКТОРА', 'value' => '--10001'),
+        '10002' => array('role' => 'секретарь', 'label' => 'ВСЕ СЕКРЕТАРИ', 'value' => '--10002'),
+        '10003' => array('role' => 'переводчик', 'label' => 'ВСЕ ПЕРЕВОДЧИКИ', 'value' => '--10003'),
+        '10004' => array('role' => 'сотрудник', 'label' => 'ВСЕ СОТРУДНИКИ', 'value' => '--10004'),
+    );
+
     /**
      * Функция проверки прав доступа
      */
@@ -80,6 +87,12 @@ class Training extends MY_Controller {
                     $Employees[] = $this->getUserID(); // Добавление текущего пользователя к объекту прав
                 }
 
+                // проверяем наличие групп пользователей в Employees
+                // если они там есть – назначаем права всем юзерам в группе
+                if(!empty($Employees) && is_array($Employees)){
+                    $Employees = $this->checkEmployeesGroups($Employees);
+                }
+
                 if (empty($Name))
                     throw new Exception('Не указано имя папки');
 
@@ -96,7 +109,8 @@ class Training extends MY_Controller {
 
         $data = array(
             'folders' => $this->getTrainingModel()->folderGetList(),
-            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole())
+            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole()),
+            'employee_groups' => $this->employeeGroups,
         );
 
         // 3. Загрузка шаблона
@@ -119,6 +133,12 @@ class Training extends MY_Controller {
                     $Employees[] = $this->getUserID(); // Добавление текущего пользователя к объекту прав
                 }
 
+                // проверяем наличие групп пользователей в Employees
+                // если они там есть – назначаем права всем юзерам в группе
+                if(!empty($Employees) && is_array($Employees)){
+                    $Employees = $this->checkEmployeesGroups($Employees);
+                }
+
                 if (empty($Name))
                     throw new Exception('Не указано имя папки');
 
@@ -137,7 +157,8 @@ class Training extends MY_Controller {
             'record' => $this->getTrainingModel()->trainingGet($id),
             'rights' => $this->getTrainingModel()->getFolderRights($id),
             'folders' => $this->getTrainingModel()->folderGetList(),
-            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole())
+            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole()),
+            'employee_groups' => $this->employeeGroups,
         );
 
         // 3. Загрузка шаблона
@@ -160,6 +181,12 @@ class Training extends MY_Controller {
                     $Employees[] = $this->getUserID(); // Добавление текущего пользователя к объекту прав
                 }
 
+                // проверяем наличие групп пользователей в Employees
+                // если они там есть – назначаем права всем юзерам в группе
+                if(!empty($Employees) && is_array($Employees)){
+                    $Employees = $this->checkEmployeesGroups($Employees);
+                }
+
                 if (empty($TrainingName))
                     throw new Exception('Не указано имя статьи');
 
@@ -179,7 +206,8 @@ class Training extends MY_Controller {
             'Parent' => $idFolder,
             'bread' => $this->getTrainingModel()->breadGetList($idFolder),
             'folders' => $this->getTrainingModel()->folderGetList(),
-            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole())
+            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole()),
+            'employee_groups' => $this->employeeGroups,
         );
 
         $this->viewHeader($data);
@@ -208,11 +236,17 @@ class Training extends MY_Controller {
                     $Employees[] = $this->getUserID(); // Добавление текущего пользователя к объекту прав
                 }
 
+                // проверяем наличие групп пользователей в Employees
+                // если они там есть – назначаем права всем юзерам в группе
+                if(!empty($Employees) && is_array($Employees)){
+                    $Employees = $this->checkEmployeesGroups($Employees);
+                }
+
                 if (empty($TrainingName))
                     throw new Exception('Не указано имя статьи');
 
                 $this->getTrainingModel()->trainingUpdate($idRecord, $TrainingName, $Parent, $TrainingContent);
-                $this->getTrainingModel()->trainingRightUpdate($idRecord, $Employees);
+                $this->getTrainingModel()->trainingRightUpdate($idRecord, $Employees, 0);
 
                 $res = array('status' => 1, 'id' => $idRecord);
             } catch (Exception $e) {
@@ -229,7 +263,8 @@ class Training extends MY_Controller {
             'Parent' => $idFolder,
             'rights' => $this->getTrainingModel()->getFolderRights($idRecord),
             'folders' => $this->getTrainingModel()->folderGetList(),
-            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole())
+            'employees' => $this->getEmployeeModel()->employeeGetActiveList($this->getUserID(), $this->getUserRole()),
+            'employee_groups' => $this->employeeGroups,
         );
 
         $this->viewHeader($data);
@@ -388,4 +423,33 @@ class Training extends MY_Controller {
         }
     }
 
+    /**
+     * проверяем массив на наличие групп пользователей (--10001, --10002)
+     * если находим – получаем всех пользователей этих групп и добавляем в массив
+     * @param array $Employees
+     * @return array
+     */
+    public function checkEmployeesGroups($Employees)
+    {
+        $return = $Employees;
+        $groups = array();
+        foreach ($Employees as $k => $ID){
+            if(strpos((string)$ID, '--') !== false){
+                // это группа сотрудников
+                $groups[] = str_replace('--', '', (string)$ID);
+                unset($return[$k]);
+            }
+        }
+        if(!empty($groups)){
+            $groupsEmployees = $this->getEmployeeModel()->employeeGetFilterRoleList(0, $groups);
+            if(!empty($groupsEmployees)){
+                foreach ($groupsEmployees as $gEmployee){
+                    if(!in_array($gEmployee['ID'], $return))
+                        $return[] = $gEmployee['ID'];
+                }
+                unset($groupsEmployees);
+            }
+        }
+        return $return;
+    }
 }

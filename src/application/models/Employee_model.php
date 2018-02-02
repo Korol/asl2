@@ -347,7 +347,7 @@ class Employee_model extends MY_Model {
      */
     public function employeeGetActiveList($EmployeeID, $EmployeeRole) {
         $this->db()
-            ->select('e.ID, e.SName, e.FName, e.MName')
+            ->select('e.ID, e.SName, e.FName, e.MName, e.UserRole')
             ->from(self::TABLE_EMPLOYEE_NAME . ' AS e');
 
         // Фильтруем список для ролей "Сотрудник" и "Переводчик" на основе прав доступа

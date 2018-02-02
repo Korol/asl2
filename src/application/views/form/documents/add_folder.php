@@ -52,9 +52,21 @@
             <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
             <ul class="dropdown-menu">
                 <?php foreach($employees as $item): ?>
-                    <li>
+                    <?php
+                    $eRole = (!empty($employee_groups[$item['UserRole']]))
+                        ? $employee_groups[$item['UserRole']]['role']
+                        : '';
+                    ?>
+                    <li style="position: relative;">
                         <input type="checkbox" id="ex<?= $item['ID'] ?>" value="<?= $item['ID'] ?>">
                         <label for="ex<?= $item['ID'] ?>"><?= $item['SName'] ?> <?= $item['FName'] ?></label>
+                        <span style="position: absolute; right: 5px; top: 5px;"><?= $eRole; ?></span>
+                    </li>
+                <?php endforeach ?>
+                <?php foreach($employee_groups as $k => $item): ?>
+                    <li>
+                        <input type="checkbox" id="ex<?= $k ?>" value="<?= $item['value'] ?>">
+                        <label for="ex<?= $k ?>"><?= $item['label'] ?></label>
                     </li>
                 <?php endforeach ?>
             </ul>

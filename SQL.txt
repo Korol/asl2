@@ -15,3 +15,7 @@ ALTER TABLE `assol_calendar_event` ADD `forall` TINYINT(1)  NULL  DEFAULT '0'  A
 CREATE TABLE `assol_employees_services_access` (   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,   `EmployeeID` int(11) DEFAULT NULL,   PRIMARY KEY (`id`),   UNIQUE KEY `EmployeeID` (`EmployeeID`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- =====
+
+-- 2018-02-02 documents article
+ALTER TABLE `assol_document_article_rights` DROP FOREIGN KEY `assol_document_article_rights_ibfk_1`;
+ALTER TABLE `assol_document_article_rights` ADD CONSTRAINT `assol_document_article_rights_ibfk_1` FOREIGN KEY (`TrainingID`) REFERENCES `assol_document_article` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION;

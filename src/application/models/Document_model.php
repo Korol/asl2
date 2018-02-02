@@ -49,7 +49,7 @@ class Document_model extends MY_Model {
       PRIMARY KEY (`ID`),
       KEY `TrainingID` (`TrainingID`),
       KEY `EmployeeID` (`EmployeeID`),
-      CONSTRAINT `assol_document_article_rights_ibfk_1` FOREIGN KEY (`TrainingID`) REFERENCES `assol_training` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+      CONSTRAINT `assol_document_article_rights_ibfk_1` FOREIGN KEY (`TrainingID`) REFERENCES `assol_document_article` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
       CONSTRAINT `assol_document_article_rights_ibfk_2` FOREIGN KEY (`EmployeeID`) REFERENCES `assol_employee` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Права доступа к статьям в Документации';";
 
@@ -124,6 +124,23 @@ class Document_model extends MY_Model {
             INNER JOIN `assol_document_rights` ON
                 `assol_document_rights`.`DocumentID`= `assol_document`.`ID`
             WHERE `assol_document`.`ID`=?', array($idFolder)
+        )->result_array();
+    }
+
+    /**
+     * Получить список разрешенных пользователей для статьи
+     *
+     * @param int $idArticle ID статьи
+     *
+     * @return mixed
+     */
+    public function getArticleRights($idArticle) {
+        return $this->db()->query('
+            SELECT `assol_document_article_rights`.`EmployeeID` AS \'ID\' FROM
+                `assol_document_article`
+            INNER JOIN `assol_document_article_rights` ON
+                `assol_document_article_rights`.`TrainingID`= `assol_document_article`.`ID`
+            WHERE `assol_document_article`.`ID`=?', array($idArticle)
         )->result_array();
     }
 
