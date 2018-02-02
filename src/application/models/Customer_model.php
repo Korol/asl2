@@ -338,7 +338,7 @@ class Customer_model extends MY_Model {
     /**
      * Получить список клиентов
      *
-     * @param int $idEmployee ID сотрудника
+     * @param int|bool $idEmployee ID сотрудника
      * @param bool $data
      *
      * @return mixed
@@ -1711,9 +1711,10 @@ class Customer_model extends MY_Model {
      * за которыми закреплен данный клиент
      *
      * @param string $CustomerID - ID клиента
+     * @param bool $raw - вернуть ли чистые данные, без HTML
      * @return array
      */
-    public function getEmployeesBySite($CustomerID)
+    public function getEmployeesBySite($CustomerID, $raw = false)
     {
         $return = array();
         $res = $this->db()
@@ -1733,8 +1734,13 @@ class Customer_model extends MY_Model {
         // группируем результаты по сайтам (es.SiteID), формируем ссылку на профиль сотрудника
         if(!empty($res)){
             foreach ($res as $row) {
-                $name = '<a href="/employee/' . $row['ID'] . '/profile" target="_blank">' . trim($row['SName']) . ' ' . mb_substr($row['FName'], 0, 1, 'UTF-8') . '.</a>';
-                $return[$row['SiteID']] = (isset($return[$row['SiteID']])) ? $return[$row['SiteID']] . ', ' . $name : $name;
+                if(!$raw) {
+                    $name = '<a href="/employee/' . $row['ID'] . '/profile" target="_blank">' . trim($row['SName']) . ' ' . mb_substr($row['FName'], 0, 1, 'UTF-8') . '.</a>';
+                    $return[$row['SiteID']] = (isset($return[$row['SiteID']])) ? $return[$row['SiteID']] . ', ' . $name : $name;
+                }
+                else {
+                    $return[$row['SiteID']][] = $row;
+                }
             }
         }
         return $return;

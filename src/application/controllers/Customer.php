@@ -214,6 +214,38 @@ class Customer extends MY_Controller {
                     [USER_ROLE_TRANSLATE]
                 );
 
+            // Контроль доступа к просмотру новой анкеты самоописание
+            $data['ssdCanView'] = false;
+            // самоописание могут видеть Директор и Секретарь
+            if($this->isDirector() || $this->isSecretary()){
+                $data['ssdCanView'] = true;
+            }
+            elseif ($this->isTranslate()){
+                // также самоописание может видеть Переводчик,
+                // назначенный ответственным за заполнение анкеты самоописание
+                if(
+                    (
+                        !empty($data['customer']['ssdResponsibleStaff']) &&
+                        ($data['customer']['ssdStatus'] != 3)
+                    ) &&
+                    ($data['customer']['ssdResponsibleStaff'] == $this->getUserID())
+                ){
+                    $data['ssdCanView'] = true;
+                }
+                // также анкету самоописание может видеть Переводчик,
+                // за которым закреплена эта клиентка
+                if(!$data['ssdCanView']){
+                    // список клиенток, которые закреплены за текущим Переводчиком
+                    $my_customers = $this->getEmployeeModel()->employeeCustomerGetList($this->getUserID());
+                    $my_customers = (!empty($my_customers))
+                        ? toolIndexArrayBy($my_customers, 'CustomerID')
+                        : array();
+                    if(!empty($my_customers) && in_array($id, array_keys($my_customers))){
+                        $data['ssdCanView'] = true;
+                    }
+                }
+            }//var_dump($this->getCustomerModel()->getEmployeesBySite($id, true));
+
             // Редактирование прав доступа к договорам и паспорту
             $data['isEditDocumentAccess'] = $this->isDirector() || $this->isSecretary();
 

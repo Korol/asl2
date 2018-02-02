@@ -1175,6 +1175,7 @@
                 <? endif ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="SelfDescription">
+                <?php if($ssdCanView): ?>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -1259,6 +1260,7 @@
                     'ssdStaffs' => $ssdStaffs,
                 ));
                 ?>
+                <?php endif; // if($ssdCanView) ?>
             </div>
             <div role="tabpanel" class="tab-pane" id="Questions">
                 <div id="react-customer-profile-page"></div>
