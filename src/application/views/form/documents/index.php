@@ -122,8 +122,8 @@
                     <span class="glyphicon glyphicon-edit document-menu-btn blue" aria-hidden="true" title="Редактировать"></span>
                 </a>
                 {{else}}
-                <a href="<?=current_url()?>/load/${ID}" target="_blank">
-                    <span class="glyphicon glyphicon-download document-menu-btn blue" aria-hidden="true" title="Скачать"></span>
+                <a href="<?=base_url('documents')?>/load/${ID}" target="_blank">
+                    <span class="glyphicon glyphicon-eye-open document-menu-btn blue" aria-hidden="true" title="Скачать"></span>
                 </a>
                 {{/if}}
             {{/if}}

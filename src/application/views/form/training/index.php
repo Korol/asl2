@@ -110,7 +110,7 @@
                     <?php if ($role['isDirector']): ?>
                         <span class="glyphicon glyphicon-remove-circle document-menu-btn remove action-file-remove" aria-hidden="true" title="Удалить"></span>
                     <?php endif ?>
-                    <a href="<?=current_url()?>/load/${ID}" target="_blank">
+                    <a href="<?=base_url('training')?>/load/${ID}" target="_blank">
                         <span class="glyphicon glyphicon-eye-open document-menu-btn blue" aria-hidden="true" title="Открыть"></span>
                     </a>
                 {{else}}
