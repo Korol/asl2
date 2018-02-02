@@ -104,19 +104,22 @@
                 <span class="glyphicon glyphicon-edit document-menu-btn blue" aria-hidden="true" title="Редактировать"></span>
             </a>
             {{/if}}
-
+        <?php endif ?>
             {{if IsFolder==0}}
                 {{if isFile}}
-                <span class="glyphicon glyphicon-remove-circle document-menu-btn remove action-file-remove" aria-hidden="true" title="Удалить"></span>
-                <a href="<?=current_url()?>/load/${ID}" target="_blank">
-                    <span class="glyphicon glyphicon-eye-open document-menu-btn blue" aria-hidden="true" title="Открыть"></span>
-                </a>
+                    <?php if ($role['isDirector']): ?>
+                        <span class="glyphicon glyphicon-remove-circle document-menu-btn remove action-file-remove" aria-hidden="true" title="Удалить"></span>
+                    <?php endif ?>
+                    <a href="<?=current_url()?>/load/${ID}" target="_blank">
+                        <span class="glyphicon glyphicon-eye-open document-menu-btn blue" aria-hidden="true" title="Открыть"></span>
+                    </a>
                 {{else}}
-                    <span class="glyphicon glyphicon-remove-circle document-menu-btn remove action-document-remove" aria-hidden="true" title="Удалить"></span>
-                    <span class="glyphicon glyphicon-edit document-menu-btn blue action-training-edit" aria-hidden="true" title="Редактировать"></span>
+                    <?php if ($role['isDirector']): ?>
+                        <span class="glyphicon glyphicon-remove-circle document-menu-btn remove action-document-remove" aria-hidden="true" title="Удалить"></span>
+                        <span class="glyphicon glyphicon-edit document-menu-btn blue action-training-edit" aria-hidden="true" title="Редактировать"></span>
+                    <?php endif ?>
                 {{/if}}
             {{/if}}
-        <?php endif ?>
         </div>
         <div>
             {{if isFile}}

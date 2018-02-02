@@ -355,7 +355,7 @@ class Training extends MY_Controller {
     public function load($id) {
         try {
             // 1. Проверка прав доступа
-            $this->assertUserRight();
+            //$this->assertUserRight();
 
             if (!isset($id))
                 throw new RuntimeException("Не указан обязательный параметр");
