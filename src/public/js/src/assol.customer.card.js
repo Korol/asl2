@@ -780,6 +780,9 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
 
             data['ssdStatus'] = 1; // новый статус
+            if(data['ssdResponsibleStaff'] === undefined){
+                data['ssdResponsibleStaff'] = $('#ssdResponsibleStaff').find('input:checked').val();
+            }
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
@@ -827,6 +830,9 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff']);
 
             data['ssdStatus'] = 3; // новый статус
+            if(data['ssdResponsibleStaff'] === undefined){
+                data['ssdResponsibleStaff'] = $('#ssdResponsibleStaff').find('input:checked').val();
+            }
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
@@ -861,6 +867,9 @@ $(document).ready(function(){
                 'ssdMailingList1', 'ssdMailingList2', 'ssdMailingList3', 'ssdResponsibleStaff', 'ssdRSComment']);
 
             data['ssdStatus'] = 1; // новый статус
+            if(data['ssdResponsibleStaff'] === undefined){
+                data['ssdResponsibleStaff'] = $('#ssdResponsibleStaff').find('input:checked').val();
+            }
 
             if (!$.isBlank(data))
                 $.post($.CustomerCard.GetCustomerUpdateUrl(), {data: data}, callback, 'json');
