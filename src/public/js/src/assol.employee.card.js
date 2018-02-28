@@ -337,6 +337,19 @@ $(document).ready(function(){
         ReloadSiteCustomerList: function(SiteID) {
             //this.ReloadData('#ClientsList_' + SiteID, 'site/' + SiteID + '/customer', 'clientsTemplate');
             this.ReloadData('#ClientsList_' + SiteID, 'site/' + SiteID + '/customer', 'clientsTemplate', null, function() {
+                // подсчет количества клиенток в блоке
+                // если больше 10 – то выводим количество и скрываем список за кнопкой «Показать»
+                var list = $('#ClientsList_' + SiteID);
+                var numLi = list.find('li.clients-item').length;
+                list.removeClass('hide');
+                $('#showAll_'+SiteID).remove();
+                if(numLi > 10){
+                    list.addClass('hide');
+                    $('#ClientsList_' + SiteID).parent('.clients-list').append('<button class="btn assol-btn save" title="Количество клиентов на сайте">'+numLi+'</button>&nbsp;');
+                    $('#ClientsList_' + SiteID).parent('.clients-list').append('<button class="btn assol-btn add" onclick="toggleClientsList('+SiteID+');" id="showAll_'+ SiteID +'" title="Показать всех клиенток"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Показать всех</button>&nbsp;');
+                }
+
+                // добавляем кнопку «Удалить всех»
                 var listHtml = $('#ClientsList_' + SiteID).html();
                 if(listHtml != ''){
                     $('#rmAll'+SiteID).remove();
@@ -967,3 +980,18 @@ $(document).ready(function(){
         $('a[href="'+mhash+'"]').tab('show');
     }
 });
+
+// показываем/скрываем клиенток в списках по сайтам
+// на вкладке «Работа»
+function toggleClientsList(id){
+    var tid = $('#showAll_'+id);
+    $('#ClientsList_' + id).toggleClass('show hide');
+    if(tid.find('span.glyphicon-eye-open').length > 0){
+        tid.attr('title', 'Скрыть всех клиенток');
+        tid.html('<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span> Скрыть всех');
+    }
+    else {
+        tid.attr('title', 'Показать всех клиенток');
+        tid.html('<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Показать всех');
+    }
+}
