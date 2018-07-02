@@ -2071,7 +2071,7 @@
                     <tbody>
                         {{each customers}}
                             <tr>
-                                <td title="${SName} ${FName}" class="sticky-cell"><div>${SName} ${FName}</div></td>
+                                <td title="${SName} ${FName}" class="sticky-cell"><div><a href="/customer/${CustomerID}/profile" target="_blank">${SName} ${FName}</a></div></td>
 
                                 {{each work_sites}}
                                     <td id="gc_mail_${CustomerID}_${SiteID}" title="${SName} ${FName}"><div>0</div></td>

@@ -5575,3 +5575,8 @@ code {
 .small-btn-text{
   font-size: 12px !important;
 }
+
+/* red tsak title */
+.red-task-title {
+  color: #fd0101;
+}

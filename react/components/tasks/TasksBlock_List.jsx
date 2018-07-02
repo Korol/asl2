@@ -88,6 +88,12 @@ export default class TasksBlock_List extends React.Component {
             return null;
         }
 
+        function hasnewcomments(task) {
+            return (task.CountNewComment > 0)
+                ? <span className="title red-task-title">{task.Title}</span>
+                : <span className="title">{task.Title}</span>
+        }
+
         const data = tasks.map(function (task) {
             return (
                 <tr className="task-block" key={task.ID}>
@@ -100,7 +106,7 @@ export default class TasksBlock_List extends React.Component {
                         <div className="task-name">
                             <a href="#" onClick={() => dispatch(showTask(task))}>
                                 {unread(task)}
-                                <span className="title">{task.Title}</span>
+                                {hasnewcomments(task)}
                             </a>
                         </div>
                     </td>
@@ -164,6 +170,12 @@ export default class TasksBlock_List extends React.Component {
             return null;
         }
 
+        function hasnewcomments(task) {
+            return (task.CountNewComment > 0)
+                ? <span className="title red-task-title">{task.Title}</span>
+                : <span className="title">{task.Title}</span>
+        }
+
         const data = tasks.map(function (task) {
             return (
                 <tr className="task-block" key={task.ID}>
@@ -179,7 +191,7 @@ export default class TasksBlock_List extends React.Component {
                         <div className="task-name">
                             <a href="#" onClick={() => dispatch(showTask(task))}>
                                 {unread(task)}
-                                <span className="title">{task.Title}</span>
+                                {hasnewcomments(task)}
                             </a>
                         </div>
                     </td>
@@ -254,6 +266,12 @@ export default class TasksBlock_List extends React.Component {
             return null;
         }
 
+        function hasnewcomments(task) {
+            return (task.CountNewComment > 0)
+                ? <span className="title red-task-title">{task.Title}</span>
+                : <span className="title">{task.Title}</span>
+        }
+
         const data = tasks.map(function (task) {
             return (
                 <tr className="task-block" key={task.ID}>
@@ -266,7 +284,7 @@ export default class TasksBlock_List extends React.Component {
                         <div className="task-name">
                             <a href="#" onClick={() => dispatch(showTask(task))}>
                                 {unread(task)}
-                                <span className="title">{task.Title}</span>
+                                {hasnewcomments(task)}
                             </a>
                         </div>
                     </td>
@@ -324,6 +342,12 @@ export default class TasksBlock_List extends React.Component {
             return null;
         }
 
+        function hasnewcomments(task) {
+            return (task.CountNewComment > 0)
+                ? <span className="title red-task-title">{task.Title}</span>
+                : <span className="title">{task.Title}</span>
+        }
+
         const data = tasks.map(function (task) {
             return (
                 <tr className="task-block" key={task.ID}>
@@ -335,8 +359,7 @@ export default class TasksBlock_List extends React.Component {
                     <td>
                         <div className="task-name">
                             <a href="#" onClick={() => dispatch(showTask(task))}>
-                                {unreadComment(task)}
-                                <span className="title">{task.Title}</span>
+                                {hasnewcomments(task)}
                             </a>
                         </div>
                     </td>
@@ -386,6 +409,12 @@ export default class TasksBlock_List extends React.Component {
             return null;
         }
 
+        function hasnewcomments(task) {
+            return (task.CountNewComment > 0)
+                ? <span className="title red-task-title">{task.Title}</span>
+                : <span className="title">{task.Title}</span>
+        }
+
         const data = tasks.map(function (task) {
             return (
                 <tr className="task-block" key={task.ID}>
@@ -397,8 +426,7 @@ export default class TasksBlock_List extends React.Component {
                     <td>
                         <div className="task-name">
                             <a href="#" onClick={() => dispatch(showTask(task))}>
-                                {unreadComment(task)}
-                                <span className="title">{task.Title}</span>
+                                {hasnewcomments(task)}
                             </a>
                         </div>
                     </td>
